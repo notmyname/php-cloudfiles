@@ -2,31 +2,6 @@
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
-/**
-* Short description for file
-*
-* Long description for file (if any)...
-*
-* PHP versions 4 and 5
-*
-* LICENSE: This source file is subject to version 3.0 of the PHP license
-* that is available through the world-wide-web at the following URI:
-* http://www.php.net/license/3_0.txt.  If you did not receive a copy of
-* the PHP License and are unable to obtain it through the web, please
-* send a note to license@php.net so we can mail you a copy immediately.
-*
-* @category   CategoryName
-* @package    Freerange
-* @author     EJ <ej@racklabs.com>
-* @copyright  2008 Rackspace US, Inc.
-* @license    http://www.php.net/license/3_0.txt  PHP License 3.0
-* @version    CVS: $Id:$
-* @link       http://pear.php.net/package/Freerange
-* @see        NetOther, Net_Sample::Net_Sample()
-* @since      File available since Release 1.2.0
-* @deprecated File deprecated in Release 2.0.0
-*/
-
 define("DEFAULT_CLOUDFS_API_VERSION", 1);
 define("CAPON_VERSION", "0.5");
 define("USER_AGENT", sprintf("Capon/%s", CAPON_VERSION));
@@ -52,6 +27,8 @@ class CLOUDFS_Connection
     var $object_metadata;
     var $object_write_resource;
     var $object_write_string;
+    var $_write_callback_type;
+    var $_header_callback_type;
 
     function CLOUDFS_Connection($surl, $stoken, $saccount, $apiv=DEFAULT_CLOUDFS_API_VERSION)
     {
@@ -69,22 +46,20 @@ class CLOUDFS_Connection
         $this->object_metadata = array();
         $this->object_write_resource = NULL;
         $this->object_write_string = "";
+        $this->_write_callback_type = NULL;
+        $this->_header_callback_type = NULL;
 
         # Curl connections array - since there is no way to "re-set" a
         # connection and each connection has slightly different options,
         # we keep an array of unique use-cases and funnel all of those same
         # requests through the same curl connection.
         $this->connections = array(
-            "PUT_OBJECT"        => NULL, # upload objects
-            "GET_OBJECT_STREAM" => NULL, # download objects to stream
-            "GET_OBJECT_STRING" => NULL, # download objects to string
-            "PUT_CONTAINER"     => NULL, # create containers
-            "LIST_OBJECTS"      => NULL, # list containers/objects
-            "LIST_CONTAINERS"   => NULL, # list containers/objects
-            "CUST_DELETE"       => NULL, # delete containers/objects
-            "CUST_POST"         => NULL, # post objects
-            "CHECK_CONTAINER"   => NULL, # head containers/objects
-            "CHECK_OBJECT"      => NULL, # head containers/objects
+            "CONN_1" => NULL, # GET objects/containers/lists
+            "CONN_2" => NULL, # PUT object
+            "CONN_3" => NULL, # HEAD requests
+            "CONN_4" => NULL, # PUT container
+            "CONN_5" => NULL, # DELETE containers/objects
+            "CONN_6" => NULL, # POST objects
         );
         if ($this->dbug) {
             print "=> CLOUDFS_Connection constructor\n";
@@ -107,48 +82,35 @@ class CLOUDFS_Connection
         curl_setopt($ch, CURLOPT_MAXREDIRS, 4);
         curl_setopt($ch, CURLOPT_HEADER, 0);
 
-        if ($conn_type == "PUT_OBJECT") {
+        if ($conn_type == "CONN_1") {
+            curl_setopt($ch, CURLOPT_WRITEFUNCTION,
+                    array(&$this, '_write_cb'));
+        }
+
+        if ($conn_type == "CONN_2") {
             curl_setopt($ch, CURLOPT_PUT, 1);
+            ## Next two options are set within the 'put_object' method
             #curl_setopt($ch, CURLOPT_INFILESIZE, $size);
             #curl_setopt($ch, CURLOPT_INFILE, $fp);
         }
-        if ($conn_type == "GET_OBJECT_STREAM") {
-            curl_setopt($ch, CURLOPT_WRITEFUNCTION,
-                    array(&$this, '_write_object_stream'));
+        if ($conn_type == "CONN_3") {
+            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "HEAD");
+            curl_setopt($ch, CURLOPT_HEADERFUNCTION, array(&$this, '_header_cb'));
+            curl_setopt($ch, CURLOPT_NOBODY, 1);
         }
-        if ($conn_type == "GET_OBJECT_STRING") {
-            curl_setopt($ch, CURLOPT_WRITEFUNCTION,
-                    array(&$this, '_write_object_string'));
-        }
-        if ($conn_type == "PUT_CONTAINER") {
+
+        if ($conn_type == "CONN_4") {
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
+            #curl_setopt($ch, CURLOPT_PUT, 1);
             curl_setopt($ch, CURLOPT_INFILESIZE, 0);
         }
-        if ($conn_type == "LIST_OBJECTS") {
-            curl_setopt($ch, CURLOPT_WRITEFUNCTION, array(&$this, '_list_objects'));
-        }
-        if ($conn_type == "LIST_CONTAINERS") {
-            curl_setopt($ch, CURLOPT_WRITEFUNCTION, array(&$this, '_list_containers'));
-        }
-        if ($conn_type == "CUST_DELETE") {
+        if ($conn_type == "CONN_5") {
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
             curl_setopt($ch, CURLOPT_NOBODY, 1);
-            #curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST or DELETE");
         }
-        if ($conn_type == "CUST_POST") {
+        if ($conn_type == "CONN_6") {
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
             curl_setopt($ch, CURLOPT_NOBODY, 1);
-            #curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST or DELETE");
-        }
-        if ($conn_type == "CHECK_CONTAINER") {
-            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "HEAD");
-            curl_setopt($ch, CURLOPT_HEADERFUNCTION, array(&$this, '_head_container'));
-            curl_setopt($ch, CURLOPT_NOBODY, 1);
-        }
-        if ($conn_type == "CHECK_OBJECT") {
-            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "HEAD");
-            curl_setopt($ch, CURLOPT_NOBODY, 1);
-            curl_setopt($ch, CURLOPT_HEADERFUNCTION, array(&$this, '_head_object'));
         }
         $this->connections[$conn_type] = $ch;
         return;
@@ -176,57 +138,51 @@ class CLOUDFS_Connection
         return curl_getinfo($this->connections[$conn_type], CURLINFO_HTTP_CODE);
     }
 
+    function _header_cb($ch, $header)
+    {
+        switch ($this->_header_callback_type) {
+        case "HEAD_CONTAINER":
+            if (stripos($header, CONTAINER_OBJ_COUNT) === 0) {
+                $this->container_object_count = trim(substr($header,
+                        strlen(CONTAINER_OBJ_COUNT)+1));
+            }
+            if (stripos($header, CONTAINER_BYTES_USED) === 0) {
+                $this->container_bytes_used = trim(substr($header,
+                        strlen(CONTAINER_BYTES_USED)+1));
+            }
+            break;
+        case "HEAD_OBJECT":
+            if (stripos($header, METADATA_HEADER) === 0) {
+                # strip off the leading METADATA_HEADER part
+                $temp = substr($header, strlen(METADATA_HEADER));
+                $parts = explode(":", $temp);
+                $this->object_metadata[$parts[0]] = trim($parts[1]);
+            }
+            if (stripos($header, "ETag") === 0) {
+                $parts = explode(":", $header);
+                $this->object_metadata[$parts[0]] = trim($parts[1]);
+            }
+            break;
+        }
+        return strlen($header);
+    }
+
     // callback function to read list of containers on an account
-    function _list_containers($ch, $data)
+    function _write_cb($ch, $data)
     {
-        $this->container_list[] = trim($data);
-        return strlen($data);
-    }
-
-    // callback function to write object data to an open file stream
-    function _write_object_stream($ch, $data)
-    {
-        return fwrite($this->object_write_resource, $data);
-    }
-
-    // callback function to write object data to string variable
-    function _write_object_string($ch, $data)
-    {
-        $this->object_write_string .= $data;
-        return strlen($data);
-    }
-
-    // callback function to read list of objects for a container
-    function _list_objects($ch, $data)
-    {
-        $this->object_list[] = trim($data);
-        return strlen($data);
-    }
-
-    // callback function for doing a HEAD on a container
-    function _head_container($ch, $header)
-    {
-        if (stripos($header, CONTAINER_OBJ_COUNT) === 0) {
-            $this->container_object_count = trim(substr($header,
-                    strlen(CONTAINER_OBJ_COUNT)+1));
+        switch ($this->_write_callback_type) {
+        case "CONTAINER_LIST":
+            $this->container_list[] = trim($data);
+            break;
+        case "OBJECT_LIST":
+            $this->object_list[] = trim($data);
+            break;
+        case "OBJECT_STREAM":
+            return fwrite($this->object_write_resource, $data);
+        case "OBJECT_STREAM":
+            $this->object_write_string .= $data;
         }
-        if (stripos($header, CONTAINER_BYTES_USED) === 0) {
-            $this->container_bytes_used = trim(substr($header,
-                    strlen(CONTAINER_BYTES_USED)+1));
-        }
-        return strlen($header);
-    }
-
-    // callback function for doing a HEAD on an object
-    function _head_object($ch, $header)
-    {
-        if (stripos($header, METADATA_HEADER) === 0) {
-            # strip off the leading METADATA_HEADER part
-            $temp = substr($header, strlen(METADATA_HEADER));
-            $parts = explode(":", $temp);
-            $this->object_metadata[$parts[0]] = trim($parts[1]);
-        }
-        return strlen($header);
+        return strlen($data);
     }
 
     function get_error()
@@ -248,7 +204,7 @@ class CLOUDFS_Connection
     #
     function get_containers()
     {
-        $conn_type = "LIST_CONTAINERS";
+        $conn_type = "CONN_1";
 
         $path = array();
         $path[] = $this->storage_url;
@@ -262,6 +218,7 @@ class CLOUDFS_Connection
         // re-init the container list and set the callback function
         $this->_init_curl($conn_type);
         $this->container_list = array();
+        $this->_write_callback_type = "CONTAINER_LIST";
 
         $return_code = $this->_send_request($conn_type,$url_path,$hdrs);
         if (!$return_code) {
@@ -293,7 +250,7 @@ class CLOUDFS_Connection
             $this->error_str = "Container name not set.";
             return False;
         }
-        $conn_type = "LIST_OBJECTS";
+        $conn_type = "CONN_1";
         $limit = intval($limit);
         $offset = intval($offset);
 
@@ -323,6 +280,7 @@ class CLOUDFS_Connection
         // re-init the object list and set the callback function
         $this->_init_curl($conn_type);
         $this->object_list = array();
+        $this->_write_callback_type = "OBJECT_LIST";
 
         $return_code = $this->_send_request($conn_type,$url_path,$hdrs);
         if (!$return_code) {
@@ -369,8 +327,10 @@ class CLOUDFS_Connection
             "User-Agent: " . USER_AGENT,
             "X-Storage-Token: " . $this->storage_token,
         );
+        $conn_type = "CONN_4";
+        $this->_init_curl($conn_type);
 
-        $return_code = $this->_send_request("PUT_CONTAINER",$url_path,$hdrs);
+        $return_code = $this->_send_request($conn_type,$url_path,$hdrs);
         if (!$return_code) {
             $this->error_str = "Failed to obtain http response";
             return False;
@@ -390,7 +350,7 @@ class CLOUDFS_Connection
             $this->error_str = "Container name not set.";
             return False;
         }
-        $conn_type = "CUST_DELETE";
+        $conn_type = "CONN_5";
         $path = array();
         $path[] = $this->storage_url;
         $path[] = urlencode($container_name);
@@ -429,7 +389,7 @@ class CLOUDFS_Connection
             $this->error_str = "Container name not set.";
             return False;
         }
-        $conn_type = "CHECK_CONTAINER";
+        $conn_type = "CONN_3";
         $path = array();
         $path[] = $this->storage_url;
         $path[] = urlencode($container_name);
@@ -444,6 +404,7 @@ class CLOUDFS_Connection
         $this->_init_curl($conn_type);
         $this->container_object_count = 0;
         $this->container_bytes_used = 0;
+        $this->_header_callback_type = "HEAD_CONTAINER";
 
         $return_code = $this->_send_request($conn_type,$url_path,$hdrs);
         if (!$return_code) {
@@ -493,11 +454,12 @@ class CLOUDFS_Connection
         // otherwise, concat to a string
         if ($resource && is_resource($resource)) {
             $this->object_write_resource = $resource;
-            $conn_type = "GET_OBJECT_STREAM";
+            $this->_write_callback_type = "OBJECT_STREAM";
         } else {
             $this->object_write_string = "";
-            $conn_type = "GET_OBJECT_STRING";
+            $this->_write_callback_type = "OBJECT_STRING";
         }
+        $conn_type = "CONN_1";
 
         $this->_init_curl($conn_type);
         $return_code = $this->_send_request($conn_type,$url_path,$hdrs);
@@ -538,7 +500,7 @@ class CLOUDFS_Connection
             $this->error_str = "URL encoded object name exceeds 128 characters.";
             return False;
         }
-        $conn_type = "PUT_OBJECT";
+        $conn_type = "CONN_2";
 
         $path = array();
         $path[] = $this->storage_url;
@@ -573,21 +535,21 @@ class CLOUDFS_Connection
             $fp = fopen("php://memory", "r+");
             fwrite($fp, $data);
             rewind($fp);
-            $size = strlen($data);
+            $size > 0 ? $put_size = $size : $put_size = strlen($data);
         } else {
             $fp = $data;
             if (!$size) {
                 $this->error_str = "Must supply size in bytes for data stream.";
                 return False;
+            } else {
+                $put_size = $size;
             }
         }
         $this->_init_curl($conn_type);
         curl_setopt($this->connections[$conn_type],
                 CURLOPT_INFILE, $fp);
-        if ($size) {
-            curl_setopt($this->connections[$conn_type],
-                    CURLOPT_INFILESIZE, $size);
-        }
+        curl_setopt($this->connections[$conn_type],
+                CURLOPT_INFILESIZE, $put_size);
 
         $return_code = $this->_send_request($conn_type,$url_path,$hdrs);
         if (!$return_code) {
@@ -641,7 +603,7 @@ class CLOUDFS_Connection
             $this->error_str = "Container or Object name missing.";
             return False;
         }
-        $conn_type = "CUST_POST";
+        $conn_type = "CONN_6";
 
         $path = array();
         $path[] = $this->storage_url;
@@ -688,7 +650,7 @@ class CLOUDFS_Connection
             $this->error_str = "Container or Object name missing.";
             return False;
         }
-        $conn_type = "CHECK_OBJECT";
+        $conn_type = "CONN_3";
 
         $path = array();
         $path[] = $this->storage_url;
@@ -703,6 +665,7 @@ class CLOUDFS_Connection
 
         $this->_init_curl($conn_type);
         $this->object_metadata = array();
+        $this->_header_callback_type = "HEAD_OBJECT";
 
         $return_code = $this->_send_request($conn_type,$url_path,$hdrs);
         if (!$return_code) {
@@ -735,7 +698,7 @@ class CLOUDFS_Connection
             $this->error_str = "Container or Object name not set.";
             return False;
         }
-        $conn_type = "CUST_DELETE";
+        $conn_type = "CONN_5";
         $path = array();
         $path[] = $this->storage_url;
         $path[] = urlencode($container_name);

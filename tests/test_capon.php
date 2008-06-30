@@ -8,11 +8,16 @@ $TEST_CONTAINER = "The Capon";
 $TEST_OBJECT = "The Object";
 $TEST_OBJECT2 = "Filestream_object";
 $TEST_OBJECT3 = "fullpath_object";
+
+$BIGGIE = "biggie_object";
+#$BIG_FILE = "/home/ej/bigfile.dat";
+
 $SINK_FILE = "/tmp/foo.txt";
 $TOBJECTS = array(
     $TEST_OBJECT,
     $TEST_OBJECT2,
     $TEST_OBJECT3,
+    $BIGGIE,
     );
 
 if ($PROD) {
@@ -59,6 +64,7 @@ if (!$result) {
 }
 
 print "== make container ===================================\n";
+#$conn->setDebug(True);
 $result = $conn->create_container($TEST_CONTAINER);
 if (!$result) {
     print "ERROR: " . $conn->get_error() . "\n";
@@ -74,6 +80,7 @@ if (!$result) {
 } else {
     print_r($result);
 }
+#$conn->setDebug(False);
 
 print "== check container2 =================================\n";
 #$conn->setDebug(True);
@@ -108,9 +115,9 @@ if (!$result) {
 
 print "== create object from file stream ===================\n";
 #$conn->setDebug(True);
-$fp = fopen("test_capon.php", "r");
-$etag = md5_file("test_capon.php");
-$size = filesize("test_capon.php");
+$fp = fopen("tests/test_capon.php", "r");
+$etag = md5_file("tests/test_capon.php");
+$size = filesize("tests/test_capon.php");
 $result = $conn->create_object(
     $TEST_CONTAINER, $TEST_OBJECT2,
     array(
@@ -133,7 +140,7 @@ fclose($fp);
 print "== create object from full filename path ============\n";
 #$conn->setDebug(True);
 $result = $conn->upload_filename(
-    $TEST_CONTAINER, $TEST_OBJECT3, "test_capon.php",
+    $TEST_CONTAINER, $TEST_OBJECT3, "tests/test_capon.php",
     array(
         "Bike" => "2008 FXDWG",
     )
@@ -142,6 +149,23 @@ if (!$result) {
     print "ERROR: " . $conn->get_error() . "\n";
 } else {
     print "SUCCESS: ".$TEST_CONTAINER."/".$TEST_OBJECT3." object created.\n";
+}
+
+if ($BIG_FILE) {
+    print "== create object from BIG_FILE ======================\n";
+    $conn->setDebug(True);
+    $result = $conn->upload_filename(
+        $TEST_CONTAINER, $BIGGIE, $BIG_FILE,
+        array(
+            "Bike" => "2008 FXDWG",
+        )
+        );
+    if (!$result) {
+        print "ERROR: " . $conn->get_error() . "\n";
+    } else {
+        print "SUCCESS: ".$TEST_CONTAINER."/".$TEST_OBJECT3." object created.\n";
+    }
+    $conn->setDebug(False);
 }
 
 print "== list objects =====================================\n";
