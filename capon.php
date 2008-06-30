@@ -10,6 +10,23 @@ define("CONTAINER_OBJ_COUNT", "x-container-object-count:");
 define("CONTAINER_BYTES_USED", "x-container-bytes-used:");
 define("METADATA_HEADER", "X-Object-Meta-");
 
+class CLOUDFS_Container
+{
+    var $name;
+    var $object_count;
+    var $bytes_used;
+}
+
+class CLOUDFS_Object
+{
+    var $container;
+    var $name;
+    var $etag;
+    var $content_type;
+    var $content_length;
+    var $metadata;
+}
+
 class CLOUDFS_Connection
 {
     var $dbug;
