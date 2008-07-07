@@ -9,7 +9,7 @@ $TEST_OBJECT = "The Object";
 $TEST_OBJECT2 = "Filestream_object";
 $TEST_OBJECT3 = "fullpath_object";
 
-$BIGGIE = "biggie_object";
+#$BIGGIE = "biggie_object";
 #$BIG_FILE = "/home/ej/bigfile.dat";
 
 $SINK_FILE = "/tmp/foo.txt";
@@ -17,7 +17,7 @@ $TOBJECTS = array(
     $TEST_OBJECT,
     $TEST_OBJECT2,
     $TEST_OBJECT3,
-    $BIGGIE,
+#    $BIGGIE,
     );
 
 if ($PROD) {
@@ -93,7 +93,7 @@ if (!$result) {
 
 print "== create object from string ========================\n";
 #$conn->setDebug(False);
-$data = "This is the data to write.\n";
+$data = "This is the data to write.";
 $size = strlen($data);
 $etag = md5($data);
 $result = $conn->create_object(
@@ -280,7 +280,7 @@ $result = $conn->delete_container($TEST_CONTAINER);
 if (!$result) {
     print "ERROR (".$v."): " . $conn->get_error() . "\n";
 } else {
-    print "SUCCESS DELETING CONTAINER (".$v.")\n";
+    print "SUCCESS DELETING CONTAINER '".$TEST_CONTAINER."'\n";
 }
 
 print "== check container ==================================\n";
