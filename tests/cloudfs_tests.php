@@ -22,6 +22,32 @@ if ($container) {
     print "ERROR: " . $conn->get_error() . "\n";
 }
 
+echo "======= CREATE CONTAINER (WITH '/' IN NAME) =================\n";
+try {
+    $bad_cont = $conn->create_container("php/capon");
+} catch (Exception $e) {
+    print "SUCCESS: do not allow '/' in container name\n";
+}
+
+echo "======= CREATE OBJECT (WITH '/' IN NAME) ====================\n";
+$o0 = $container->create_object("slash/name");
+if ($o0) {
+    print $o0 . "\n";
+} else {
+    print "ERROR: " . $container->get_error() . "\n";
+}
+
+echo "======= UPLOAD STRING CONTENT FOR OBJECT(0) =================\n";
+$text = "Some sample text.";
+$md5 = md5($text);
+$o0->content_type = "text/plain";
+$result = $o0->write($text);
+if ($result) {
+    $o0->etag == $md5 ? print "SUCCESS\n" : print "FAIL: MD5sums do not match\n";
+} else {
+    print "ERROR: " . $o0->get_error() . "\n";
+}
+
 echo "======= CREATE OBJECT =======================================\n";
 $o1 = $container->create_object("fuzzy.txt");
 if ($o1) {
@@ -137,6 +163,10 @@ echo "======= DOWNLOAD OBJECT TO STRING ===========================\n";
 $data = $o4->read();
 $data ?  print "SUCCESS: " . $data . "\n" : print "FAIL\n";
 
+echo "======= LIST OBJECTS (ALL) ==================================\n";
+$obj_list = $container->list_objects();
+print_r($obj_list);
+
 echo "======= FIND OBJECTS (LIMIT) ================================\n";
 $obj_list = $container->list_objects(1);
 print_r($obj_list);
@@ -157,6 +187,7 @@ try {
 }
 
 echo "======= DELETE OBJECTS ======================================\n";
+$container->delete_object($o0) ? print "SUCCESS: deleted\n" : print "FAIL\n";
 $container->delete_object($o1) ? print "SUCCESS: deleted\n" : print "FAIL\n";
 $container->delete_object($o2) ? print "SUCCESS: deleted\n" : print "FAIL\n";
 #$container->delete_object($o3); $o3 is the same as $o1
