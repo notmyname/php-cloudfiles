@@ -9,17 +9,11 @@
 ## ---------------------------------------------------------------------------- ##
 require("capon.php");
 
-#$VERBOSE = True;                        # informational messages to stdout
-#$ACCOUNT = "Account";                   # account name
-#$USER    = "Username";                  # account's username
-#$PASS    = "Password";                  # user's password
-#$HOST    = "https://auth.example.com";  # authentication host URL
-
-$VERBOSE = True;        # toggle to keep silent except for failed assertions
-$ACCOUNT = "PicsWall";
-$USER    = "pics";
-$PASS    = "picswall";
-$HOST    = "http://auth.stg.racklabs.com";
+$VERBOSE = True;                        # informational messages to stdout
+$ACCOUNT = "Account";                   # account name
+$USER    = "Username";                  # account's username
+$PASS    = "Password";                  # user's password
+$HOST    = "https://auth.example.com";  # authentication host URL
 
 # Authenticate and make sure we get back a valid url/token
 $auth = new CLOUDFS_Authentication($ACCOUNT,$USER,$PASS,$HOST);
