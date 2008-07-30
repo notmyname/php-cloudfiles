@@ -58,7 +58,7 @@ class CLOUDFS_Authentication
     public $storage_token;
     public $storage_url;
 
-    function CLOUDFS_Authentication($account, $username, $password, $auth_host)
+    function __construct($account, $username, $password, $auth_host)
     {
         if (!$account || !$username || !$password || !$auth_host) {
             throw new SyntaxException("Missing required constructor arguments.");
@@ -143,7 +143,7 @@ class CLOUDFS_Connection
     /*
      * Pass in a previously authenticated CLOUDFS_Authentication instance.
      */
-    function CLOUDFS_Connection($cfs_auth)
+    function __construct($cfs_auth)
     {
         $this->cfs_http = new CLOUDFS_Http(DEFAULT_CLOUDFS_API_VERSION);
         $this->storage_url = $cfs_auth->getStorageUrl();
@@ -287,7 +287,7 @@ class CLOUDFS_Container
     public $object_count;
     public $size_used;
 
-    function CLOUDFS_Container($cfs_http, $name, $count=0, $bytes=0)
+    function __construct($cfs_http, $name, $count=0, $bytes=0)
     {
         if (strlen(rawurlencode($name)) > MAX_CONTAINER_NAME_LEN) {
             throw new SyntaxException("Encoded container name exceeds "
@@ -398,7 +398,7 @@ class CLOUDFS_Object
     public $metadata;
     private $etag;          /* must use set_etag() for user-supplied value */
 
-    function CLOUDFS_Object($container, $name, $force_exists=False)
+    function __construct($container, $name, $force_exists=False)
     {
         if (strlen(rawurlencode($name)) > MAX_OBJECT_NAME_LEN) {
             throw new SyntaxException("Encoded object name exceeds "

@@ -1,12 +1,21 @@
 <?php
+/*
+ * This is an example script that will list the contents of the CloudFS
+ * Container (hard-coded below as $CFS_CONTAINER) and present
+ * URL's for each storage Object.
+ *
+ * A visitor clicking on the Object's URL will cause this script to fetch
+ * the storage Object and stream it back to the visitor's browser after
+ * sending the Object's Content-Type header.
+ *
+ */
 require("capon.php");
 
 $CFS_ACCOUNT = "Your CloudFS Account Name";
 $CFS_USERNAME = "Your CloudFS Username";
 $CFS_PASSWORD = "Your CloudFS Password";
 $CFS_AUTH_URL = "The CloudFS Authentication URL"
-
-$CFS_CONTAINER = "CloudFS Image Container";
+$CFS_CONTAINER = "CloudFS Image Container";  # referred to as IMAGES in the example
 
 # Authenticate to CloudFS
 #

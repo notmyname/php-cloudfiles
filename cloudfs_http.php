@@ -21,7 +21,7 @@
  */
 require_once("cloudfs_exceptions.php");
 
-define("CAPON_VERSION", "0.5");
+define("CAPON_VERSION", "0.6");
 define("USER_AGENT", sprintf("Capon/%s", CAPON_VERSION));
 define("CONTAINER_OBJ_COUNT", "X-Container-Object-Count");
 define("CONTAINER_BYTES_USED", "X-Container-Bytes-Used");
@@ -62,7 +62,7 @@ class CLOUDFS_Http
     public $_obj_write_resource;
     public $_obj_write_string;
 
-    function CLOUDFS_Http($api_version)
+    function __construct($api_version)
     {
         $this->dbug = False;
         $this->api_version = $api_version;
