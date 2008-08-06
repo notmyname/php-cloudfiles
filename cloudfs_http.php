@@ -18,6 +18,7 @@
  *
  * Requires PHP 5.x (for Exceptions and OO syntax)
  *
+ * See COPYING for license information.
  */
 require_once("cloudfs_exceptions.php");
 

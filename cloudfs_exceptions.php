@@ -1,6 +1,8 @@
 <?php
 /*
  * Custom Exceptions for the CloudFS API
+ *
+ * See COPYING for license information.
  */
 class SyntaxException extends Exception { }
 class AuthenticationException extends Exception { }
