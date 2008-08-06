@@ -11,11 +11,11 @@
  */
 require("capon.php");
 
-$CFS_ACCOUNT = "Your CloudFS Account Name";
-$CFS_USERNAME = "Your CloudFS Username";
-$CFS_PASSWORD = "Your CloudFS Password";
-$CFS_AUTH_URL = "The CloudFS Authentication URL"
-$CFS_CONTAINER = "CloudFS Image Container";  # referred to as IMAGES in the example
+$CFS_ACCOUNT = "Account";
+$CFS_USERNAME = "Username";
+$CFS_PASSWORD = "Password";
+$CFS_AUTH_URL = "http://auth.example.com";
+$CFS_CONTAINER = "pics";  # referred to as IMAGES in the example
 
 # Authenticate to CloudFS
 #
@@ -51,14 +51,18 @@ if ($_GET["display"]) {
     }
 
 } else {
-    # List out the stored images and create a link to display them
-    # if the user clicks on a link.
+    # List out the stored images creating a link for each one
+    # Display the content if the user clicks on a link.
     #
     print "Click an image link to display it in your browser.<br />\n";
     print "<ul>\n";
     $object_list = $container->list_objects();
     foreach ($object_list as $obj) {
-        print "<li> <a href='/?display=".$obj."'>".$obj."</a></li>\n";
+        $details = $container->get_object($obj);
+        print "<li> ";
+        print "<a href='/display.php?display=".$obj."'>".$obj."</a> - ";
+        print $details->content_length . " bytes";
+        print "</li>\n";
     }
     print "</ul>\n";
 }
