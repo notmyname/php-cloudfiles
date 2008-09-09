@@ -10,13 +10,13 @@
 require("capon.php");
 
 $VERBOSE = True;                        # informational messages to stdout
-$ACCOUNT = "Account";                   # account name
+$ACCOUNT = NULL;                        # account name
 $USER    = "Username";                  # account's username
 $PASS    = "Password";                  # user's password
-$HOST    = "https://auth.example.com";  # authentication host URL
+$HOST    = NULL;                        # authentication host URL
 
 # Authenticate and make sure we get back a valid url/token
-$auth = new CLOUDFS_Authentication($ACCOUNT,$USER,$PASS,$HOST);
+$auth = new CLOUDFS_Authentication($USER,$PASS,$ACCOUNT,$HOST);
 $auth->authenticate();
 print $auth->getStorageUrl();
 

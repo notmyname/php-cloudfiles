@@ -1,10 +1,10 @@
 <?php
 
 $VERBOSE = True;                        # informational messages to stdout
-$ACCOUNT = "Account";                   # account name
-$USER    = "Username";                  # account's username
-$PASS    = "Password";                  # user's password
-$HOST    = "https://auth.example.com";  # authentication host URL
+$ACCOUNT = NULL;                        # account name
+$USER    = "username";                  # account's username
+$PASS    = "password";                  # user's password
+$HOST    = NULL;                        # authentication host URL
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 

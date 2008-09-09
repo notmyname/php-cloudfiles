@@ -7,7 +7,7 @@
  *
  *   # Authenticate to CloudFS
  *   #
- *   $auth = new CLOUDFS_Authentication($account,$user,$passwd,$auth_host);
+ *   $auth = new CLOUDFS_Authentication($user,$passwd);
  *   $auth->authenticate();
  *
  *   # Establish a connection to the storage cluster0
@@ -59,9 +59,9 @@ class CLOUDFS_Authentication
     public $storage_token;
     public $storage_url;
 
-    function __construct($account, $username, $password, $auth_host)
+    function __construct($username, $password, $account=NULL, $auth_host=NULL)
     {
-        if (!$account || !$username || !$password || !$auth_host) {
+        if (!$username || !$password) {
             throw new SyntaxException("Missing required constructor arguments.");
         }
 
@@ -86,9 +86,8 @@ class CLOUDFS_Authentication
     function authenticate($version=DEFAULT_CLOUDFS_API_VERSION)
     {
         list($status,$reason,$surl,$stoken) = 
-                $this->cfs_http->authenticate($this->account_name,
-                $this->username, $this->password,
-                $this->auth_host);
+                $this->cfs_http->authenticate($this->username, $this->password,
+                $this->account_name, $this->auth_host);
 
         if ($status == 401) {
             throw new AuthenticationException("Invalid username or password.");

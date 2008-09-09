@@ -16,7 +16,7 @@ assert_options(ASSERT_WARNING, 0);
 assert_options(ASSERT_QUIET_EVAL, 1);
 assert_options(ASSERT_CALLBACK, "assert_callback");
 
-$auth = new CLOUDFS_Authentication($ACCOUNT,$USER,$PASS,$HOST);
+$auth = new CLOUDFS_Authentication($USER,$PASS,$ACCOUNT,$HOST);
 $auth->authenticate();
 assert('$auth->getStorageUrl() != NULL');
 assert('$auth->getStorageToken() != NULL');

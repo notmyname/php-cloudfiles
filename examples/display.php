@@ -11,16 +11,16 @@
  */
 require("capon.php");
 
-$CFS_ACCOUNT = "Account";
+$CFS_ACCOUNT = NULL;
 $CFS_USERNAME = "Username";
 $CFS_PASSWORD = "Password";
-$CFS_AUTH_URL = "http://auth.example.com";
+$CFS_AUTH_URL = NULL;
 $CFS_CONTAINER = "pics";  # referred to as IMAGES in the example
 
 # Authenticate to CloudFS
 #
-$auth = new CLOUDFS_Authentication($CFS_ACCOUNT,
-        $CFS_USERNAME,$CFS_PASSWORD,$CFS_AUTH_URL);
+$auth = new CLOUDFS_Authentication($CFS_USERNAME, $CFS_PASSWORD,
+        $CFS_ACCOUNT, $CFS_AUTH_URL);
 $auth->authenticate();
 
 # Connect to CloudFS after authentication

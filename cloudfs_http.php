@@ -29,8 +29,8 @@ define("CONTAINER_BYTES_USED", "X-Container-Bytes-Used");
 define("METADATA_HEADER", "X-Object-Meta-");
 define("STORAGE_URL", "X-Storage-Url");
 define("STORAGE_TOK", "X-Storage-Token");
-define("AUTH_USER_HEADER", "X-Storage-User");
-define("AUTH_PASS_HEADER", "X-Storage-Pass");
+define("AUTH_USER_HEADER", "x-storage-user");
+define("AUTH_PASS_HEADER", "x-storage-pass");
 
 class CLOUDFS_Http
 {
@@ -103,7 +103,7 @@ class CLOUDFS_Http
 
     # Uses separate cURL connection to authenticate
     #
-    function authenticate($acct, $user, $pass, $host)
+    function authenticate($user, $pass, $acct=NULL, $host=NULL)
     {
         $headers = array(
             sprintf("%s: %s", AUTH_USER_HEADER, $user),
@@ -111,9 +111,13 @@ class CLOUDFS_Http
             );
 
         $path = array();
-        $path[] = $host;
-        $path[] = rawurlencode(sprintf("v%d",$this->api_version));
-        $path[] = rawurlencode($acct);
+        if ($acct || $host) {
+            $path[] = $host;
+            $path[] = rawurlencode(sprintf("v%d",$this->api_version));
+            $path[] = rawurlencode($acct);
+        } else {
+            $path[] = "http://api.mosso.com";
+        }
         $path[] = "auth";
         $url = implode("/", $path);
 
