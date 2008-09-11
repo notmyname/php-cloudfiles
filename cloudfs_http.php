@@ -53,6 +53,8 @@ class CLOUDFS_Http
     #
     public $_write_callback_type;
     public $_text_list;
+    public $_account_container_count;
+    public $_account_bytes_used;
     public $_container_object_count;
     public $_container_bytes_used;
     public $_obj_etag;
@@ -90,6 +92,8 @@ class CLOUDFS_Http
 
         $this->_write_callback_type = NULL;
         $this->_text_list = array();
+        $this->_account_container_count = 0;
+        $this->_account_bytes_used = 0;
         $this->_container_object_count = 0;
         $this->_container_bytes_used = 0;
         $this->_obj_write_resource = NULL;
@@ -166,6 +170,29 @@ class CLOUDFS_Http
         $this->error_str = "Unexpected HTTP response: ".$this->response_reason;
         return array($return_code,$this->error_str,array());
 
+    }
+
+    # HEAD /v1/Account
+    #
+    function head_account()
+    {
+        $conn_type = "HEAD";
+
+        $url_path = $this->_make_path();
+        $return_code = $this->_send_request($conn_type,$url_path);
+
+        if (!$return_code) {
+            $this->error_str = "Failed to obtain http response";
+            array(0,$this->error_str,0,0);
+        }
+        if ($return_code == 404) {
+            return array($return_code,"Account not found.",0,0);
+        }
+        if ($return_code == 204) {
+            return array($return_code,$this->response_reason,
+                $this->_account_container_count, $this->_account_bytes_used);
+        }
+        return array($return_code,$this->response_reason,0,0);
     }
 
     # PUT /v1/Account/Container
@@ -544,15 +571,24 @@ class CLOUDFS_Http
         if ($matches[2]) {
             $this->response_reason = $matches[2];
         }
-
+        if (stripos($header, ACCOUNT_CONTAINER_COUNT) === 0) {
+            $this->_account_container_count = trim(substr($header,
+                    strlen(ACCOUNT_CONTAINER_COUNT)+1))+0;
+            return strlen($header);
+        }
+        if (stripos($header, ACCOUNT_BYTES_USED) === 0) {
+            $this->_account_bytes_used = trim(substr($header,
+                    strlen(ACCOUNT_BYTES_USED)+1))+0;
+            return strlen($header);
+        }
         if (stripos($header, CONTAINER_OBJ_COUNT) === 0) {
             $this->_container_object_count = trim(substr($header,
-                    strlen(CONTAINER_OBJ_COUNT)+1));
+                    strlen(CONTAINER_OBJ_COUNT)+1))+0;
             return strlen($header);
         }
         if (stripos($header, CONTAINER_BYTES_USED) === 0) {
             $this->_container_bytes_used = trim(substr($header,
-                    strlen(CONTAINER_BYTES_USED)+1));
+                    strlen(CONTAINER_BYTES_USED)+1))+0;
             return strlen($header);
         }
         if (stripos($header, METADATA_HEADER) === 0) {
@@ -702,6 +738,8 @@ class CLOUDFS_Http
     private function _reset_callback_vars()
     {
         $this->_text_list = array();
+        $this->_account_container_count = 0;
+        $this->_account_bytes_used = 0;
         $this->_container_object_count = 0;
         $this->_container_bytes_used = 0;
         $this->_obj_etag = NULL;

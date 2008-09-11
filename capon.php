@@ -168,6 +168,22 @@ class CLOUDFS_Connection
     }
 
     /*
+     * Return an array of two integers (or possibly floats if the value
+     * overflows PHP's 32-bit integer); number of containers on the account
+     * and total bytes used for the account.
+     */
+    function get_info()
+    {
+        list($status, $reason, $container_count, $total_bytes) =
+                $this->cfs_http->head_account();
+        if ($status < 200 || $status > 299) {
+            throw new InvalidResponseException(
+                "Invalid response: ".$this->cfs_http->get_error());
+        }
+        return array($container_count, $total_bytes);
+    }
+
+    /*
      * Given a Container name, return a Container instance, creating a new
      * remote Container if it does not exit.
      */
@@ -279,6 +295,10 @@ class CLOUDFS_Connection
  * with the exception that they exist in a flat namespace, you can not create
  * containers inside of containers.
  *
+ * NOTE: Due to the possible overflow of PHP's 32-bit integer, the Container's
+ *       object_count and size_used instance variables may either be a
+ *       integer or float.
+ *
  */
 class CLOUDFS_Container
 {
@@ -309,7 +329,7 @@ class CLOUDFS_Container
      */
     function __toString()
     {
-        return sprintf("name: %s, count: %d, bytes: %d",
+        return sprintf("name: %s, count: %.0f, bytes: %.0f",
             $this->name, $this->object_count, $this->bytes_used);
     }
 
