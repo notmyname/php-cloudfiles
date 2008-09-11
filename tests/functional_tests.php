@@ -191,8 +191,8 @@ print_r($obj_list);
 
 echo "======= CHECK ACCOUNT INFO ==================================\n";
 list($num_containers, $total_bytes) = $conn->get_info();
-assert('$num_containers > 0');
-assert('$total_bytes > 0');
+assert('$num_containers >= 1');
+assert('$total_bytes >= 7478');
 print "num_containers: " . $num_containers . "\n";
 print "   total bytes: " . $total_bytes . "\n";
 

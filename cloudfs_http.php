@@ -24,6 +24,8 @@ require_once("cloudfs_exceptions.php");
 
 define("CAPON_VERSION", "0.7");
 define("USER_AGENT", sprintf("Capon/%s", CAPON_VERSION));
+define("ACCOUNT_CONTAINER_COUNT", "X-Account-Container-Count");
+define("ACCOUNT_BYTES_USED", "X-Account-Bytes-Used");
 define("CONTAINER_OBJ_COUNT", "X-Container-Object-Count");
 define("CONTAINER_BYTES_USED", "X-Container-Bytes-Used");
 define("METADATA_HEADER", "X-Object-Meta-");
@@ -752,11 +754,13 @@ class CLOUDFS_Http
         $this->response_reason = "";
     }
 
-    private function _make_path($c,$o=NULL)
+    private function _make_path($c=NULL,$o=NULL)
     {
         $path = array();
         $path[] = $this->storage_url;
-        $path[] = rawurlencode($c);
+        if ($c) {
+            $path[] = rawurlencode($c);
+        }
         if ($o) {
             # mimic Python's urllib.quote() feature of a "safe" '/' character
             #
