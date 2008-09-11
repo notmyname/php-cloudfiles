@@ -61,6 +61,11 @@ foreach ($orig_container_list as $idx => $cont_name) {
     }
 }
 
+list($num_containers, $total_bytes) = $conn->get_info();
+if ($VERBOSE) {
+    print "Number of remaining containers: " . $num_containers . "\n";
+    print " Total bytes stored on account: " . $total_bytes . "\n";
+}
 if ($VERBOSE) {echo "==> Done...\n";}
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */

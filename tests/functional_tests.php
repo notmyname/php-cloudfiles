@@ -189,6 +189,14 @@ assert('is_array($obj_list) && !empty($obj_list)');
 print_r($obj_list);
 
 
+echo "======= CHECK ACCOUNT INFO ==================================\n";
+list($num_containers, $total_bytes) = $conn->get_info();
+assert('$num_containers > 0');
+assert('$total_bytes > 0');
+print "num_containers: " . $num_containers . "\n";
+print "   total bytes: " . $total_bytes . "\n";
+
+
 echo "======= FIND OBJECTS (LIMIT) ================================\n";
 $obj_list = $container->list_objects(1);
 assert('is_array($obj_list) && !empty($obj_list)');
