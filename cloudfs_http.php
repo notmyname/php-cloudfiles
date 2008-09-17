@@ -22,7 +22,7 @@
  */
 require_once("cloudfs_exceptions.php");
 
-define("CAPON_VERSION", "0.7");
+define("CAPON_VERSION", "1.0.0");
 define("USER_AGENT", sprintf("Capon/%s", CAPON_VERSION));
 define("ACCOUNT_CONTAINER_COUNT", "X-Account-Container-Count");
 define("ACCOUNT_BYTES_USED", "X-Account-Bytes-Used");
@@ -321,7 +321,7 @@ class CLOUDFS_Http
 
     # GET /v1/Account/Container/Object
     #
-    function get_object_to_string(&$obj)
+    function get_object_to_string(&$obj, $hdrs=array())
     {
         if (!is_object($obj) || get_class($obj) != "CLOUDFS_Object") {
             throw new SyntaxException(
@@ -332,7 +332,7 @@ class CLOUDFS_Http
 
         $url_path = $this->_make_path($obj->container->name,$obj->name);
         $this->_write_callback_type = "OBJECT_STRING";
-        $return_code = $this->_send_request($conn_type,$url_path);
+        $return_code = $this->_send_request($conn_type,$url_path,$hdrs);
 
         if (!$return_code) {
             $this->error_str = "Failed to obtain http response";
@@ -342,7 +342,8 @@ class CLOUDFS_Http
             $this->error_str = "Object not found.";
             return array($return_code0,$this->error_str,NULL);
         }
-        if ($return_code != 200) {
+        if (($return_code < 200) || ($return_code > 299
+                && $return_code != 412 && $return_code != 304)) {
             $this->error_str = "Unexpected HTTP return code: $return_code";
             return array($return_code,$this->error_str,NULL);
         }
@@ -351,7 +352,7 @@ class CLOUDFS_Http
 
     # GET /v1/Account/Container/Object
     #
-    function get_object_to_stream(&$obj, &$resource=NULL)
+    function get_object_to_stream(&$obj, &$resource=NULL, $hdrs=array())
     {
         if (!is_object($obj) || get_class($obj) != "CLOUDFS_Object") {
             throw new SyntaxException(
@@ -377,7 +378,8 @@ class CLOUDFS_Http
             $this->error_str = "Object not found.";
             return array($return_code,$this->error_str);
         }
-        if ($return_code != 200) {
+        if (($return_code < 200) || ($return_code > 299
+                && $return_code != 412 && $return_code != 304)) {
             $this->error_str = "Unexpected HTTP return code: $return_code";
             return array($return_code,$this->error_str);
         }

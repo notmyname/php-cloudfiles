@@ -21,6 +21,7 @@ $auth->authenticate();
 assert('$auth->getStorageUrl() != NULL');
 assert('$auth->getStorageToken() != NULL');
 $conn = new CLOUDFS_Connection($auth);
+$conn->setDebug(1);
 
 
 echo "======= LIST CONTAINERS =====================================\n";
@@ -74,6 +75,14 @@ assert('$ospace->getETag() == $md5');
 print $ospace."\n";
 
 
+echo "======= RANGE TEST ==========================================\n";
+$orange = $container->get_object("space name");
+$partial = $orange->read(array("Range"=>"bytes=0-10"));
+assert('strlen($partial) == 11');
+assert('$partial == "Some sample"');
+print "Range[0-10]: ".$partial."\n";
+
+
 echo "======= CREATE OBJECT =======================================\n";
 $o1 = $container->create_object("fuzzy.txt");
 assert('$o1');
@@ -108,6 +117,62 @@ $result = $o1->write($text);
 assert('$result');
 assert('$o1->getETag() == $md5');
 print $o1."\n";
+
+
+echo "======= IF-MATCH (MATCHED MD5) ==============================\n";
+$ifmatch = $container->get_object($o1->name);
+$ifdata = $ifmatch->read(array("If-Match" => $md5));
+assert('$ifdata == $text');
+print "If-Match passes (matched)\n";
+
+
+echo "======= IF-MATCH (UNMATCHED MD5) ============================\n";
+$ifmatch = $container->get_object($o1->name);
+$ifdata = $ifmatch->read(array("If-Match" => "foo"));
+assert('$ifdata != $text'); # an HTML response entity is returned. :-(
+print "If-Match passes (unmatched)\n";
+
+
+echo "======= IF-NONE-MATCH (UNMATCHED MD5) =======================\n";
+$ifmatch = $container->get_object($o1->name);
+$ifdata = $ifmatch->read(array("If-None-Match" => "if-none-match"));
+assert('$ifdata == $text');
+print "If-None-Match passes (unmatched)\n";
+
+
+echo "======= IF-NONE-MATCH (MATCHED MD5) =========================\n";
+$ifmatch = $container->get_object($o1->name);
+$ifdata = $ifmatch->read(array("If-None-Match" => $md5));
+assert('!$ifdata');
+print "If-None-Match passes (matched)\n";
+
+
+echo "======= IF-MODIFIED-SINCE (PAST TIMESTAMP) ===================\n";
+$ifmatch = $container->get_object($o1->name);
+$ifdata = $ifmatch->read(array("If-Modified-Since" => http_date(time()-86400)));
+assert('$ifdata == $text');
+print "If-Modified-Since passes (old timestamp)\n";
+
+
+echo "======= IF-MODIFIED-SINCE (FUTURE TIMESTAMP) ===================\n";
+$ifmatch = $container->get_object($o1->name);
+$ifdata = $ifmatch->read(array("If-Modified-Since" => http_date(time()+86400)));
+assert('$ifdata != $text');
+print "If-Modified-Since passes (future timestamp)\n";
+
+
+echo "======= IF-UNMODIFIED-SINCE (PAST TIMESTAMP) =================\n";
+$ifmatch = $container->get_object($o1->name);
+$ifdata = $ifmatch->read(array("If-Unmodified-Since" => http_date(time()-86400)));
+assert('$ifdata != $text');
+print "If-Unmodified-Since passes (old timestamp)\n";
+
+
+echo "======= IF-UNMODIFIED-SINCE (FUTURE TIMESTAMP) =================\n";
+$ifmatch = $container->get_object($o1->name);
+$ifdata = $ifmatch->read(array("If-Unmodified-Since" => http_date(time()+86400)));
+assert('$ifdata == $text');
+print "If-Unmodified-Since passes (future timestamp)\n";
 
 
 echo "======= UPLOAD OBJECT FROM FILE =============================\n";
@@ -179,7 +244,7 @@ print "\n";
 
 echo "======= DOWNLOAD OBJECT TO STRING ===========================\n";
 $data = $o4->read();
-assert('$data');
+assert('strlen($data) == 35');
 print $data . "\n";
 
 

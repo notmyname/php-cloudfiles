@@ -450,12 +450,16 @@ class CLOUDFS_Object
      * Returns the Object's data.  This is useful for smaller Objects such
      * as images or office documents.  Object's with larger content should use
      * the stream() method below.
+     *
+     * Pass in $hdrs array to set specific custom HTTP headers such as
+     * If-Match, If-None-Match, If-Modified-Since, Range, etc.
      */
-    function read()
+    function read($hdrs=array())
     {
         list($status, $reason, $data) =
-            $this->container->cfs_http->get_object_to_string($this);
-        if ($status < 200 || $status > 299) {
+            $this->container->cfs_http->get_object_to_string($this,$hdrs);
+        if (($status < 200) || ($status > 299
+                && $status != 412 && $status != 304)) {
             throw new InvalidResponseException("Invalid response: "
                 . $this->container->cfs_http->get_error());
         }
@@ -467,12 +471,16 @@ class CLOUDFS_Object
      * data and write it to the open resource handle.  This is useful for
      * streaming an Object's content to the browser (videos, images) or for
      * fetching content to a local file.
+     *
+     * Pass in $hdrs array to set specific custom HTTP headers such as
+     * If-Match, If-None-Match, If-Modified-Since, Range, etc.
      */
-    function stream(&$fp)
+    function stream(&$fp, $hdrs=array())
     {
         list($status, $reason) = 
-                $this->container->cfs_http->get_object_to_stream($this, $fp);
-        if ($status < 200 || $status > 299) {
+                $this->container->cfs_http->get_object_to_stream($this,$fp,$hdrs);
+        if (($status < 200) || ($status > 299
+                && $status != 412 && $status != 304)) {
             throw new InvalidResponseException("Invalid response: ".$reason);
         }
         return True;
