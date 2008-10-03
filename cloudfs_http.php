@@ -22,7 +22,7 @@
  */
 require_once("cloudfs_exceptions.php");
 
-define("CAPON_VERSION", "1.0.0");
+define("CAPON_VERSION", "1.0.1");
 define("USER_AGENT", sprintf("Capon/%s", CAPON_VERSION));
 define("ACCOUNT_CONTAINER_COUNT", "X-Account-Container-Count");
 define("ACCOUNT_BYTES_USED", "X-Account-Bytes-Used");

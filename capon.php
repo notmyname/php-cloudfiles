@@ -187,7 +187,7 @@ class CLOUDFS_Connection
      * Given a Container name, return a Container instance, creating a new
      * remote Container if it does not exit.
      */
-    function create_container($container_name)
+    function create_container($container_name=NULL)
     {
         if (!$container_name) {
             throw new SyntaxException("Container name not set.");
@@ -217,9 +217,8 @@ class CLOUDFS_Connection
     /*
      * Given either a Container instance or name, remove the remote Container.
      */
-    function delete_container($container)
+    function delete_container($container=NULL)
     {
-        $container_name = NULL;
         if (is_object($container)) {
             if (get_class($container) == "CLOUDFS_Container") {
                 $container_name = $container->name;
@@ -256,7 +255,7 @@ class CLOUDFS_Connection
      * For the given name, return a Container instance if the remote Container
      * exists, otherwise throw a Not Found exception.
      */
-    function get_container($container_name)
+    function get_container($container_name=NULL)
     {
         list($status, $reason, $size, $bytes) =
                 $this->cfs_http->head_container($container_name);
@@ -337,7 +336,7 @@ class CLOUDFS_Container
      * Return a new Object instance.  If the remote storage Object exists,
      * the instance's attributes are populated.
      */
-    function create_object($obj_name)
+    function create_object($obj_name=NULL)
     {
         return new CLOUDFS_Object(&$this, $obj_name);
     }
@@ -346,7 +345,7 @@ class CLOUDFS_Container
      * Given an name, return a Object instance representing the
      * remote storage object.
      */
-    function get_object($obj_name)
+    function get_object($obj_name=NULL)
     {
         return new CLOUDFS_Object(&$this, $obj_name, True);
     }
@@ -509,8 +508,11 @@ class CLOUDFS_Object
      * variable.  If passing in a PHP resource, you must also include the $size
      * parameter.
      */
-    function write($data, $size=0, $verify=True)
+    function write($data=NULL, $size=0, $verify=True)
     {
+        if (!$data) {
+            throw new SyntaxException("Missing required data source.");
+        }
         if ($verify) {
             if (!$this->_etag_override) {
                 $this->etag = $this->compute_md5sum($data);

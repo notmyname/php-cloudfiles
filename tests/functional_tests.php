@@ -16,12 +16,13 @@ assert_options(ASSERT_WARNING, 0);
 assert_options(ASSERT_QUIET_EVAL, 1);
 assert_options(ASSERT_CALLBACK, "assert_callback");
 
+
 $auth = new CLOUDFS_Authentication($USER,$PASS,$ACCOUNT,$HOST);
 $auth->authenticate();
 assert('$auth->getStorageUrl() != NULL');
 assert('$auth->getStorageToken() != NULL');
 $conn = new CLOUDFS_Connection($auth);
-$conn->setDebug(1);
+//$conn->setDebug(1);  # toggle to enable cURL verbose output
 
 
 echo "======= LIST CONTAINERS =====================================\n";
@@ -30,10 +31,72 @@ assert('is_array($orig_containers)');
 print_r($orig_containers);
 
 
+echo "======= CREATE NEW LONG CONTAINER ===========================\n";
+$long_name = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+$long_name .= "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+$long_name .= "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+try {
+    $container = $conn->create_container($long_name);
+} catch (SyntaxException $e) {
+    print "SUCCESS: disallow long container names\n";
+}
+
+
+echo "======= CREATE EMPTY CONTAINER ==============================\n";
+try {
+    $container = $conn->create_container();
+} catch (SyntaxException $e) {
+    print "SUCCESS: do not allow empty in container name\n";
+}
+
+
 echo "======= CREATE CONTAINER ====================================\n";
 $container = $conn->create_container("php-capon");
 assert('$container');
 print $container."\n";
+
+
+echo "======= CREATE NEW LONG OBJECT ==============================\n";
+$long_name = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+$long_name .= "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+$long_name .= "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+try {
+    $o0 = $container->create_object($long_name);
+} catch (SyntaxException $e) {
+    print "SUCCESS: disallow long object names\n";
+}
+
+
+echo "======= FETCH NON-EXISTENT CONTAINER ========================\n";
+try {
+    $no_container = $conn->get_container("7HER3_1S_N0_5PO0N");
+} catch (NoSuchContainerException $e) {
+    print "SUCCESS: can't delete a non-existent container\n";
+}
+
+
+echo "======= DELETE NON-EXISTENT CONTAINER =======================\n";
+try {
+    $result = $conn->delete_container("7HER3_1S_N0_5PO0N");
+} catch (NoSuchContainerException $e) {
+    print "SUCCESS: can't delete a non-existent container\n";
+}
+
+
+echo "======= DELETE NON-SPECIFIED CONTAINER ======================\n";
+try {
+    $result = $conn->delete_container();
+} catch (SyntaxException $e) {
+    print "SUCCESS: must specify container\n";
+}
+
+
+echo "======= DELETE NON-EXISTENT OBJECT ==========================\n";
+try {
+    $result = $container->delete_object("7HER3_1S_N0_5PO0N");
+} catch (NoSuchObjectException $e) {
+    print "SUCCESS: can't delete a non-existent object\n";
+}
 
 
 echo "======= CREATE CONTAINER (WITH '/' IN NAME) =================\n";
@@ -42,6 +105,15 @@ try {
 } catch (SyntaxException $e) {
     print "SUCCESS: do not allow '/' in container name\n";
 }
+
+echo "======= CREATE EMPTY OBJECT =================================\n";
+$o0 = $container->create_object("empty_object");
+try {
+    $result = $o0->write();
+} catch (SyntaxException $e) {
+    print "SUCCESS: do upload empty objects\n";
+}
+
 
 echo "======= CREATE OBJECT (WITH '/' IN NAME) ====================\n";
 $o0 = $container->create_object("slash/name");
@@ -147,28 +219,28 @@ assert('!$ifdata');
 print "If-None-Match passes (matched)\n";
 
 
-echo "======= IF-MODIFIED-SINCE (PAST TIMESTAMP) ===================\n";
+echo "======= IF-MODIFIED-SINCE (PAST TIMESTAMP) ==================\n";
 $ifmatch = $container->get_object($o1->name);
 $ifdata = $ifmatch->read(array("If-Modified-Since" => http_date(time()-86400)));
 assert('$ifdata == $text');
 print "If-Modified-Since passes (old timestamp)\n";
 
 
-echo "======= IF-MODIFIED-SINCE (FUTURE TIMESTAMP) ===================\n";
+echo "======= IF-MODIFIED-SINCE (FUTURE TIMESTAMP) ================\n";
 $ifmatch = $container->get_object($o1->name);
 $ifdata = $ifmatch->read(array("If-Modified-Since" => http_date(time()+86400)));
 assert('$ifdata != $text');
 print "If-Modified-Since passes (future timestamp)\n";
 
 
-echo "======= IF-UNMODIFIED-SINCE (PAST TIMESTAMP) =================\n";
+echo "======= IF-UNMODIFIED-SINCE (PAST TIMESTAMP) ================\n";
 $ifmatch = $container->get_object($o1->name);
 $ifdata = $ifmatch->read(array("If-Unmodified-Since" => http_date(time()-86400)));
 assert('$ifdata != $text');
 print "If-Unmodified-Since passes (old timestamp)\n";
 
 
-echo "======= IF-UNMODIFIED-SINCE (FUTURE TIMESTAMP) =================\n";
+echo "======= IF-UNMODIFIED-SINCE (FUTURE TIMESTAMP) ==============\n";
 $ifmatch = $container->get_object($o1->name);
 $ifdata = $ifmatch->read(array("If-Unmodified-Since" => http_date(time()+86400)));
 assert('$ifdata == $text');
