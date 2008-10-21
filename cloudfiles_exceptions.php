@@ -1,8 +1,20 @@
 <?php
-/*
- * Custom Exceptions for the CloudFS API
+/**
+ * Custom Exceptions for the CloudFiles API
+ *
+ * Requres PHP 5.x (for Exceptions and OO syntax)
  *
  * See COPYING for license information.
+ *
+ * @author Eric "EJ" Johnson <ej@racklabs.com>
+ * @version 1.1.0
+ * @copyright Copyright (c) 2008, Rackspace US, Inc.
+ * @package php-cloudfiles-exceptions
+ */
+
+/**
+ * Custom Exceptions for the CloudFiles API
+ * @package php-cloudfiles-exceptions
  */
 class SyntaxException extends Exception { }
 class AuthenticationException extends Exception { }
@@ -12,6 +24,7 @@ class NoSuchObjectException extends Exception { }
 class NoSuchContainerException extends Exception { }
 class NoSuchAccountException extends Exception { }
 class MisMatchedChecksumException extends Exception { }
+class IOException extends Exception { }
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 

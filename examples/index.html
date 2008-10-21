@@ -1,17 +1,17 @@
 <html>
-<head><title>Sample PHP "display" script for CloudFS</title></head>
+<head><title>Sample PHP "display" script for Cloud Files</title></head>
 <body>
-<h2>Demonstrating how to use the PHP CloudFS API</h2>
+<h2>Demonstrating how to use the PHP Cloud Files API</h2>
 <p>
-This is a simple web page intended to demonstrate how a CloudFS user
+This is a simple web page intended to demonstrate how a Cloud Files user
 could use a script to "list" the contents of a Container and present
 links for each storage Object.
 </p>
 
 <p>
-Let's assume you have a valid CloudFS account and a Container named "IMAGES"
+Let's assume you have a valid Cloud Files account and a Container named "IMAGES"
 that you use to store media files that you want to make visible to visitors.
-You also want to serve the files directly from CloudFS rather store them on
+You also want to serve the files directly from Cloud Files rather store them on
 your web server.  For this example, we'll also assume you were to use the
 included SAMPLE Apache configuration file to run a new Virtual Host on
 port 4512 (setting up the vhost is beyond the scope of this example - see the
@@ -21,7 +21,7 @@ instructions).
 
 <p>
 The accompanying PHP script, <tt>display.php</tt>, must be edited to store your
-CloudFS user information and the <em>$CFS_CONTAINER</em> variable to
+Cloud Files user information and the <em>$CFS_CONTAINER</em> variable to
 "IMAGES".  For this example, let's assume you have a picture of your
 dog (<tt>fido.jpg</tt>) and a video of yourself dancing in front of your web
 cam (<tt>disco.avi</tt>) stored in your "IMAGES" Container.
@@ -29,7 +29,7 @@ cam (<tt>disco.avi</tt>) stored in your "IMAGES" Container.
 
 <p>
 Here are links that you could put in a static HTML page (such as this one) that
-would use the <tt>display.php</tt> script to fetch the content from CloudFS and
+would use the <tt>display.php</tt> script to fetch the content from Cloud Files and
 stream it back to the visitor's browser:<br />&nbsp;<br />
 This is the <a href="/">web page</a> you're currently viewing.<br />
 See my <a href="/display.php?display=fido.jpg">dog</a>.<br />
@@ -40,13 +40,13 @@ Watch me <a href="/display.php?display=disco.avi">dance</a>!<br />
 <li><b>http://your_server_name_or_ip:4512/</b>:
     would see this HTML page.</li>
 <li><b>http://your_servername_or_ip:4512/display.php?display=fido.jpg</b>:
-    would see the picture of your dog streamed from CloudFS directly to the
-    browser if it's Content-Type was set correctly when uploading into CloudFS
+    would see the picture of your dog streamed from Cloud Files directly to the
+    browser if it's Content-Type was set correctly when uploading into Cloud Files
     (no intermediate caching of the image on your server).</li>
 <li><b>http://your_servername_or_ip:4512/display.php?display=disco.avi</b>:
-    would see you shake your groove-thang streamed from CloudFS directly to
+    would see you shake your groove-thang streamed from Cloud Files directly to
     the browser if it's Content-Type was set correctly when uploading into
-    CloudFS (no intermediate caching of the image on your server).</li>
+    Cloud Files (no intermediate caching of the image on your server).</li>
 <li><b>http://your_servername_or_ip:4512/display.php</b>:
     with no query parameters, vistiors would see dynamically generated URLs
     for fido.jpg and disco.avi.</li>

@@ -1,7 +1,7 @@
 <?php
 /*
- * This is an example script that will list the contents of the CloudFS
- * Container (hard-coded below as $CFS_CONTAINER) and present
+ * This is an example script that will list the contents of the
+ * Cloud Files Container (hard-coded below as $CFS_CONTAINER) and present
  * URL's for each storage Object.
  *
  * A visitor clicking on the Object's URL will cause this script to fetch
@@ -9,28 +9,29 @@
  * sending the Object's Content-Type header.
  *
  */
-require("capon.php");
+require("cloudfiles.php");
 
-$CFS_ACCOUNT = NULL;
 $CFS_USERNAME = "Username";
 $CFS_PASSWORD = "Password";
-$CFS_AUTH_URL = NULL;
-$CFS_CONTAINER = "pics";  # referred to as IMAGES in the example
+$CFS_CONTAINER = "MyPictures";  # referred to as IMAGES in the example
 
-# Authenticate to CloudFS
+# deprecated variables
+$CFS_ACCOUNT = NULL;
+$CFS_AUTH_URL = NULL;
+
+# Authenticate to Cloud Files
 #
-$auth = new CLOUDFS_Authentication($CFS_USERNAME, $CFS_PASSWORD,
+$auth = new CF_Authentication($CFS_USERNAME, $CFS_PASSWORD,
         $CFS_ACCOUNT, $CFS_AUTH_URL);
 $auth->authenticate();
 
-# Connect to CloudFS after authentication
+# Connect to Cloud Files after authentication
 #
-$conn = new CLOUDFS_Connection($auth);
+$conn = new CF_Connection($auth);
 
 # Grab reference to container
 #
 $container = $conn->get_container($CFS_CONTAINER);
-
 
 if ($_GET["display"]) {
     # Display the requested image or throw a 404 if that fails

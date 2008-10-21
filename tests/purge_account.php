@@ -3,26 +3,27 @@
 ## WARNING!!  WARNING!!  WARNING!!  WARNING!!  WARNING!!  WARNING!!  WARNING!! 
 ##
 ##   This is a development script only - it will permanently remove ALL
-##    storage objects/containers in CloudFS for the specified account!
+##    storage objects/containers in Cloud Files for the specified account!
 ##
 ## WARNING!!  WARNING!!  WARNING!!  WARNING!!  WARNING!!  WARNING!!  WARNING!! 
 ## ---------------------------------------------------------------------------- ##
-require("capon.php");
+require("cloudfiles.php");
 
 $VERBOSE = True;                        # informational messages to stdout
-$ACCOUNT = NULL;                        # account name
-$USER    = "Username";                  # account's username
-$PASS    = "Password";                  # user's password
-$HOST    = NULL;                        # authentication host URL
+$USER    = "Username";                  # Mosso Username
+$PASS    = "API Key";                   # User's API Access Key
+$ACCOUNT = NULL;                        # DEPRECATED: account name
+$HOST    = NULL;                        # DEPRECATED: authentication host URL
 
 # Authenticate and make sure we get back a valid url/token
-$auth = new CLOUDFS_Authentication($USER,$PASS,$ACCOUNT,$HOST);
+$auth = new CF_Authentication($USER,$PASS,$ACCOUNT,$HOST);
 $auth->authenticate();
 print $auth->getStorageUrl();
+print $auth->getAuthToken();
 
 # Create a connection to the backend storage system
 #
-$conn = new CLOUDFS_Connection($auth);
+$conn = new CF_Connection($auth);
 
 # Grab the current list of containers on the account
 #

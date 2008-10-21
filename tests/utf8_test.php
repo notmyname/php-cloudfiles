@@ -1,11 +1,11 @@
 <?php
-require("capon.php");
+require("cloudfiles.php");
 
 $VERBOSE = True;                        # informational messages to stdout
-$ACCOUNT = NULL;                        # account name
-$USER    = "Username";                  # account's username
-$PASS    = "Password";                  # user's password
-$HOST    = NULL;                        # authentication host URL
+$USER    = "Username";                  # Mosso Username
+$PASS    = "API Key";                   # User's API Access Key
+$ACCOUNT = NULL;                        # DEPRECATED: account name
+$HOST    = NULL;                        # DEPRECATED: authentication host URL
 
 function genUTF8($len=10)
 {
@@ -21,12 +21,12 @@ function genUTF8($len=10)
 }
 
 # Authenticate and make sure we get back a valid url/token
-$auth = new CLOUDFS_Authentication($USER,$PASS,$ACCOUNT,$HOST);
+$auth = new CF_Authentication($USER,$PASS,$ACCOUNT,$HOST);
 $auth->authenticate();
 
 # Create a connection to the backend storage system
 #
-$conn = new CLOUDFS_Connection($auth);
+$conn = new CF_Connection($auth);
 
 $container_name = genUTF8(12);
 $object_name = genUTF8(14);

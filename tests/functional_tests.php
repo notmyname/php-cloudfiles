@@ -1,6 +1,6 @@
 <?php
-require("capon.php");
-require("cloudfs_ini.php");  # account settings
+require("cloudfiles.php");
+require("cloudfiles_ini.php");  # account settings
 
 function assert_callback($file, $line, $code)
 {
@@ -17,11 +17,13 @@ assert_options(ASSERT_QUIET_EVAL, 1);
 assert_options(ASSERT_CALLBACK, "assert_callback");
 
 
-$auth = new CLOUDFS_Authentication($USER,$PASS,$ACCOUNT,$HOST);
+echo "======= AUTHENTICATING ======================================\n";
+$auth = new CF_Authentication($USER,$PASS,$ACCOUNT,$HOST);
+//$auth->setDebug(1);  # toggle to enable cURL verbose output
 $auth->authenticate();
-assert('$auth->getStorageUrl() != NULL');
-assert('$auth->getStorageToken() != NULL');
-$conn = new CLOUDFS_Connection($auth);
+assert('$auth->storage_url != NULL');
+assert('$auth->auth_token != NULL');
+$conn = new CF_Connection($auth);
 //$conn->setDebug(1);  # toggle to enable cURL verbose output
 
 
@@ -51,7 +53,7 @@ try {
 
 
 echo "======= CREATE CONTAINER ====================================\n";
-$container = $conn->create_container("php-capon");
+$container = $conn->create_container("php-cloudfiles");
 assert('$container');
 print $container."\n";
 
@@ -101,7 +103,7 @@ try {
 
 echo "======= CREATE CONTAINER (WITH '/' IN NAME) =================\n";
 try {
-    $bad_cont = $conn->create_container("php/capon");
+    $bad_cont = $conn->create_container("php/cloudfiles");
 } catch (SyntaxException $e) {
     print "SUCCESS: do not allow '/' in container name\n";
 }
@@ -258,7 +260,7 @@ print $o2."\n";
 
 
 echo "======= GET CONTAINER =======================================\n";
-$cont2 = $conn->get_container("php-capon");
+$cont2 = $conn->get_container("php-cloudfiles");
 assert('$cont2');
 print $cont2 . "\n";
 

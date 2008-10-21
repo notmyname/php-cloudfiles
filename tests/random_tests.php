@@ -1,6 +1,6 @@
 <?php
-require("capon.php");
-require("cloudfs_ini.php"); # account settings
+require("cloudfiles.php");
+require("cloudfiles_ini.php"); # account settings
 
 # Test variable's quantity/lengths
 #
@@ -70,14 +70,14 @@ assert_options(ASSERT_QUIET_EVAL, 1);
 assert_options(ASSERT_CALLBACK, "assert_callback");
 
 # Authenticate and make sure we get back a valid url/token
-$auth = new CLOUDFS_Authentication($USER,$PASS,$ACCOUNT,$HOST);
+$auth = new CF_Authentication($USER,$PASS,$ACCOUNT,$HOST);
 $auth->authenticate();
+assert('$auth->getAuthToken() != NULL');
 assert('$auth->getStorageUrl() != NULL');
-assert('$auth->getStorageToken() != NULL');
 
 # Create a connection to the backend storage system
 #
-$conn = new CLOUDFS_Connection($auth);
+$conn = new CF_Connection($auth);
 
 # Grab the current list of containers on the account
 #
@@ -90,11 +90,11 @@ if ($VERBOSE) {echo "==> CREATE TEST DATA ===============================\n";}
 foreach ($test_data as $cont_name => $obj_arr) {
     if ($VERBOSE) {print "==> Container: " . $cont_name . "\n";}
     $test_cont = $conn->create_container($cont_name);
-    assert('get_class($test_cont) == "CLOUDFS_Container"');
+    assert('get_class($test_cont) == "CF_Container"');
     foreach ($obj_arr as $obj_name => $metadata) {
         if ($VERBOSE) {print "  +--> Object: " . $obj_name . "\n";}
         $obj = $test_cont->create_object($obj_name);
-        assert('get_class($obj) == "CLOUDFS_Object"');
+        assert('get_class($obj) == "CF_Object"');
         assert('$obj->getETag() == NULL');
         $obj->metadata = $metadata;
         $obj->write($OBJECT_DATA);

@@ -1,71 +1,87 @@
 <?php
-/*
- * This is an HTTP client class for CloudFS.  It uses PHP's cURL module
+/**
+ * This is an HTTP client class for Cloud Files.  It uses PHP's cURL module
  * to handle the actual HTTP request/response.  This is NOT a generic HTTP
  * client class and is only used to abstract out the HTTP communication for
- * the PHP CloudFS API.
+ * the PHP Cloud Files API.
  *
  * This module was designed to re-use existing HTTP(S) connections between
  * subsequent operations.  For example, performing multiple PUT operations
  * will re-use the same connection.
  *
  * This modules also provides support for streaming content into and out
- * of CloudFS.  The majority (all?) of the PHP HTTP client modules expect
+ * of Cloud Files.  The majority (all?) of the PHP HTTP client modules expect
  * to read the server's response into a string variable.  This will not work
  * with large files without killing your server.  Methods like,
  * get_object_to_stream() and put_object() take an open filehandle
- * argument for streaming data out of or into CloudFS.
+ * argument for streaming data out of or into Cloud Files.
  *
- * Requires PHP 5.x (for Exceptions and OO syntax)
+ * Requres PHP 5.x (for Exceptions and OO syntax)
  *
  * See COPYING for license information.
+ *
+ * @author Eric "EJ" Johnson <ej@racklabs.com>
+ * @version 1.1.0
+ * @copyright Copyright (c) 2008, Rackspace US, Inc.
+ * @package php-cloudfiles-http
  */
-require_once("cloudfs_exceptions.php");
 
-define("CAPON_VERSION", "1.0.1");
-define("USER_AGENT", sprintf("Capon/%s", CAPON_VERSION));
+/**
+ */
+require_once("cloudfiles_exceptions.php");
+
+define("PHP_CF_VERSION", "1.1.0");
+define("USER_AGENT", sprintf("PHP-CloudFiles/%s", PHP_CF_VERSION));
 define("ACCOUNT_CONTAINER_COUNT", "X-Account-Container-Count");
 define("ACCOUNT_BYTES_USED", "X-Account-Bytes-Used");
 define("CONTAINER_OBJ_COUNT", "X-Container-Object-Count");
 define("CONTAINER_BYTES_USED", "X-Container-Bytes-Used");
 define("METADATA_HEADER", "X-Object-Meta-");
 define("STORAGE_URL", "X-Storage-Url");
-define("STORAGE_TOK", "X-Storage-Token");
-define("AUTH_USER_HEADER", "x-storage-user");
-define("AUTH_PASS_HEADER", "x-storage-pass");
+define("AUTH_TOKEN", "X-Auth-Token");
+define("AUTH_USER_HEADER", "X-Auth-User");
+define("AUTH_KEY_HEADER", "X-Auth-Key");
 
-class CLOUDFS_Http
+/**
+ * HTTP/cURL wrapper for Cloud Files
+ *
+ * This class should not be used directly.  It's only purpose is to abstract
+ * out the HTTP communication from the main API.
+ *
+ * @package php-cloudfiles-http
+ */
+class CF_Http
 {
-    public $dbug;
-    public $api_version;
-    public $error_str;
+    private $error_str;
+    private $dbug;
+    private $api_version;
 
     # Authentication instance variables
     #
-    public $storage_token;
-    public $storage_url;
+    private $storage_url;
+    private $auth_token;
 
     # Request/response variables
     #
-    public $connections;
-    public $response_status;
-    public $response_reason;
+    private $response_status;
+    private $response_reason;
+    private $connections;
 
     # Variables used for content/header callbacks
     #
-    public $_write_callback_type;
-    public $_text_list;
-    public $_account_container_count;
-    public $_account_bytes_used;
-    public $_container_object_count;
-    public $_container_bytes_used;
-    public $_obj_etag;
-    public $_obj_last_modified;
-    public $_obj_content_type;
-    public $_obj_content_length;
-    public $_obj_metadata;
-    public $_obj_write_resource;
-    public $_obj_write_string;
+    private $_write_callback_type;
+    private $_text_list;
+    private $_account_container_count;
+    private $_account_bytes_used;
+    private $_container_object_count;
+    private $_container_bytes_used;
+    private $_obj_etag;
+    private $_obj_last_modified;
+    private $_obj_content_type;
+    private $_obj_content_length;
+    private $_obj_metadata;
+    private $_obj_write_resource;
+    private $_obj_write_string;
 
     function __construct($api_version)
     {
@@ -74,7 +90,7 @@ class CLOUDFS_Http
         $this->error_str = NULL;
 
         $this->storage_url = NULL;
-        $this->storage_token = NULL;
+        $this->auth_token = NULL;
 
         $this->response_status = NULL;
         $this->response_reason = NULL;
@@ -113,7 +129,7 @@ class CLOUDFS_Http
     {
         $headers = array(
             sprintf("%s: %s", AUTH_USER_HEADER, $user),
-            sprintf("%s: %s", AUTH_PASS_HEADER, $pass),
+            sprintf("%s: %s", AUTH_KEY_HEADER, $pass),
             );
 
         $path = array();
@@ -140,7 +156,7 @@ class CLOUDFS_Http
         curl_close($curl_ch);
 
         return array($this->response_status, $this->response_reason,
-            $this->storage_url, $this->storage_token);
+            $this->storage_url, $this->auth_token);
     }
 
     # GET /v1/Account
@@ -163,7 +179,7 @@ class CLOUDFS_Http
             return array($return_code, "Account has no containers.", array());
         }
         if ($return_code == 404) {
-            $this->error_str = "Invalid account name for token.";
+            $this->error_str = "Invalid account name for authentication token.";
             return array($return_code,$this->error_str,array());
         }
         if ($return_code == 200) {
@@ -323,9 +339,9 @@ class CLOUDFS_Http
     #
     function get_object_to_string(&$obj, $hdrs=array())
     {
-        if (!is_object($obj) || get_class($obj) != "CLOUDFS_Object") {
+        if (!is_object($obj) || get_class($obj) != "CF_Object") {
             throw new SyntaxException(
-                "Method argument is not a valid CLOUDFS_Object.");
+                "Method argument is not a valid CF_Object.");
         }
 
         $conn_type = "GET_CALL";
@@ -354,9 +370,9 @@ class CLOUDFS_Http
     #
     function get_object_to_stream(&$obj, &$resource=NULL, $hdrs=array())
     {
-        if (!is_object($obj) || get_class($obj) != "CLOUDFS_Object") {
+        if (!is_object($obj) || get_class($obj) != "CF_Object") {
             throw new SyntaxException(
-                "Method argument is not a valid CLOUDFS_Object.");
+                "Method argument is not a valid CF_Object.");
         }
         if (!is_resource($resource)) {
             throw new SyntaxException(
@@ -390,9 +406,9 @@ class CLOUDFS_Http
     #
     function put_object(&$obj, &$fp)
     {
-        if (!is_object($obj) || get_class($obj) != "CLOUDFS_Object") {
+        if (!is_object($obj) || get_class($obj) != "CF_Object") {
             throw new SyntaxException(
-                "Method argument is not a valid CLOUDFS_Object.");
+                "Method argument is not a valid CF_Object.");
         }
 
         if (!$obj->content_length) {
@@ -449,9 +465,9 @@ class CLOUDFS_Http
     #
     function update_object(&$obj)
     {
-        if (!is_object($obj) || get_class($obj) != "CLOUDFS_Object") {
+        if (!is_object($obj) || get_class($obj) != "CF_Object") {
             throw new SyntaxException(
-                "Method argument is not a valid CLOUDFS_Object.");
+                "Method argument is not a valid CF_Object.");
         }
 
         if (!is_array($obj->metadata) || empty($obj->metadata)) {
@@ -480,9 +496,9 @@ class CLOUDFS_Http
     #
     function head_object(&$obj)
     {
-        if (!is_object($obj) || get_class($obj) != "CLOUDFS_Object") {
+        if (!is_object($obj) || get_class($obj) != "CF_Object") {
             throw new SyntaxException(
-                "Method argument is not a valid CLOUDFS_Object.");
+                "Method argument is not a valid CF_Object.");
         }
 
         $conn_type = "HEAD";
@@ -560,9 +576,9 @@ class CLOUDFS_Http
         $this->storage_url = $surl;
     }
 
-    function setStorageToken($stok)
+    function setAuthToken($stok)
     {
-        $this->storage_token = $stok;
+        $this->auth_token = $stok;
     }
 
 
@@ -653,12 +669,10 @@ class CLOUDFS_Http
             $this->response_reason = $matches[2];
         }
         if (stripos($header, STORAGE_URL) === 0) {
-            $this->storage_url = trim(substr($header,
-                strlen(STORAGE_URL)+1));
+            $this->storage_url = trim(substr($header, strlen(STORAGE_URL)+1));
         }
-        if (stripos($header, STORAGE_TOK) === 0) {
-            $this->storage_token = trim(substr($header,
-                strlen(STORAGE_TOK)+1));
+        if (stripos($header, AUTH_TOKEN) === 0) {
+            $this->auth_token = trim(substr($header, strlen(AUTH_TOKEN)+1));
         }
         return strlen($header);
     }
@@ -679,7 +693,7 @@ class CLOUDFS_Http
                     $value = trim($v);
                 }
 
-                if (stripos($header, STORAGE_TOK) === 0) {
+                if (stripos($header, AUTH_TOKEN) === 0) {
                     $has_stoken = True;
                 }
                 if (stripos($header, "user-agent") === 0) {
@@ -689,7 +703,7 @@ class CLOUDFS_Http
             }
         }
         if (!$has_stoken) {
-            $new_headers[] = "X-Storage-Token: " . $this->storage_token;
+            $new_headers[] = AUTH_TOKEN . ": " . $this->auth_token;
         }
         if (!$has_uagent) {
             $new_headers[] = "User-Agent: " . USER_AGENT;
