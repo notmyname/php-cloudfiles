@@ -12,7 +12,7 @@
 require("cloudfiles.php");
 
 $CFS_USERNAME = "Username";
-$CFS_PASSWORD = "Password";
+$CFS_API_KEY = "API Key";
 $CFS_CONTAINER = "MyPictures";  # referred to as IMAGES in the example
 
 # deprecated variables
@@ -21,7 +21,7 @@ $CFS_AUTH_URL = NULL;
 
 # Authenticate to Cloud Files
 #
-$auth = new CF_Authentication($CFS_USERNAME, $CFS_PASSWORD,
+$auth = new CF_Authentication($CFS_USERNAME, $CFS_API_KEY,
         $CFS_ACCOUNT, $CFS_AUTH_URL);
 $auth->authenticate();
 
