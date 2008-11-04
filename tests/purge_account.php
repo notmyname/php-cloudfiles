@@ -11,15 +11,15 @@ require("cloudfiles.php");
 
 $VERBOSE = True;                        # informational messages to stdout
 $USER    = "Username";                  # Mosso Username
-$PASS    = "API Key";                   # User's API Access Key
+$API_KEY = "API Key";                   # User's API Access Key
 $ACCOUNT = NULL;                        # DEPRECATED: account name
 $HOST    = NULL;                        # DEPRECATED: authentication host URL
 
 # Authenticate and make sure we get back a valid url/token
-$auth = new CF_Authentication($USER,$PASS,$ACCOUNT,$HOST);
+$auth = new CF_Authentication($USER,$API_KEY,$ACCOUNT,$HOST);
 $auth->authenticate();
-print $auth->getStorageUrl();
-print $auth->getAuthToken();
+print $auth->storage_url;
+print $auth->auth_token;
 
 # Create a connection to the backend storage system
 #

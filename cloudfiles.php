@@ -231,9 +231,9 @@ class CF_Connection
             $r .= "' cannot contain a '/' character.";
             throw new SyntaxException($r);
         }
-        if (strlen(rawurlencode($container_name)) > MAX_CONTAINER_NAME_LEN) {
+        if (mb_strlen($container_name, "UTF-8") > MAX_CONTAINER_NAME_LEN) {
             throw new SyntaxException(sprintf(
-                "URL encoded container name exeeds %d characters.",
+                "Container name exeeds %d characters.",
                 MAX_CONTAINER_NAME_LEN));
         }
 
@@ -371,10 +371,10 @@ class CF_Container
      * @param int $bytes number of bytes stored in this Container
      * @throws SyntaxException invalid Container name
      */
-    function __construct($cfs_http, $name, $count=0, $bytes=0)
+    function __construct(&$cfs_http, $name, $count=0, $bytes=0)
     {
-        if (strlen(rawurlencode($name)) > MAX_CONTAINER_NAME_LEN) {
-            throw new SyntaxException("Encoded container name exceeds "
+        if (mb_strlen($name, "UTF-8") > MAX_CONTAINER_NAME_LEN) {
+            throw new SyntaxException("Container name exceeds "
                 . "maximum allowed length.");
         }
         if (strpos($container_name, "/") !== False) {
@@ -412,7 +412,7 @@ class CF_Container
      */
     function create_object($obj_name=NULL)
     {
-        return new CF_Object(&$this, $obj_name);
+        return new CF_Object($this, $obj_name);
     }
 
     /**
@@ -426,7 +426,7 @@ class CF_Container
      */
     function get_object($obj_name=NULL)
     {
-        return new CF_Object(&$this, $obj_name, True);
+        return new CF_Object($this, $obj_name, True);
     }
 
     /**
@@ -519,10 +519,10 @@ class CF_Object
      * @param string $name name of Object
      * @param boolean $force_exists if set, throw an error if Object doesn't exist
      */
-    function __construct($container, $name, $force_exists=False)
+    function __construct(&$container, $name, $force_exists=False)
     {
-        if (strlen(rawurlencode($name)) > MAX_OBJECT_NAME_LEN) {
-            throw new SyntaxException("Encoded object name exceeds "
+        if (mb_strlen($name, "UTF-8") > MAX_OBJECT_NAME_LEN) {
+            throw new SyntaxException("Object name exceeds "
                 . "maximum allowed length.");
         }
         $this->container = $container;

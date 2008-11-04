@@ -11,9 +11,7 @@ $CONT_NAME_LENGTH = 20;
 $OBJ_NAME_LENGTH = 15;
 $META_NAME_LENGTH = 5;
 
-# Include Unicode characters - does not work, ascii only :-(
-#
-#$SEED_CONT_CHARS  = " ŞỏмēšäოрŀĕÄŞĊ|Î-ţề×ţaB012.~`!@#$%^&*()-_=+{}[]\|;:'>?<,'\"";
+# See the utf8_test.php for testing UTF-8
 #
 $SEED_CONT_CHARS  = " abcDEFgHiJkLmNo0123456789.~`!@#$%^&*()-_=+{}[]\|;:'>?<,'\"";
 $SEED_OBJ_CHARS   = " abcDEFgHiJkLmNo0123456789.~`!@#$%^&*()-_=+{}[]\|;:'>?</,'\"";
@@ -70,10 +68,10 @@ assert_options(ASSERT_QUIET_EVAL, 1);
 assert_options(ASSERT_CALLBACK, "assert_callback");
 
 # Authenticate and make sure we get back a valid url/token
-$auth = new CF_Authentication($USER,$PASS,$ACCOUNT,$HOST);
+$auth = new CF_Authentication($USER,$API_KEY,$ACCOUNT,$HOST);
 $auth->authenticate();
-assert('$auth->getAuthToken() != NULL');
-assert('$auth->getStorageUrl() != NULL');
+assert('$auth->storage_url != NULL');
+assert('$auth->auth_token != NULL');
 
 # Create a connection to the backend storage system
 #

@@ -18,7 +18,7 @@ assert_options(ASSERT_CALLBACK, "assert_callback");
 
 
 echo "======= AUTHENTICATING ======================================\n";
-$auth = new CF_Authentication($USER,$PASS,$ACCOUNT,$HOST);
+$auth = new CF_Authentication($USER,$API_KEY,$ACCOUNT,$HOST);
 //$auth->setDebug(1);  # toggle to enable cURL verbose output
 $auth->authenticate();
 assert('$auth->storage_url != NULL');

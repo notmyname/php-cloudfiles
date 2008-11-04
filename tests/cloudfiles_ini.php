@@ -2,7 +2,7 @@
 
 $VERBOSE = True;                        # informational messages to stdout
 $USER    = "Username";                  # Mosso Username
-$PASS    = "API Key";                   # User's API Access Key
+$API_KEY = "API Key";                   # User's API Access Key
 $ACCOUNT = NULL;                        # DEPRECATED: account name
 $HOST    = NULL;                        # DEPRECATED: authentication host URL
 

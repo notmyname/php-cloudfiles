@@ -9,50 +9,59 @@ links for each storage Object.
 </p>
 
 <p>
-Let's assume you have a valid Cloud Files account and a Container named "IMAGES"
-that you use to store media files that you want to make visible to visitors.
-You also want to serve the files directly from Cloud Files rather store them on
-your web server.  For this example, we'll also assume you were to use the
-included SAMPLE Apache configuration file to run a new Virtual Host on
-port 4512 (setting up the vhost is beyond the scope of this example - see the
-<a href="http://httpd.apache.org/docs/">Apache Documentation</a> for detailed
-instructions).
+Let's assume you have a valid Cloud Files account and a Container named
+"IMAGES" that you use to store media files that you want to make visible to
+visitors. You also want to serve the files directly from Cloud Files rather
+store them on your web server.  For this example, we'll also assume you were
+to use the included SAMPLE Apache configuration file to run a new Virtual
+Host on port 4512 (setting up the vhost is beyond the scope of this example,
+see <a href="http://httpd.apache.org/docs/">Apache Documentation</a> for
+detailed instructions).
 </p>
 
 <p>
-The accompanying PHP script, <tt>display.php</tt>, must be edited to store your
-Cloud Files user information and the <em>$CFS_CONTAINER</em> variable to
+The accompanying PHP script, <tt>display.php</tt>, must be edited to store
+your Cloud Files user information and the <em>$CFS_CONTAINER</em> variable to
 "IMAGES".  For this example, let's assume you have a picture of your
-dog (<tt>fido.jpg</tt>) and a video of yourself dancing in front of your web
-cam (<tt>disco.avi</tt>) stored in your "IMAGES" Container.
+dog (<tt>fido.jpg</tt>) and a video of yourself juggling in front of your web
+cam (<tt>juggle.avi</tt>) stored in your "IMAGES" Container.
 </p>
 
 <p>
-Here are links that you could put in a static HTML page (such as this one) that
-would use the <tt>display.php</tt> script to fetch the content from Cloud Files and
-stream it back to the visitor's browser:<br />&nbsp;<br />
+Here are links that you could put in a static HTML page (such as this one)
+that would use the <tt>display.php</tt> script to fetch the content from
+Cloud Files and stream it back to the visitor's browser:<br />
+&nbsp;<br />
 This is the <a href="/">web page</a> you're currently viewing.<br />
 See my <a href="/display.php?display=fido.jpg">dog</a>.<br />
-Watch me <a href="/display.php?display=disco.avi">dance</a>!<br />
+Watch me <a href="/display.php?display=juggle.avi">juggle</a>!<br />
 </p>
 
 <p>
-Or, embed an image in the page served from Cloud Files like this:<br />
-<img src="/display.php?display=kitty_cat.jpg" /><br />
+Or, embed an image in the page streamed from Cloud Files like this:<br />
+<img src="/display.php?display=birthday.jpg" /><br />
 Of course, this is a broken image link until you set it to a real
 image in your Cloud Files "IMAGES" Container.
+</p>
+
+<p>
+<b>NOTE:</b> If you are having trouble serving files from Cloud Files, you
+may need to review your PHP ini settings such as <i>max_execution_time</i>
+or your web server's timeout options.  If you are loading storage objects
+into script variables you may also need to adjust PHP's <i>memory_limit</i>
+ini variable.
 </p>
 
 <ul>
 <li><b>http://your_server_name_or_ip:4512/</b>:
     would see this HTML page.</li>
 <li><b>http://your_servername_or_ip:4512/display.php?display=fido.jpg</b>:
-    would see the picture of your dog streamed from Cloud Files directly to the
-    browser if it's Content-Type was set correctly when uploading into Cloud Files
-    (no intermediate caching of the image on your server).</li>
-<li><b>http://your_servername_or_ip:4512/display.php?display=disco.avi</b>:
-    would see you shake your groove-thang streamed from Cloud Files directly to
+    would see the picture of your dog streamed from Cloud Files directly to
     the browser if it's Content-Type was set correctly when uploading into
+    Cloud Files (no intermediate caching of the image on your server).</li>
+<li><b>http://your_servername_or_ip:4512/display.php?display=disco.avi</b>:
+    would see you shake your groove-thang streamed from Cloud Files directly
+    to the browser if it's Content-Type was set correctly when uploading into
     Cloud Files (no intermediate caching of the image on your server).</li>
 <li><b>http://your_servername_or_ip:4512/display.php</b>:
     with no query parameters, vistiors would see dynamically generated URLs
