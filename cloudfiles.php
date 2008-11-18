@@ -37,6 +37,10 @@
  *   # email message, etc.
  *   #
  *   $uri = $images->make_public();
+ *
+ *   # Or... print out the Object's public URI
+ *   #
+ *   print $bday->public_uri();
  * </code>
  *
  * See the included tests directory for additional sample code.
@@ -703,7 +707,7 @@ class CF_Object
     }
 
     /**
-     * String representation of Container
+     * String representation of Object
      *
      * Pretty print the Object's location and name
      *
@@ -712,6 +716,22 @@ class CF_Object
     function __toString()
     {
         return $this->container->name . "/" . $this->name;
+    }
+
+    /**
+     * String representation of the Object's public URI
+     *
+     * A string representing the Object's public URI assuming that it's
+     * parent Container is CDN-enabled.
+     *
+     * @return string Object's public URI or NULL
+     */
+    function public_uri()
+    {
+        if ($this->container->cdn_enabled) {
+            return $this->container->cdn_uri . "/" . $this->name;
+        }
+        return NULL;
     }
 
     /**

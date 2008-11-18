@@ -92,7 +92,7 @@ class CF_Http
 
     function __construct($api_version)
     {
-        $this->dbug = True;
+        $this->dbug = False;
         $this->api_version = $api_version;
         $this->error_str = NULL;
 

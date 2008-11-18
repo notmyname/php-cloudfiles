@@ -100,6 +100,18 @@ foreach ($cnames as $name => $cont) {
     assert('$tcont->cdn_ttl == $cont->cdn_ttl');
 }
 
+echo "======= UPLOAD STORAGE OBJECT AND FETCH FROM CDN ============\n";
+$contents = "This is a sample text file.";
+$o = $ascii_cont->create_object("foo.txt");
+$o->write($contents);
+sleep(2);
+print $o->public_uri() . "\n";
+$fp = fopen($o->public_uri(), "r");
+$cdn_contents = fread($fp, 1024);
+fclose($fp);
+assert('$contents == substr($cdn_contents, -strlen($contents))');
+
+
 echo "======= DISABLE CDN =========================================\n";
 foreach ($cnames as $name => $cont) {
     $uri = $cont->make_private();
@@ -111,6 +123,7 @@ foreach ($cnames as $name => $cont) {
 }
 
 echo "======= CLEAN-UP AND DELETE =================================\n";
+$ascii_cont->delete_object("foo.txt");
 foreach ($cnames as $name => $cont) {
     $conn->delete_container($cont);
 }
