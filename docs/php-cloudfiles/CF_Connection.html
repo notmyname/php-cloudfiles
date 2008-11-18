@@ -74,6 +74,7 @@ Source Location: /cloudfiles.php<br /><br />
 <h3><a href="#class_vars">Variables</a></h3>
 <ul>
     <li><a href="../php-cloudfiles/CF_Connection.html#var$auth_token">$auth_token</a></li>
+    <li><a href="../php-cloudfiles/CF_Connection.html#var$cdnm_url">$cdnm_url</a></li>
     <li><a href="../php-cloudfiles/CF_Connection.html#var$cfs_http">$cfs_http</a></li>
     <li><a href="../php-cloudfiles/CF_Connection.html#var$dbug">$dbug</a></li>
     <li><a href="../php-cloudfiles/CF_Connection.html#var$storage_url">$storage_url</a></li>
@@ -90,6 +91,7 @@ Source Location: /cloudfiles.php<br /><br />
     <li><a href="../php-cloudfiles/CF_Connection.html#methodget_container">get_container</a></li>
     <li><a href="../php-cloudfiles/CF_Connection.html#methodget_info">get_info</a></li>
     <li><a href="../php-cloudfiles/CF_Connection.html#methodlist_containers">list_containers</a></li>
+    <li><a href="../php-cloudfiles/CF_Connection.html#methodlist_public_containers">list_public_containers</a></li>
     <li><a href="../php-cloudfiles/CF_Connection.html#methodsetDebug">setDebug</a></li>
   </ul>
 </td>
@@ -110,7 +112,7 @@ Source Location: /cloudfiles.php<br /><br />
 <a name="class_details"></a>
 <h3>Class Details</h3>
 <div class="tags">
-[line 152]<br />
+[line 161]<br />
 Class for establishing connections to the Cloud Files storage system.  Connection  instances are used to communicate with the storage system at the account  level; listing and deleting Containers and returning Container instances.<br /><br /></div><br /><br />
 <div class="top">[ <a href="#top">Top</a> ]</div><br />
 
@@ -121,7 +123,31 @@ Class for establishing connections to the Cloud Files storage system.  Connectio
 	<a name="var$auth_token"></a>
 	<p></p>
 	<h4>$auth_token = <span class="value"></span></h4>
-	<p>[line 157]</p>
+	<p>[line 168]</p>
+  <br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+
+  <br />
+	<div class="tags">
+  <table border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td><b>Type:</b>&nbsp;&nbsp;</td>
+      <td>mixed</td>
+    </tr>
+      </table>
+	</div><br /><br />
+	<div class="top">[ <a href="#top">Top</a> ]</div><br />
+	<a name="var$cdnm_url"></a>
+	<p></p>
+	<h4>$cdnm_url = <span class="value"></span></h4>
+	<p>[line 167]</p>
   <br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -145,7 +171,7 @@ Class for establishing connections to the Cloud Files storage system.  Connectio
 	<a name="var$cfs_http"></a>
 	<p></p>
 	<h4>$cfs_http = <span class="value"></span></h4>
-	<p>[line 155]</p>
+	<p>[line 164]</p>
   <br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -169,7 +195,7 @@ Class for establishing connections to the Cloud Files storage system.  Connectio
 	<a name="var$dbug"></a>
 	<p></p>
 	<h4>$dbug = <span class="value"></span></h4>
-	<p>[line 154]</p>
+	<p>[line 163]</p>
   <br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -193,7 +219,7 @@ Class for establishing connections to the Cloud Files storage system.  Connectio
 	<a name="var$storage_url"></a>
 	<p></p>
 	<h4>$storage_url = <span class="value"></span></h4>
-	<p>[line 158]</p>
+	<p>[line 166]</p>
   <br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -223,7 +249,7 @@ Class for establishing connections to the Cloud Files storage system.  Connectio
 
   <hr />
 	<a name="method__construct"></a>
-	<h3>constructor __construct <span class="smalllinenumber">[line 166]</span></h3>
+	<h3>constructor __construct <span class="smalllinenumber">[line 176]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -259,7 +285,7 @@ $cfs_auth)</code>
   </div>
   <hr />
 	<a name="methodcreate_container"></a>
-	<h3>method create_container <span class="smalllinenumber">[line 224]</span></h3>
+	<h3>method create_container <span class="smalllinenumber">[line 236]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -298,7 +324,7 @@ $container_name = NULL])</code>
   </div>
   <hr />
 	<a name="methoddelete_container"></a>
-	<h3>method delete_container <span class="smalllinenumber">[line 264]</span></h3>
+	<h3>method delete_container <span class="smalllinenumber">[line 276]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -346,7 +372,7 @@ $container = NULL])</code>
   </div>
   <hr />
 	<a name="methodget_container"></a>
-	<h3>method get_container <span class="smalllinenumber">[line 309]</span></h3>
+	<h3>method get_container <span class="smalllinenumber">[line 321]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -388,7 +414,7 @@ $container_name = NULL])</code>
   </div>
   <hr />
 	<a name="methodget_info"></a>
-	<h3>method get_info <span class="smalllinenumber">[line 202]</span></h3>
+	<h3>method get_info <span class="smalllinenumber">[line 214]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -416,7 +442,7 @@ $container_name = NULL])</code>
   </div>
   <hr />
 	<a name="methodlist_containers"></a>
-	<h3>method list_containers <span class="smalllinenumber">[line 331]</span></h3>
+	<h3>method list_containers <span class="smalllinenumber">[line 343]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -443,8 +469,36 @@ $container_name = NULL])</code>
         <div class="top">[ <a href="#top">Top</a> ]</div>
   </div>
   <hr />
+	<a name="methodlist_public_containers"></a>
+	<h3>method list_public_containers <span class="smalllinenumber">[line 361]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>array list_public_containers(
+)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Return list of Containers that have been published to the CDN.<br /><br /><p>Return an array of strings containing the names of all published Containers.</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>list of published Container names</td>
+  </tr>
+  <tr>
+    <td><b>throws:</b>&nbsp;&nbsp;</td><td>InvalidResponseException unexpected response</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+	
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
 	<a name="methodsetDebug"></a>
-	<h3>method setDebug <span class="smalllinenumber">[line 186]</span></h3>
+	<h3>method setDebug <span class="smalllinenumber">[line 198]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -474,7 +528,7 @@ $bool)</code>
 
         <div class="credit">
 		    <hr />
-		    Documentation generated on Tue, 21 Oct 2008 13:43:14 -0500 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.2</a>
+		    Documentation generated on Tue, 18 Nov 2008 12:46:49 -0600 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.2</a>
 	      </div>
       </td></tr></table>
     </td>

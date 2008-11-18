@@ -67,15 +67,17 @@
 							<dt><b>$auth_token</b></dt>
 				<dd>in file cloudfiles.php, variable <a href="php-cloudfiles/CF_Connection.html#var$auth_token">CF_Connection::$auth_token</a></dd>
 							<dt><b>$auth_token</b></dt>
-				<dd>in file cloudfiles.php, variable <a href="php-cloudfiles/CF_Authentication.html#var$auth_token">CF_Authentication::$auth_token</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Instance variables that are set after successful authentication</dd>
+				<dd>in file cloudfiles.php, variable <a href="php-cloudfiles/CF_Authentication.html#var$auth_token">CF_Authentication::$auth_token</a></dd>
 							<dt><b>ACCOUNT_BYTES_USED</b></dt>
 				<dd>in file cloudfiles_http.php, constant <a href="php-cloudfiles-http/_cloudfiles_http.php.html#defineACCOUNT_BYTES_USED">ACCOUNT_BYTES_USED</a></dd>
 							<dt><b>ACCOUNT_CONTAINER_COUNT</b></dt>
 				<dd>in file cloudfiles_http.php, constant <a href="php-cloudfiles-http/_cloudfiles_http.php.html#defineACCOUNT_CONTAINER_COUNT">ACCOUNT_CONTAINER_COUNT</a></dd>
-							<dt><b>authenticate</b></dt>
-				<dd>in file cloudfiles.php, method <a href="php-cloudfiles/CF_Authentication.html#methodauthenticate">CF_Authentication::authenticate()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Attempt to validate Username/API Access Key</dd>
+							<dt><b>add_cdn_container</b></dt>
+				<dd>in file cloudfiles_http.php, method <a href="php-cloudfiles-http/CF_Http.html#methodadd_cdn_container">CF_Http::add_cdn_container()</a></dd>
 							<dt><b>authenticate</b></dt>
 				<dd>in file cloudfiles_http.php, method <a href="php-cloudfiles-http/CF_Http.html#methodauthenticate">CF_Http::authenticate()</a></dd>
+							<dt><b>authenticate</b></dt>
+				<dd>in file cloudfiles.php, method <a href="php-cloudfiles/CF_Authentication.html#methodauthenticate">CF_Authentication::authenticate()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Attempt to validate Username/API Access Key</dd>
 							<dt><b>AuthenticationException</b></dt>
 				<dd>in file cloudfiles_exceptions.php, class <a href="php-cloudfiles-exceptions/AuthenticationException.html">AuthenticationException</a></dd>
 							<dt><b>AUTH_KEY_HEADER</b></dt>
@@ -92,6 +94,16 @@
 	<div>
 		<h2>c</h2>
 		<dl>
+							<dt><b>$cdnm_url</b></dt>
+				<dd>in file cloudfiles.php, variable <a href="php-cloudfiles/CF_Authentication.html#var$cdnm_url">CF_Authentication::$cdnm_url</a></dd>
+							<dt><b>$cdnm_url</b></dt>
+				<dd>in file cloudfiles.php, variable <a href="php-cloudfiles/CF_Connection.html#var$cdnm_url">CF_Connection::$cdnm_url</a></dd>
+							<dt><b>$cdn_enabled</b></dt>
+				<dd>in file cloudfiles.php, variable <a href="php-cloudfiles/CF_Container.html#var$cdn_enabled">CF_Container::$cdn_enabled</a></dd>
+							<dt><b>$cdn_ttl</b></dt>
+				<dd>in file cloudfiles.php, variable <a href="php-cloudfiles/CF_Container.html#var$cdn_ttl">CF_Container::$cdn_ttl</a></dd>
+							<dt><b>$cdn_uri</b></dt>
+				<dd>in file cloudfiles.php, variable <a href="php-cloudfiles/CF_Container.html#var$cdn_uri">CF_Container::$cdn_uri</a></dd>
 							<dt><b>$cfs_http</b></dt>
 				<dd>in file cloudfiles.php, variable <a href="php-cloudfiles/CF_Container.html#var$cfs_http">CF_Container::$cfs_http</a></dd>
 							<dt><b>$cfs_http</b></dt>
@@ -102,6 +114,16 @@
 				<dd>in file cloudfiles.php, variable <a href="php-cloudfiles/CF_Object.html#var$content_length">CF_Object::$content_length</a></dd>
 							<dt><b>$content_type</b></dt>
 				<dd>in file cloudfiles.php, variable <a href="php-cloudfiles/CF_Object.html#var$content_type">CF_Object::$content_type</a></dd>
+							<dt><b>CDNM_URL</b></dt>
+				<dd>in file cloudfiles_http.php, constant <a href="php-cloudfiles-http/_cloudfiles_http.php.html#defineCDNM_URL">CDNM_URL</a></dd>
+							<dt><b>CDNNotEnabledException</b></dt>
+				<dd>in file cloudfiles_exceptions.php, class <a href="php-cloudfiles-exceptions/CDNNotEnabledException.html">CDNNotEnabledException</a></dd>
+							<dt><b>CDN_ENABLED</b></dt>
+				<dd>in file cloudfiles_http.php, constant <a href="php-cloudfiles-http/_cloudfiles_http.php.html#defineCDN_ENABLED">CDN_ENABLED</a></dd>
+							<dt><b>CDN_TTL</b></dt>
+				<dd>in file cloudfiles_http.php, constant <a href="php-cloudfiles-http/_cloudfiles_http.php.html#defineCDN_TTL">CDN_TTL</a></dd>
+							<dt><b>CDN_URI</b></dt>
+				<dd>in file cloudfiles_http.php, constant <a href="php-cloudfiles-http/_cloudfiles_http.php.html#defineCDN_URI">CDN_URI</a></dd>
 							<dt><b>CF_Authentication</b></dt>
 				<dd>in file cloudfiles.php, class <a href="php-cloudfiles/CF_Authentication.html">CF_Authentication</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Class for handling Cloud Files Authentication, call it's <a href="php-cloudfiles-http/CF_Http.html#methodauthenticate">authenticate()</a>  method to obtain authorized service urls and authentication token.</dd>
 							<dt><b>CF_Connection</b></dt>
@@ -160,8 +182,14 @@
 	<div>
 		<h2>g</h2>
 		<dl>
+							<dt><b>getAuthToken</b></dt>
+				<dd>in file cloudfiles_http.php, method <a href="php-cloudfiles-http/CF_Http.html#methodgetAuthToken">CF_Http::getAuthToken()</a></dd>
+							<dt><b>getCDNMUrl</b></dt>
+				<dd>in file cloudfiles_http.php, method <a href="php-cloudfiles-http/CF_Http.html#methodgetCDNMUrl">CF_Http::getCDNMUrl()</a></dd>
 							<dt><b>getETag</b></dt>
 				<dd>in file cloudfiles.php, method <a href="php-cloudfiles/CF_Object.html#methodgetETag">CF_Object::getETag()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Object's MD5 checksum</dd>
+							<dt><b>getStorageUrl</b></dt>
+				<dd>in file cloudfiles_http.php, method <a href="php-cloudfiles-http/CF_Http.html#methodgetStorageUrl">CF_Http::getStorageUrl()</a></dd>
 							<dt><b>get_container</b></dt>
 				<dd>in file cloudfiles.php, method <a href="php-cloudfiles/CF_Connection.html#methodget_container">CF_Connection::get_container()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Return a Container instance</dd>
 							<dt><b>get_container</b></dt>
@@ -186,6 +214,8 @@
 		<dl>
 							<dt><b>head_account</b></dt>
 				<dd>in file cloudfiles_http.php, method <a href="php-cloudfiles-http/CF_Http.html#methodhead_account">CF_Http::head_account()</a></dd>
+							<dt><b>head_cdn_container</b></dt>
+				<dd>in file cloudfiles_http.php, method <a href="php-cloudfiles-http/CF_Http.html#methodhead_cdn_container">CF_Http::head_cdn_container()</a></dd>
 							<dt><b>head_container</b></dt>
 				<dd>in file cloudfiles_http.php, method <a href="php-cloudfiles-http/CF_Http.html#methodhead_container">CF_Http::head_container()</a></dd>
 							<dt><b>head_object</b></dt>
@@ -202,6 +232,8 @@
 				<dd>in file cloudfiles_exceptions.php, class <a href="php-cloudfiles-exceptions/InvalidResponseException.html">InvalidResponseException</a></dd>
 							<dt><b>IOException</b></dt>
 				<dd>in file cloudfiles_exceptions.php, class <a href="php-cloudfiles-exceptions/IOException.html">IOException</a></dd>
+							<dt><b>is_public</b></dt>
+				<dd>in file cloudfiles.php, method <a href="php-cloudfiles/CF_Container.html#methodis_public">CF_Container::is_public()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Check if this Container is being publicly served via CDN</dd>
 					</dl>
 	</div>
 	<a href="elementindex.html#top">top</a><br>
@@ -212,12 +244,16 @@
 		<dl>
 							<dt><b>$last_modified</b></dt>
 				<dd>in file cloudfiles.php, variable <a href="php-cloudfiles/CF_Object.html#var$last_modified">CF_Object::$last_modified</a></dd>
+							<dt><b>list_cdn_containers</b></dt>
+				<dd>in file cloudfiles_http.php, method <a href="php-cloudfiles-http/CF_Http.html#methodlist_cdn_containers">CF_Http::list_cdn_containers()</a></dd>
 							<dt><b>list_containers</b></dt>
 				<dd>in file cloudfiles_http.php, method <a href="php-cloudfiles-http/CF_Http.html#methodlist_containers">CF_Http::list_containers()</a></dd>
 							<dt><b>list_containers</b></dt>
 				<dd>in file cloudfiles.php, method <a href="php-cloudfiles/CF_Connection.html#methodlist_containers">CF_Connection::list_containers()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Return list of remote Containers</dd>
 							<dt><b>list_objects</b></dt>
 				<dd>in file cloudfiles.php, method <a href="php-cloudfiles/CF_Container.html#methodlist_objects">CF_Container::list_objects()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Return a list of Objects</dd>
+							<dt><b>list_public_containers</b></dt>
+				<dd>in file cloudfiles.php, method <a href="php-cloudfiles/CF_Connection.html#methodlist_public_containers">CF_Connection::list_public_containers()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Return list of Containers that have been published to the CDN.</dd>
 							<dt><b>load_from_filename</b></dt>
 				<dd>in file cloudfiles.php, method <a href="php-cloudfiles/CF_Object.html#methodload_from_filename">CF_Object::load_from_filename()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Upload Object data from local filename</dd>
 					</dl>
@@ -230,6 +266,10 @@
 		<dl>
 							<dt><b>$metadata</b></dt>
 				<dd>in file cloudfiles.php, variable <a href="php-cloudfiles/CF_Object.html#var$metadata">CF_Object::$metadata</a></dd>
+							<dt><b>make_private</b></dt>
+				<dd>in file cloudfiles.php, method <a href="php-cloudfiles/CF_Container.html#methodmake_private">CF_Container::make_private()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Disable the CDN sharing for this container</dd>
+							<dt><b>make_public</b></dt>
+				<dd>in file cloudfiles.php, method <a href="php-cloudfiles/CF_Container.html#methodmake_public">CF_Container::make_public()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Enable Container content to be served via CDN or modify CDN attributes</dd>
 							<dt><b>MAX_CONTAINER_NAME_LEN</b></dt>
 				<dd>in file cloudfiles.php, constant <a href="php-cloudfiles/_cloudfiles.php.html#defineMAX_CONTAINER_NAME_LEN">MAX_CONTAINER_NAME_LEN</a></dd>
 							<dt><b>MAX_OBJECT_NAME_LEN</b></dt>
@@ -290,6 +330,8 @@
 		<dl>
 							<dt><b>read</b></dt>
 				<dd>in file cloudfiles.php, method <a href="php-cloudfiles/CF_Object.html#methodread">CF_Object::read()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Read the remote Object's data</dd>
+							<dt><b>remove_cdn_container</b></dt>
+				<dd>in file cloudfiles_http.php, method <a href="php-cloudfiles-http/CF_Http.html#methodremove_cdn_container">CF_Http::remove_cdn_container()</a></dd>
 					</dl>
 	</div>
 	<a href="elementindex.html#top">top</a><br>
@@ -301,19 +343,21 @@
 							<dt><b>$size_used</b></dt>
 				<dd>in file cloudfiles.php, variable <a href="php-cloudfiles/CF_Container.html#var$size_used">CF_Container::$size_used</a></dd>
 							<dt><b>$storage_url</b></dt>
-				<dd>in file cloudfiles.php, variable <a href="php-cloudfiles/CF_Authentication.html#var$storage_url">CF_Authentication::$storage_url</a></dd>
-							<dt><b>$storage_url</b></dt>
 				<dd>in file cloudfiles.php, variable <a href="php-cloudfiles/CF_Connection.html#var$storage_url">CF_Connection::$storage_url</a></dd>
+							<dt><b>$storage_url</b></dt>
+				<dd>in file cloudfiles.php, variable <a href="php-cloudfiles/CF_Authentication.html#var$storage_url">CF_Authentication::$storage_url</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Instance variables that are set after successful authentication</dd>
 							<dt><b>save_to_filename</b></dt>
 				<dd>in file cloudfiles.php, method <a href="php-cloudfiles/CF_Object.html#methodsave_to_filename">CF_Object::save_to_filename()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Save Object's data to local filename</dd>
 							<dt><b>setAuthToken</b></dt>
 				<dd>in file cloudfiles_http.php, method <a href="php-cloudfiles-http/CF_Http.html#methodsetAuthToken">CF_Http::setAuthToken()</a></dd>
+							<dt><b>setCDNMUrl</b></dt>
+				<dd>in file cloudfiles_http.php, method <a href="php-cloudfiles-http/CF_Http.html#methodsetCDNMUrl">CF_Http::setCDNMUrl()</a></dd>
 							<dt><b>setDebug</b></dt>
 				<dd>in file cloudfiles_http.php, method <a href="php-cloudfiles-http/CF_Http.html#methodsetDebug">CF_Http::setDebug()</a></dd>
 							<dt><b>setDebug</b></dt>
-				<dd>in file cloudfiles.php, method <a href="php-cloudfiles/CF_Connection.html#methodsetDebug">CF_Connection::setDebug()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Toggle debugging of instance and back-end HTTP module</dd>
-							<dt><b>setDebug</b></dt>
 				<dd>in file cloudfiles.php, method <a href="php-cloudfiles/CF_Authentication.html#methodsetDebug">CF_Authentication::setDebug()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Toggle debugging - set cURL verbose flag</dd>
+							<dt><b>setDebug</b></dt>
+				<dd>in file cloudfiles.php, method <a href="php-cloudfiles/CF_Connection.html#methodsetDebug">CF_Connection::setDebug()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Toggle debugging of instance and back-end HTTP module</dd>
 							<dt><b>setStorageUrl</b></dt>
 				<dd>in file cloudfiles_http.php, method <a href="php-cloudfiles-http/CF_Http.html#methodsetStorageUrl">CF_Http::setStorageUrl()</a></dd>
 							<dt><b>set_etag</b></dt>
@@ -336,6 +380,8 @@
 		<dl>
 							<dt><b>$username</b></dt>
 				<dd>in file cloudfiles.php, variable <a href="php-cloudfiles/CF_Authentication.html#var$username">CF_Authentication::$username</a></dd>
+							<dt><b>update_cdn_container</b></dt>
+				<dd>in file cloudfiles_http.php, method <a href="php-cloudfiles-http/CF_Http.html#methodupdate_cdn_container">CF_Http::update_cdn_container()</a></dd>
 							<dt><b>update_object</b></dt>
 				<dd>in file cloudfiles_http.php, method <a href="php-cloudfiles-http/CF_Http.html#methodupdate_object">CF_Http::update_object()</a></dd>
 							<dt><b>USER_AGENT</b></dt>
@@ -377,7 +423,7 @@
 	<a href="elementindex.html#top">top</a><br>
         <div class="credit">
 		    <hr />
-		    Documentation generated on Tue, 21 Oct 2008 13:43:13 -0500 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.2</a>
+		    Documentation generated on Tue, 18 Nov 2008 12:46:49 -0600 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.2</a>
 	      </div>
       </td></tr></table>
     </td>

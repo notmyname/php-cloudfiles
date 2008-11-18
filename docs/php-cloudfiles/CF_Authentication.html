@@ -77,6 +77,7 @@ Source Location: /cloudfiles.php<br /><br />
     <li><a href="../php-cloudfiles/CF_Authentication.html#var$api_key">$api_key</a></li>
     <li><a href="../php-cloudfiles/CF_Authentication.html#var$auth_host">$auth_host</a></li>
     <li><a href="../php-cloudfiles/CF_Authentication.html#var$auth_token">$auth_token</a></li>
+    <li><a href="../php-cloudfiles/CF_Authentication.html#var$cdnm_url">$cdnm_url</a></li>
     <li><a href="../php-cloudfiles/CF_Authentication.html#var$dbug">$dbug</a></li>
     <li><a href="../php-cloudfiles/CF_Authentication.html#var$storage_url">$storage_url</a></li>
     <li><a href="../php-cloudfiles/CF_Authentication.html#var$username">$username</a></li>
@@ -109,7 +110,7 @@ Source Location: /cloudfiles.php<br /><br />
 <a name="class_details"></a>
 <h3>Class Details</h3>
 <div class="tags">
-[line 61]<br />
+[line 66]<br />
 Class for handling Cloud Files Authentication, call it's <a href="../php-cloudfiles-http/CF_Http.html#methodauthenticate">authenticate()</a>  method to obtain authorized service urls and authentication token.<br /><br /></div><br /><br />
 <div class="top">[ <a href="#top">Top</a> ]</div><br />
 
@@ -120,7 +121,7 @@ Class for handling Cloud Files Authentication, call it's <a href="../php-cloudfi
 	<a name="var$account"></a>
 	<p></p>
 	<h4>$account = <span class="value"></span></h4>
-	<p>[line 67]</p>
+	<p>[line 72]</p>
   <br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -144,7 +145,7 @@ Class for handling Cloud Files Authentication, call it's <a href="../php-cloudfi
 	<a name="var$api_key"></a>
 	<p></p>
 	<h4>$api_key = <span class="value"></span></h4>
-	<p>[line 65]</p>
+	<p>[line 70]</p>
   <br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -168,7 +169,7 @@ Class for handling Cloud Files Authentication, call it's <a href="../php-cloudfi
 	<a name="var$auth_host"></a>
 	<p></p>
 	<h4>$auth_host = <span class="value"></span></h4>
-	<p>[line 66]</p>
+	<p>[line 71]</p>
   <br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -192,8 +193,32 @@ Class for handling Cloud Files Authentication, call it's <a href="../php-cloudfi
 	<a name="var$auth_token"></a>
 	<p></p>
 	<h4>$auth_token = <span class="value"></span></h4>
-	<p>[line 72]</p>
-  Instance variables that are set after successful authentication<br /><br /><br /><br />
+	<p>[line 79]</p>
+  <br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+
+  <br />
+	<div class="tags">
+  <table border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td><b>Type:</b>&nbsp;&nbsp;</td>
+      <td>mixed</td>
+    </tr>
+      </table>
+	</div><br /><br />
+	<div class="top">[ <a href="#top">Top</a> ]</div><br />
+	<a name="var$cdnm_url"></a>
+	<p></p>
+	<h4>$cdnm_url = <span class="value"></span></h4>
+	<p>[line 78]</p>
+  <br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
@@ -216,7 +241,7 @@ Class for handling Cloud Files Authentication, call it's <a href="../php-cloudfi
 	<a name="var$dbug"></a>
 	<p></p>
 	<h4>$dbug = <span class="value"></span></h4>
-	<p>[line 63]</p>
+	<p>[line 68]</p>
   <br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -240,8 +265,8 @@ Class for handling Cloud Files Authentication, call it's <a href="../php-cloudfi
 	<a name="var$storage_url"></a>
 	<p></p>
 	<h4>$storage_url = <span class="value"></span></h4>
-	<p>[line 73]</p>
-  <br /><br />
+	<p>[line 77]</p>
+  Instance variables that are set after successful authentication<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
@@ -264,7 +289,7 @@ Class for handling Cloud Files Authentication, call it's <a href="../php-cloudfi
 	<a name="var$username"></a>
 	<p></p>
 	<h4>$username = <span class="value"></span></h4>
-	<p>[line 64]</p>
+	<p>[line 69]</p>
   <br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -294,7 +319,7 @@ Class for handling Cloud Files Authentication, call it's <a href="../php-cloudfi
 
   <hr />
 	<a name="method__construct"></a>
-	<h3>constructor __construct <span class="smalllinenumber">[line 83]</span></h3>
+	<h3>constructor __construct <span class="smalllinenumber">[line 89]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -339,7 +364,7 @@ $auth_host = NULL])</code>
   </div>
   <hr />
 	<a name="methodauthenticate"></a>
-	<h3>method authenticate <span class="smalllinenumber">[line 113]</span></h3>
+	<h3>method authenticate <span class="smalllinenumber">[line 120]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -381,7 +406,7 @@ $version = DEFAULT_CF_API_VERSION])</code>
   </div>
   <hr />
 	<a name="methodsetDebug"></a>
-	<h3>method setDebug <span class="smalllinenumber">[line 139]</span></h3>
+	<h3>method setDebug <span class="smalllinenumber">[line 148]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -411,7 +436,7 @@ $bool)</code>
 
         <div class="credit">
 		    <hr />
-		    Documentation generated on Tue, 21 Oct 2008 13:43:13 -0500 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.2</a>
+		    Documentation generated on Tue, 18 Nov 2008 12:46:49 -0600 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.2</a>
 	      </div>
       </td></tr></table>
     </td>

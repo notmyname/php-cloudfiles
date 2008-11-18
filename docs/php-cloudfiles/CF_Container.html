@@ -73,6 +73,9 @@ Source Location: /cloudfiles.php<br /><br />
 <td valign="top">
 <h3><a href="#class_vars">Variables</a></h3>
 <ul>
+    <li><a href="../php-cloudfiles/CF_Container.html#var$cdn_enabled">$cdn_enabled</a></li>
+    <li><a href="../php-cloudfiles/CF_Container.html#var$cdn_ttl">$cdn_ttl</a></li>
+    <li><a href="../php-cloudfiles/CF_Container.html#var$cdn_uri">$cdn_uri</a></li>
     <li><a href="../php-cloudfiles/CF_Container.html#var$cfs_http">$cfs_http</a></li>
     <li><a href="../php-cloudfiles/CF_Container.html#var$name">$name</a></li>
     <li><a href="../php-cloudfiles/CF_Container.html#var$object_count">$object_count</a></li>
@@ -88,7 +91,10 @@ Source Location: /cloudfiles.php<br /><br />
     <li><a href="../php-cloudfiles/CF_Container.html#methodcreate_object">create_object</a></li>
     <li><a href="../php-cloudfiles/CF_Container.html#methoddelete_object">delete_object</a></li>
     <li><a href="../php-cloudfiles/CF_Container.html#methodget_object">get_object</a></li>
+    <li><a href="../php-cloudfiles/CF_Container.html#methodis_public">is_public</a></li>
     <li><a href="../php-cloudfiles/CF_Container.html#methodlist_objects">list_objects</a></li>
+    <li><a href="../php-cloudfiles/CF_Container.html#methodmake_private">make_private</a></li>
+    <li><a href="../php-cloudfiles/CF_Container.html#methodmake_public">make_public</a></li>
     <li><a href="../php-cloudfiles/CF_Container.html#method__toString">__toString</a></li>
   </ul>
 </td>
@@ -109,18 +115,90 @@ Source Location: /cloudfiles.php<br /><br />
 <a name="class_details"></a>
 <h3>Class Details</h3>
 <div class="tags">
-[line 356]<br />
-Container operations<br /><br /><p>Containers are storage compartments where you put your data (objects).  A container is similar to a directory or folder on a conventional filesystem  with the exception that they exist in a flat namespace, you can not create  containers inside of containers.</p><p>NOTE: Due to the possible overflow of PHP's 32-bit integer, the Container's        object_count and size_used instance variables may either be a        integer or float.</p><br /></div><br /><br />
+[line 390]<br />
+Container operations<br /><br /><p>Containers are storage compartments where you put your data (objects).  A container is similar to a directory or folder on a conventional filesystem  with the exception that they exist in a flat namespace, you can not create  containers inside of containers.</p><p>You also have the option of marking a Container as &quot;public&quot; so that the  Objects stored in the Container are publicly available via the CDN.</p><p>NOTE: Due to the possible overflow of PHP's 32-bit integer, the Container's        object_count and size_used instance variables may either be a        integer or float.</p><br /></div><br /><br />
 <div class="top">[ <a href="#top">Top</a> ]</div><br />
 
 <hr />
 <a name="class_vars"></a>
 <h3>Class Variables</h3>
 <div class="tags">
+	<a name="var$cdn_enabled"></a>
+	<p></p>
+	<h4>$cdn_enabled = <span class="value"></span></h4>
+	<p>[line 397]</p>
+  <br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+
+  <br />
+	<div class="tags">
+  <table border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td><b>Type:</b>&nbsp;&nbsp;</td>
+      <td>mixed</td>
+    </tr>
+      </table>
+	</div><br /><br />
+	<div class="top">[ <a href="#top">Top</a> ]</div><br />
+	<a name="var$cdn_ttl"></a>
+	<p></p>
+	<h4>$cdn_ttl = <span class="value"></span></h4>
+	<p>[line 399]</p>
+  <br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+
+  <br />
+	<div class="tags">
+  <table border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td><b>Type:</b>&nbsp;&nbsp;</td>
+      <td>mixed</td>
+    </tr>
+      </table>
+	</div><br /><br />
+	<div class="top">[ <a href="#top">Top</a> ]</div><br />
+	<a name="var$cdn_uri"></a>
+	<p></p>
+	<h4>$cdn_uri = <span class="value"></span></h4>
+	<p>[line 398]</p>
+  <br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+
+  <br />
+	<div class="tags">
+  <table border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td><b>Type:</b>&nbsp;&nbsp;</td>
+      <td>mixed</td>
+    </tr>
+      </table>
+	</div><br /><br />
+	<div class="top">[ <a href="#top">Top</a> ]</div><br />
 	<a name="var$cfs_http"></a>
 	<p></p>
 	<h4>$cfs_http = <span class="value"></span></h4>
-	<p>[line 358]</p>
+	<p>[line 392]</p>
   <br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -144,7 +222,7 @@ Container operations<br /><br /><p>Containers are storage compartments where you
 	<a name="var$name"></a>
 	<p></p>
 	<h4>$name = <span class="value"></span></h4>
-	<p>[line 359]</p>
+	<p>[line 393]</p>
   <br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -168,7 +246,7 @@ Container operations<br /><br /><p>Containers are storage compartments where you
 	<a name="var$object_count"></a>
 	<p></p>
 	<h4>$object_count = <span class="value"></span></h4>
-	<p>[line 360]</p>
+	<p>[line 394]</p>
   <br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -192,7 +270,7 @@ Container operations<br /><br /><p>Containers are storage compartments where you
 	<a name="var$size_used"></a>
 	<p></p>
 	<h4>$size_used = <span class="value"></span></h4>
-	<p>[line 361]</p>
+	<p>[line 395]</p>
   <br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -222,16 +300,17 @@ Container operations<br /><br /><p>Containers are storage compartments where you
 
   <hr />
 	<a name="method__construct"></a>
-	<h3>constructor __construct <span class="smalllinenumber">[line 374]</span></h3>
+	<h3>constructor __construct <span class="smalllinenumber">[line 412]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
 		<code>CF_Container __construct(
-obj
-$cfs_http, string
+
+&$cfs_http, string
 $name, [int
 $count = 0], [int
-$bytes = 0])</code>
+$bytes = 0], obj
+$cfs_http)</code>
     </td></tr></table>
     </td></tr></table><br />
 	
@@ -270,13 +349,18 @@ $bytes = 0])</code>
         <td><b>$bytes</b>&nbsp;&nbsp;</td>
         <td>number of bytes stored in this Container</td>
       </tr>
+          <tr>
+        <td class="type">&nbsp;&nbsp;</td>
+        <td><b>&$cfs_http</b>&nbsp;&nbsp;</td>
+        <td></td>
+      </tr>
         </table>
     </div><br />
         <div class="top">[ <a href="#top">Top</a> ]</div>
   </div>
   <hr />
 	<a name="methodcreate_object"></a>
-	<h3>method create_object <span class="smalllinenumber">[line 413]</span></h3>
+	<h3>method create_object <span class="smalllinenumber">[line 559]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -312,7 +396,7 @@ $obj_name = NULL])</code>
   </div>
   <hr />
 	<a name="methoddelete_object"></a>
-	<h3>method delete_object <span class="smalllinenumber">[line 467]</span></h3>
+	<h3>method delete_object <span class="smalllinenumber">[line 613]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -357,7 +441,7 @@ $obj)</code>
   </div>
   <hr />
 	<a name="methodget_object"></a>
-	<h3>method get_object <span class="smalllinenumber">[line 427]</span></h3>
+	<h3>method get_object <span class="smalllinenumber">[line 573]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -392,8 +476,33 @@ $obj_name = NULL])</code>
         <div class="top">[ <a href="#top">Top</a> ]</div>
   </div>
   <hr />
+	<a name="methodis_public"></a>
+	<h3>method is_public <span class="smalllinenumber">[line 545]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>boolean is_public(
+)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Check if this Container is being publicly served via CDN<br /><br /><p>Use this method to determine if the Container's content is currently  available through the CDN.</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>True if enabled, False otherwise</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+	
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
 	<a name="methodlist_objects"></a>
-	<h3>method list_objects <span class="smalllinenumber">[line 443]</span></h3>
+	<h3>method list_objects <span class="smalllinenumber">[line 589]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -443,8 +552,87 @@ $prefix = &quot;&quot;])</code>
         <div class="top">[ <a href="#top">Top</a> ]</div>
   </div>
   <hr />
+	<a name="methodmake_private"></a>
+	<h3>method make_private <span class="smalllinenumber">[line 517]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>boolean make_private(
+)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Disable the CDN sharing for this container<br /><br /><p>Use this method to disallow distribution into the CDN of this Container's  content.</p><p>NOTE: Any content already cached in the CDN will continue to be served        from its cache until the TTL expiration transpires.  The default        TTL is typically one day, so &quot;privatizing&quot; the Container will take        up to 24 hours before the content is purged from the CDN cache.</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>True if successful</td>
+  </tr>
+  <tr>
+    <td><b>throws:</b>&nbsp;&nbsp;</td><td>CDNNotEnabledException CDN functionality not returned during auth</td>
+  </tr>
+  <tr>
+    <td><b>throws:</b>&nbsp;&nbsp;</td><td>AuthenticationException if auth token is not valid/expired</td>
+  </tr>
+  <tr>
+    <td><b>throws:</b>&nbsp;&nbsp;</td><td>InvalidResponseException unexpected response</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+	
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
+	<a name="methodmake_public"></a>
+	<h3>method make_public <span class="smalllinenumber">[line 466]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>string make_public(
+[int
+$ttl = 86400])</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Enable Container content to be served via CDN or modify CDN attributes<br /><br /><p>Either enable this Container's content to be served via CDN or  adjust its CDN attributes.  This Container will always return the  same CDN-enabled URI each time it is toggled public/private/public.</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>the CDN enabled Container's URI</td>
+  </tr>
+  <tr>
+    <td><b>throws:</b>&nbsp;&nbsp;</td><td>CDNNotEnabledException CDN functionality not returned during auth</td>
+  </tr>
+  <tr>
+    <td><b>throws:</b>&nbsp;&nbsp;</td><td>AuthenticationException if auth token is not valid/expired</td>
+  </tr>
+  <tr>
+    <td><b>throws:</b>&nbsp;&nbsp;</td><td>InvalidResponseException unexpected response</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+	
+        <h4>Parameters:</h4>
+    <div class="tags">
+    <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+        <td class="type">int&nbsp;&nbsp;</td>
+        <td><b>$ttl</b>&nbsp;&nbsp;</td>
+        <td>the time in seconds content will be cached in the CDN</td>
+      </tr>
+        </table>
+    </div><br />
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
 	<a name="method__toString"></a>
-	<h3>method __toString <span class="smalllinenumber">[line 397]</span></h3>
+	<h3>method __toString <span class="smalllinenumber">[line 441]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -472,7 +660,7 @@ $prefix = &quot;&quot;])</code>
 
         <div class="credit">
 		    <hr />
-		    Documentation generated on Tue, 21 Oct 2008 13:43:14 -0500 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.2</a>
+		    Documentation generated on Tue, 18 Nov 2008 12:46:49 -0600 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.2</a>
 	      </div>
       </td></tr></table>
     </td>

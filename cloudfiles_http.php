@@ -21,7 +21,6 @@
  * See COPYING for license information.
  *
  * @author Eric "EJ" Johnson <ej@racklabs.com>
- * @version 1.1.0
  * @copyright Copyright (c) 2008, Rackspace US, Inc.
  * @package php-cloudfiles-http
  */
@@ -30,13 +29,17 @@
  */
 require_once("cloudfiles_exceptions.php");
 
-define("PHP_CF_VERSION", "1.1.1");
+define("PHP_CF_VERSION", "1.2.0");
 define("USER_AGENT", sprintf("PHP-CloudFiles/%s", PHP_CF_VERSION));
 define("ACCOUNT_CONTAINER_COUNT", "X-Account-Container-Count");
 define("ACCOUNT_BYTES_USED", "X-Account-Bytes-Used");
 define("CONTAINER_OBJ_COUNT", "X-Container-Object-Count");
 define("CONTAINER_BYTES_USED", "X-Container-Bytes-Used");
 define("METADATA_HEADER", "X-Object-Meta-");
+define("CDN_URI", "X-CDN-URI");
+define("CDN_ENABLED", "X-CDN-Enabled");
+define("CDN_TTL", "X-TTL");
+define("CDNM_URL", "X-CDN-Management-Url");
 define("STORAGE_URL", "X-Storage-Url");
 define("AUTH_TOKEN", "X-Auth-Token");
 define("AUTH_USER_HEADER", "X-Auth-User");
@@ -59,6 +62,7 @@ class CF_Http
     # Authentication instance variables
     #
     private $storage_url;
+    private $cdnm_url;
     private $auth_token;
 
     # Request/response variables
@@ -82,14 +86,18 @@ class CF_Http
     private $_obj_metadata;
     private $_obj_write_resource;
     private $_obj_write_string;
+    private $_cdn_enabled;
+    private $_cdn_uri;
+    private $_cdn_ttl;
 
     function __construct($api_version)
     {
-        $this->dbug = False;
+        $this->dbug = True;
         $this->api_version = $api_version;
         $this->error_str = NULL;
 
         $this->storage_url = NULL;
+        $this->cdnm_url = NULL;
         $this->auth_token = NULL;
 
         $this->response_status = NULL;
@@ -121,6 +129,9 @@ class CF_Http
         $this->_obj_content_type = NULL;
         $this->_obj_content_length = NULL;
         $this->_obj_metadata = array();
+        $this->_cdn_enabled = NULL;
+        $this->_cdn_uri = NULL;
+        $this->_cdn_ttl = NULL;
     }
 
     # Uses separate cURL connection to authenticate
@@ -138,7 +149,7 @@ class CF_Http
             $path[] = rawurlencode(sprintf("v%d",$this->api_version));
             $path[] = rawurlencode($acct);
         } else {
-            $path[] = "http://api.mosso.com";
+            $path[] = "https://api.mosso.com";
         }
         $path[] = "auth";
         $url = implode("/", $path);
@@ -156,7 +167,144 @@ class CF_Http
         curl_close($curl_ch);
 
         return array($this->response_status, $this->response_reason,
-            $this->storage_url, $this->auth_token);
+            $this->storage_url, $this->cdnm_url, $this->auth_token);
+    }
+
+    # (CDN) GET /v1/Account
+    #
+    function list_cdn_containers()
+    {
+        $conn_type = "GET_CALL";
+        $url_path = $this->_make_path("CDN", $container_name);
+
+        $this->_write_callback_type = "TEXT_LIST";
+        $return_code = $this->_send_request($conn_type, $url_path);
+
+        if (!$return_code) {
+            $this->error_str = "Failed to obtain http response";
+            array(0,$this->error_str,array());
+        }
+        if ($return_code == 401) {
+            return array($return_code,"Unauthorized",array());
+        }
+        if ($return_code == 404) {
+            return array($return_code,"Account not found.",array());
+        }
+        if ($return_code == 204) {
+            return array($return_code,"Account has no CDN enabled Containers.",
+                array());
+        }
+        if ($return_code == 200) {
+            return array($return_code,$this->response_reason,$this->_text_list);
+        }
+        $this->error_str = "Unexpected HTTP response: ".$this->response_reason;
+        return array($return_code,$this->error_str,array());
+    }
+
+    # (CDN) POST /v1/Account/Container
+    #
+    function update_cdn_container($container_name, $ttl=86400)
+    {
+        if (!$container_name) {
+            throw new SyntaxException("Container name not set.");
+        }
+        $url_path = $this->_make_path("CDN", $container_name);
+        $hdrs = array(
+            CDN_ENABLED => "True",
+            CDN_TTL => $ttl,
+            );
+        $return_code = $this->_send_request("DEL_POST",$url_path,$hdrs,"POST");
+        if ($return_code == 401) {
+            $this->error_str = "Unauthorized";
+            return array($return_code, $this->error_str, NULL);
+        }
+        if ($return_code == 404) {
+            $this->error_str = "Container not found.";
+            return array($return_code, $this->error_str, NULL);
+        }
+        if ($return_code != 202) {
+            $this->error_str="Unexpected HTTP response: ".$this->response_reason;
+            return array($return_code, $this->error_str, NULL);
+        }
+        return array($return_code, "Accepted", $this->_cdn_uri);
+
+    }
+
+    # (CDN) PUT /v1/Account/Container
+    #
+    function add_cdn_container($container_name, $ttl=86400)
+    {
+        if (!$container_name) {
+            throw new SyntaxException("Container name not set.");
+        }
+        $url_path = $this->_make_path("CDN", $container_name);
+        $hdrs = array(
+            CDN_ENABLED => "True",
+            CDN_TTL => $ttl,
+            );
+        $return_code = $this->_send_request("PUT_CONT", $url_path, $hdrs);
+        if ($return_code == 401) {
+            $this->error_str = "Unauthorized";
+            return array($return_code,$this->response_reason,False);
+        }
+        if (!in_array($return_code, array(201,202))) {
+            $this->error_str="Unexpected HTTP response: ".$this->response_reason;
+            return array($return_code,$this->response_reason,False);
+        }
+        return array($return_code,$this->response_reason,$this->_cdn_uri);
+    }
+
+    # (CDN) POST /v1/Account/Container
+    #
+    function remove_cdn_container($container_name)
+    {
+        if (!$container_name) {
+            throw new SyntaxException("Container name not set.");
+        }
+        $url_path = $this->_make_path("CDN", $container_name);
+        $hdrs = array(CDN_ENABLED => "False");
+        $return_code = $this->_send_request("DEL_POST",$url_path,$hdrs,"POST");
+        if ($return_code == 401) {
+            $this->error_str = "Unauthorized";
+            return array($return_code, $this->error_str);
+        }
+        if ($return_code == 404) {
+            $this->error_str = "Container not found.";
+            return array($return_code, $this->error_str);
+        }
+        if ($return_code != 202) {
+            $this->error_str="Unexpected HTTP response: ".$this->response_reason;
+            return array($return_code, $this->error_str);
+        }
+        return array($return_code, "Accepted");
+    }
+
+    # (CDN) HEAD /v1/Account
+    #
+    function head_cdn_container($container_name)
+    {
+        if (!$container_name) {
+            throw new SyntaxException("Container name not set.");
+        }
+        $conn_type = "HEAD";
+        $url_path = $this->_make_path("CDN", $container_name);
+        $return_code = $this->_send_request($conn_type, $url_path);
+
+        if (!$return_code) {
+            $this->error_str = "Failed to obtain http response";
+            array(0,$this->error_str,NULL,NULL,NULL);
+        }
+        if ($return_code == 401) {
+            return array($return_code,"Unauthorized",NULL,NULL,NULL);
+        }
+        if ($return_code == 404) {
+            return array($return_code,"Account not found.",NULL,NULL,NULL);
+        }
+        if ($return_code == 204) {
+            return array($return_code,$this->response_reason,
+                $this->_cdn_enabled, $this->_cdn_uri, $this->_cdn_ttl);
+        }
+        return array($return_code,$this->response_reason,NULL,NULL,NULL);
     }
 
     # GET /v1/Account
@@ -164,9 +312,7 @@ class CF_Http
     function list_containers()
     {
         $conn_type = "GET_CALL";
-
-        $path = array($this->storage_url);
-        $url_path = implode("/", $path);
+        $url_path = $this->_make_path();
 
         $this->_write_callback_type = "TEXT_LIST";
         $return_code = $this->_send_request($conn_type, $url_path);
@@ -187,7 +333,6 @@ class CF_Http
         }
         $this->error_str = "Unexpected HTTP response: ".$this->response_reason;
         return array($return_code,$this->error_str,array());
-
     }
 
     # HEAD /v1/Account
@@ -221,7 +366,7 @@ class CF_Http
             throw new SyntaxException("Container name not set.");
         }
 
-        $url_path = $this->_make_path($container_name);
+        $url_path = $this->_make_path("STORAGE", $container_name);
         $return_code = $this->_send_request("PUT_CONT",$url_path);
 
         if (!$return_code) {
@@ -239,7 +384,7 @@ class CF_Http
             throw new SyntaxException("Container name not set.");
         }
 
-        $url_path = $this->_make_path($container_name);
+        $url_path = $this->_make_path("STORAGE", $container_name);
         $return_code = $this->_send_request("DEL_POST",$url_path,array(),"DELETE");
 
         if (!$return_code) {
@@ -266,7 +411,7 @@ class CF_Http
             return array(0, $this->error_str, array());
         }
 
-        $url_path = $this->_make_path($container_name);
+        $url_path = $this->_make_path("STORAGE", $container_name);
 
         $limit = intval($limit);
         $offset = intval($offset);
@@ -318,7 +463,7 @@ class CF_Http
 
         $conn_type = "HEAD";
 
-        $url_path = $this->_make_path($container_name);
+        $url_path = $this->_make_path("STORAGE", $container_name);
         $return_code = $this->_send_request($conn_type,$url_path);
 
         if (!$return_code) {
@@ -346,7 +491,7 @@ class CF_Http
 
         $conn_type = "GET_CALL";
 
-        $url_path = $this->_make_path($obj->container->name,$obj->name);
+        $url_path = $this->_make_path("STORAGE", $obj->container->name,$obj->name);
         $this->_write_callback_type = "OBJECT_STRING";
         $return_code = $this->_send_request($conn_type,$url_path,$hdrs);
 
@@ -381,7 +526,7 @@ class CF_Http
 
         $conn_type = "GET_CALL";
 
-        $url_path = $this->_make_path($obj->container->name,$obj->name);
+        $url_path = $this->_make_path("STORAGE", $obj->container->name,$obj->name);
         $this->_obj_write_resource = $resource;
         $this->_write_callback_type = "OBJECT_STREAM";
         $return_code = $this->_send_request($conn_type,$url_path,$hdrs);
@@ -423,7 +568,7 @@ class CF_Http
 
         $conn_type = "PUT_OBJ";
 
-        $url_path = $this->_make_path($obj->container->name,$obj->name);
+        $url_path = $this->_make_path("STORAGE", $obj->container->name,$obj->name);
 
         $hdrs = $this->_metadata_headers($obj);
         if ($etag) {
@@ -475,7 +620,7 @@ class CF_Http
             return 0;
         }
 
-        $url_path = $this->_make_path($obj->container->name,$obj->name);
+        $url_path = $this->_make_path("STORAGE", $obj->container->name,$obj->name);
 
         $hdrs = $this->_metadata_headers($obj);
         $return_code = $this->_send_request("DEL_POST",$url_path,$hdrs,"POST");
@@ -503,7 +648,7 @@ class CF_Http
 
         $conn_type = "HEAD";
 
-        $url_path = $this->_make_path($obj->container->name,$obj->name);
+        $url_path = $this->_make_path("STORAGE", $obj->container->name,$obj->name);
         $return_code = $this->_send_request($conn_type,$url_path);
 
         if (!$return_code) {
@@ -538,14 +683,11 @@ class CF_Http
             return 0;
         }
 
-        $url_path = $this->_make_path($container_name,$object_name);
+        $url_path = $this->_make_path("STORAGE", $container_name,$object_name);
         $return_code = $this->_send_request("DEL_POST",$url_path,NULL,"DELETE");
         if (!$return_code) {
             $this->error_str = "Failed to obtain http response";
             return 0;
-        }
-        if ($return_code == 409) {
-            $this->error_str = "Container must be empty prior to removing it.";
         }
         if ($return_code == 404) {
             $this->error_str = "Specified container did not exist to delete.";
@@ -571,6 +713,26 @@ class CF_Http
         }
     }
 
+    function getCDNMUrl()
+    {
+        return $this->cdnm_url;
+    }
+
+    function getStorageUrl()
+    {
+        return $this->storage_url;
+    }
+
+    function getAuthToken()
+    {
+        return $this->auth_token;
+    }
+
+    function setCDNMUrl($curl)
+    {
+        $this->cdnm_url = $curl;
+    }
+
     function setStorageUrl($surl)
     {
         $this->storage_url = $surl;
@@ -590,6 +752,25 @@ class CF_Http
         }
         if ($matches[2]) {
             $this->response_reason = $matches[2];
+        }
+        if (stripos($header, CDN_ENABLED) === 0) {
+            $val = trim(substr($header, strlen(CDN_ENABLED)+1));
+            if (strtolower($val) == "true") {
+                $this->_cdn_enabled = True;
+            } elseif (strtolower($val) == "false") {
+                $this->_cdn_enabled = False;
+            } else {
+                $this->_cdn_enabled = NULL;
+            }
+            return strlen($header);
+        }
+        if (stripos($header, CDN_URI) === 0) {
+            $this->_cdn_uri = trim(substr($header, strlen(CDN_URI)+1));
+            return strlen($header);
+        }
+        if (stripos($header, CDN_TTL) === 0) {
+            $this->_cdn_ttl = trim(substr($header, strlen(CDN_TTL)+1))+0;
+            return strlen($header);
         }
         if (stripos($header, ACCOUNT_CONTAINER_COUNT) === 0) {
             $this->_account_container_count = trim(substr($header,
@@ -634,12 +815,7 @@ class CF_Http
         }
         if (stripos($header, "Content-Length") === 0) {
             $parts = explode(":", $header);
-            $this->_obj_content_length = trim($parts[1]);
-            return strlen($header);
-        }
-        if (stripos($header, "ETag") === 0) {
-            $parts = explode(":", $header);
-            $this->_obj_etag = trim($parts[1]);
+            $this->_obj_content_length = trim($parts[1])+0;
             return strlen($header);
         }
         return strlen($header);
@@ -670,6 +846,9 @@ class CF_Http
         }
         if (stripos($header, STORAGE_URL) === 0) {
             $this->storage_url = trim(substr($header, strlen(STORAGE_URL)+1));
+        }
+        if (stripos($header, CDNM_URL) === 0) {
+            $this->cdnm_url = trim(substr($header, strlen(CDNM_URL)+1));
         }
         if (stripos($header, AUTH_TOKEN) === 0) {
             $this->auth_token = trim(substr($header, strlen(AUTH_TOKEN)+1));
@@ -766,14 +945,22 @@ class CF_Http
         $this->_obj_content_length = NULL;
         $this->_obj_metadata = array();
         $this->_obj_write_string = "";
+        $this->_cdn_enabled = NULL;
+        $this->_cdn_uri = NULL;
+        $this->_cdn_ttl = NULL;
         $this->response_status = 0;
         $this->response_reason = "";
     }
 
-    private function _make_path($c=NULL,$o=NULL)
+    private function _make_path($t="STORAGE",$c=NULL,$o=NULL)
     {
         $path = array();
-        $path[] = $this->storage_url;
+        switch ($t) {
+        case "STORAGE":
+            $path[] = $this->storage_url; break;
+        case "CDN":
+            $path[] = $this->cdnm_url; break;
+        }
         if ($c) {
             $path[] = rawurlencode($c);
         }

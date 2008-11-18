@@ -116,7 +116,7 @@ Source Location: /cloudfiles.php<br /><br />
 <a name="class_details"></a>
 <h3>Class Details</h3>
 <div class="tags">
-[line 505]<br />
+[line 669]<br />
 Object operations<br /><br /><p>An Object is analogous to a file on a conventional filesystem. You can  read data from, or write data to your Objects. You can also associate  arbitrary metadata with them.</p><br /></div><br /><br />
 <div class="top">[ <a href="#top">Top</a> ]</div><br />
 
@@ -127,7 +127,7 @@ Object operations<br /><br /><p>An Object is analogous to a file on a convention
 	<a name="var$container"></a>
 	<p></p>
 	<h4>$container = <span class="value"></span></h4>
-	<p>[line 507]</p>
+	<p>[line 671]</p>
   <br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -151,7 +151,7 @@ Object operations<br /><br /><p>An Object is analogous to a file on a convention
 	<a name="var$content_length"></a>
 	<p></p>
 	<h4>$content_length = <span class="value"></span></h4>
-	<p>[line 511]</p>
+	<p>[line 675]</p>
   <br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -175,7 +175,7 @@ Object operations<br /><br /><p>An Object is analogous to a file on a convention
 	<a name="var$content_type"></a>
 	<p></p>
 	<h4>$content_type = <span class="value"></span></h4>
-	<p>[line 510]</p>
+	<p>[line 674]</p>
   <br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -199,7 +199,7 @@ Object operations<br /><br /><p>An Object is analogous to a file on a convention
 	<a name="var$last_modified"></a>
 	<p></p>
 	<h4>$last_modified = <span class="value"></span></h4>
-	<p>[line 509]</p>
+	<p>[line 673]</p>
   <br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -223,7 +223,7 @@ Object operations<br /><br /><p>An Object is analogous to a file on a convention
 	<a name="var$metadata"></a>
 	<p></p>
 	<h4>$metadata = <span class="value"></span></h4>
-	<p>[line 512]</p>
+	<p>[line 676]</p>
   <br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -247,7 +247,7 @@ Object operations<br /><br /><p>An Object is analogous to a file on a convention
 	<a name="var$name"></a>
 	<p></p>
 	<h4>$name = <span class="value"></span></h4>
-	<p>[line 508]</p>
+	<p>[line 672]</p>
   <br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -277,15 +277,16 @@ Object operations<br /><br /><p>An Object is analogous to a file on a convention
 
   <hr />
 	<a name="method__construct"></a>
-	<h3>constructor __construct <span class="smalllinenumber">[line 522]</span></h3>
+	<h3>constructor __construct <span class="smalllinenumber">[line 686]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
 		<code>CF_Object __construct(
-obj
-$container, string
+
+&$container, string
 $name, [boolean
-$force_exists = False])</code>
+$force_exists = False], obj
+$container)</code>
     </td></tr></table>
     </td></tr></table><br />
 	
@@ -310,13 +311,18 @@ $force_exists = False])</code>
         <td><b>$force_exists</b>&nbsp;&nbsp;</td>
         <td>if set, throw an error if Object doesn't exist</td>
       </tr>
+          <tr>
+        <td class="type">&nbsp;&nbsp;</td>
+        <td><b>&$container</b>&nbsp;&nbsp;</td>
+        <td></td>
+      </tr>
         </table>
     </div><br />
         <div class="top">[ <a href="#top">Top</a> ]</div>
   </div>
   <hr />
 	<a name="methodcompute_md5sum"></a>
-	<h3>method compute_md5sum <span class="smalllinenumber">[line 791]</span></h3>
+	<h3>method compute_md5sum <span class="smalllinenumber">[line 955]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -358,7 +364,7 @@ $data)</code>
   </div>
   <hr />
 	<a name="methodgetETag"></a>
-	<h3>method getETag <span class="smalllinenumber">[line 774]</span></h3>
+	<h3>method getETag <span class="smalllinenumber">[line 938]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -374,9 +380,6 @@ $data)</code>
   <tr>
     <td><b>return:</b>&nbsp;&nbsp;</td><td>MD5 checksum hexidecimal string</td>
   </tr>
-  <tr>
-    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
-  </tr>
 </table>
 </div>
 <br /><br />
@@ -386,7 +389,7 @@ $data)</code>
   </div>
   <hr />
 	<a name="methodload_from_filename"></a>
-	<h3>method load_from_filename <span class="smalllinenumber">[line 717]</span></h3>
+	<h3>method load_from_filename <span class="smalllinenumber">[line 881]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -440,7 +443,7 @@ $verify = True])</code>
   </div>
   <hr />
 	<a name="methodread"></a>
-	<h3>method read <span class="smalllinenumber">[line 567]</span></h3>
+	<h3>method read <span class="smalllinenumber">[line 731]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -479,7 +482,7 @@ $hdrs = array()])</code>
   </div>
   <hr />
 	<a name="methodsave_to_filename"></a>
-	<h3>method save_to_filename <span class="smalllinenumber">[line 741]</span></h3>
+	<h3>method save_to_filename <span class="smalllinenumber">[line 905]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -521,7 +524,7 @@ $filename)</code>
   </div>
   <hr />
 	<a name="methodset_etag"></a>
-	<h3>method set_etag <span class="smalllinenumber">[line 761]</span></h3>
+	<h3>method set_etag <span class="smalllinenumber">[line 925]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -532,15 +535,6 @@ $etag)</code>
     </td></tr></table><br />
 	
 		Set Object's MD5 checksum<br /><br /><p>Manually set the Object's ETag.  Including the ETag is mandatory for  Cloud Files to perform end-to-end verification.  Omitting the ETag forces  the user to handle any data integrity checks.</p><br /><br /><br />
-<h4>Tags:</h4>
-<div class="tags">
-<table border="0" cellspacing="0" cellpadding="0">
-  <tr>
-    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
-  </tr>
-</table>
-</div>
-<br /><br />
 
 	
         <h4>Parameters:</h4>
@@ -557,7 +551,7 @@ $etag)</code>
   </div>
   <hr />
 	<a name="methodstream"></a>
-	<h3>method stream <span class="smalllinenumber">[line 595]</span></h3>
+	<h3>method stream <span class="smalllinenumber">[line 759]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -608,7 +602,7 @@ $fp)</code>
   </div>
   <hr />
 	<a name="methodsync_metadata"></a>
-	<h3>method sync_metadata <span class="smalllinenumber">[line 616]</span></h3>
+	<h3>method sync_metadata <span class="smalllinenumber">[line 780]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -636,7 +630,7 @@ $fp)</code>
   </div>
   <hr />
 	<a name="methodwrite"></a>
-	<h3>method write <span class="smalllinenumber">[line 645]</span></h3>
+	<h3>method write <span class="smalllinenumber">[line 809]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -693,7 +687,7 @@ $verify = True])</code>
   </div>
   <hr />
 	<a name="method__toString"></a>
-	<h3>method __toString <span class="smalllinenumber">[line 548]</span></h3>
+	<h3>method __toString <span class="smalllinenumber">[line 712]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -721,7 +715,7 @@ $verify = True])</code>
 
         <div class="credit">
 		    <hr />
-		    Documentation generated on Tue, 21 Oct 2008 13:43:14 -0500 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.2</a>
+		    Documentation generated on Tue, 18 Nov 2008 12:46:50 -0600 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.2</a>
 	      </div>
       </td></tr></table>
     </td>

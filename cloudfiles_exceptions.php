@@ -7,7 +7,6 @@
  * See COPYING for license information.
  *
  * @author Eric "EJ" Johnson <ej@racklabs.com>
- * @version 1.1.0
  * @copyright Copyright (c) 2008, Rackspace US, Inc.
  * @package php-cloudfiles-exceptions
  */
@@ -25,6 +24,7 @@ class NoSuchContainerException extends Exception { }
 class NoSuchAccountException extends Exception { }
 class MisMatchedChecksumException extends Exception { }
 class IOException extends Exception { }
+class CDNNotEnabledException extends Exception { }
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 

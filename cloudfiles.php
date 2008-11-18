@@ -18,29 +18,34 @@
  *
  *   # Create a remote Container and storage Object
  *   #
- *   $electronica = $conn->create_container("Electronica");
- *   $tiesto = $electronica->create_object("tiesto.mp3");
+ *   $images = $conn->create_container("photos");
+ *   $bday = $electronica->create_object("first_birthday.jpg");
  *
  *   # Upload content from a local file by streaming it
  *   #
- *   $fname = "/home/user/music/electronica/tiesto.mp3";   # filename to upload
+ *   $fname = "/home/user/photos/birthdays/birthday1.jpg";  # filename to upload
  *   $size = filesize($fname);
  *   $fp = open($fname, "r");
- *   $tiesto->write($fp, $size);
+ *   $bday->write($fp, $size);
  *
  *   # Or... use a convenience function instead
  *   #
- *   $tiesto->load_from_filename("/home/user/music/electronica/tiesto.mp3");
+ *   $bday->load_from_filename("/home/user/photos/birthdays/birthday1.jpg");
+ *
+ *   # Now, publish the "photos" container to serve the images by CDN.
+ *   # Use the "$uri" value to put in your web pages or send the link in an
+ *   # email message, etc.
+ *   #
+ *   $uri = $images->make_public();
  * </code>
  *
- * See the included examples/tests for additional usage tips.
+ * See the included tests directory for additional sample code.
  *
- * Requres PHP 5.x (for Exceptions and OO syntax)
+ * Requres PHP 5.x (for Exceptions and OO syntax) and PHP's cURL module.
  *
  * See COPYING for license information.
  *
  * @author Eric "EJ" Johnson <ej@racklabs.com>
- * @version 1.1.0
  * @copyright Copyright (c) 2008, Rackspace US, Inc.
  * @package php-cloudfiles
  */
@@ -69,8 +74,9 @@ class CF_Authentication
     /**
      * Instance variables that are set after successful authentication
      */
-    public $auth_token;
     public $storage_url;
+    public $cdnm_url;
+    public $auth_token;
 
     /**
      * Class constructor (PHP 5 syntax)
@@ -92,8 +98,9 @@ class CF_Authentication
         $this->account_name = $account;
         $this->auth_host = $auth_host;
 
-        $this->auth_token = NULL;
         $this->storage_url = NULL;
+        $this->cdnm_url = NULL;
+        $this->auth_token = NULL;
 
         $this->cfs_http = new CF_Http(DEFAULT_CF_API_VERSION);
     }
@@ -112,7 +119,7 @@ class CF_Authentication
      */
     function authenticate($version=DEFAULT_CF_API_VERSION)
     {
-        list($status,$reason,$surl,$atoken) = 
+        list($status,$reason,$surl,$curl,$atoken) = 
                 $this->cfs_http->authenticate($this->username, $this->api_key,
                 $this->account_name, $this->auth_host);
 
@@ -124,11 +131,13 @@ class CF_Authentication
                 "Unexpected response (".$status."): ".$reason);
         }
 
-        if (!$surl || !$atoken) {
+        if (!($surl || $curl) || !$atoken) {
             throw new InvalidResponseException(
                 "Expected headers missing from auth service.");
         }
         $this->storage_url = $surl;
+        //$this->cdnm_url = $curl;
+        $this->cdnm_url = "https://cdn.clouddrive.com/v1/MossoCloudFS_7d025175-6423-48e3-9e86-9f0536d79aa5";
         $this->auth_token = $atoken;
         return True;
     }
@@ -154,8 +163,9 @@ class CF_Connection
     public $dbug;
     public $cfs_http;
 
-    public $auth_token;
     public $storage_url;
+    public $cdnm_url;
+    public $auth_token;
 
     /**
      * Pass in a previously authenticated CF_Authentication instance.
@@ -167,13 +177,15 @@ class CF_Connection
     {
         $this->cfs_http = new CF_Http(DEFAULT_CF_API_VERSION);
         $this->storage_url = $cfs_auth->storage_url;
+        $this->cdnm_url = $cfs_auth->cdnm_url;
         $this->auth_token = $cfs_auth->auth_token;
-        if (!$this->storage_url || !$this->auth_token) {
+        if (!($this->storage_url || $this->cdnm_url) || !$this->auth_token) {
             $e = "Need to pass in a previously authenticated ";
             $e .= "CF_Authentication instance.";
             throw new AuthenticationException($e);
         }
         $this->cfs_http->setStorageUrl($this->storage_url);
+        $this->cfs_http->setCDNMUrl($this->cdnm_url);
         $this->cfs_http->setAuthToken($this->auth_token);
         $this->dbug = False;
     }
@@ -337,6 +349,25 @@ class CF_Connection
         }
         return $containers;
     }
+
+    /**
+     * Return list of Containers that have been published to the CDN.
+     *
+     * Return an array of strings containing the names of all published Containers.
+     *
+     * @return array list of published Container names
+     * @throws InvalidResponseException unexpected response
+     */
+    function list_public_containers()
+    {
+        list($status, $reason, $containers) =
+                $this->cfs_http->list_cdn_containers();
+        if ($status < 200 || $status > 299) {
+            throw new InvalidResponseException(
+                "Invalid response: ".$this->cfs_http->get_error());
+        }
+        return $containers;
+    }
 }
 
 /**
@@ -346,6 +377,9 @@ class CF_Connection
  * A container is similar to a directory or folder on a conventional filesystem
  * with the exception that they exist in a flat namespace, you can not create
  * containers inside of containers.
+ *
+ * You also have the option of marking a Container as "public" so that the
+ * Objects stored in the Container are publicly available via the CDN.
  *
  * NOTE: Due to the possible overflow of PHP's 32-bit integer, the Container's
  *       object_count and size_used instance variables may either be a
@@ -359,6 +393,10 @@ class CF_Container
     public $name;
     public $object_count;
     public $size_used;
+
+    public $cdn_enabled;
+    public $cdn_uri;
+    public $cdn_ttl;
 
     /**
      * Class constructor
@@ -385,6 +423,12 @@ class CF_Container
         $this->name = $name;
         $this->object_count = $count;
         $this->bytes_used = $bytes;
+        $this->cdn_enabled = NULL;
+        $this->cdn_uri = NULL;
+        $this->cdn_ttl = NULL;
+        if ($this->cfs_http->getCDNMUrl() != NULL) {
+            $this->_cdn_initialize();
+        }
     }
 
     /**
@@ -398,7 +442,109 @@ class CF_Container
     {
         $me = sprintf("name: %s, count: %.0f, bytes: %.0f",
             $this->name, $this->object_count, $this->bytes_used);
+        if ($this->cfs_http->getCDNMUrl() != NULL) {
+            $me .= sprintf(", cdn: %s, cdn uri: %s, cdn ttl: %.0f",
+                $this->is_public() ? "Yes" : "No",
+                $this->cdn_uri, $this->cdn_ttl);
+        }
         return $me;
+    }
+
+    /**
+     * Enable Container content to be served via CDN or modify CDN attributes
+     *
+     * Either enable this Container's content to be served via CDN or
+     * adjust its CDN attributes.  This Container will always return the
+     * same CDN-enabled URI each time it is toggled public/private/public.
+     *
+     * @param int $ttl the time in seconds content will be cached in the CDN
+     * @returns string the CDN enabled Container's URI
+     * @throws CDNNotEnabledException CDN functionality not returned during auth
+     * @throws AuthenticationException if auth token is not valid/expired
+     * @throws InvalidResponseException unexpected response
+     */
+    function make_public($ttl=86400)
+    {
+        if ($this->cfs_http->getCDNMUrl() == NULL) {
+            throw new CDNNotEnabledException(
+                "Authentication response did not indicate CDN availability");
+        }
+        if ($this->cdn_uri != NULL) {
+            # previously published, assume we're setting new attributes
+            list($status, $reason, $cdn_uri) =
+                $this->cfs_http->update_cdn_container($this->name,$ttl);
+            if ($status == 404) {
+                # this instance _thinks_ the container was published, but the
+                # cdn management system thinks otherwise - try again with a PUT
+                list($status, $reason, $cdn_uri) =
+                    $this->cfs_http->add_cdn_container($this->name,$ttl);
+
+            }
+        } else {
+            # publish it for first time
+            list($status, $reason, $cdn_uri) =
+                $this->cfs_http->add_cdn_container($this->name,$ttl);
+        }
+        if ($status == 401) {
+            throw new AuthenticationException("Unauthorized");
+        }
+        if (!in_array($status, array(201,202))) {
+            throw new InvalidResponseException(
+                "Invalid response: ".$this->cfs_http->get_error());
+        }
+        $this->cdn_enabled = True;
+        $this->cdn_ttl = $ttl;
+        $this->cdn_uri = $cdn_uri;
+        return $this->cdn_uri;
+    }
+
+    /**
+     * Disable the CDN sharing for this container
+     *
+     * Use this method to disallow distribution into the CDN of this Container's
+     * content.
+     *
+     * NOTE: Any content already cached in the CDN will continue to be served
+     *       from its cache until the TTL expiration transpires.  The default
+     *       TTL is typically one day, so "privatizing" the Container will take
+     *       up to 24 hours before the content is purged from the CDN cache.
+     *
+     * @returns boolean True if successful
+     * @throws CDNNotEnabledException CDN functionality not returned during auth
+     * @throws AuthenticationException if auth token is not valid/expired
+     * @throws InvalidResponseException unexpected response
+     */
+    function make_private()
+    {
+        if ($this->cfs_http->getCDNMUrl() == NULL) {
+            throw new CDNNotEnabledException(
+                "Authentication response did not indicate CDN availability");
+        }
+        list($status,$reason) = $this->cfs_http->remove_cdn_container($this->name);
+        if ($status == 401) {
+            throw new AuthenticationException("Unauthorized");
+        }
+        if (!in_array($status, array(202,404))) {
+            throw new InvalidResponseException(
+                "Invalid response: ".$this->cfs_http->get_error());
+        }
+        $this->cdn_enabled = False;
+        $this->cdn_ttl = NULL;
+        $this->cdn_uri = NULL;
+        return True;
+    }
+
+    /**
+     * Check if this Container is being publicly served via CDN
+     *
+     * Use this method to determine if the Container's content is currently
+     * available through the CDN.
+     *
+     * @returns boolean True if enabled, False otherwise
+     */
+    function is_public()
+    {
+        return $this->cdn_enabled == True ? True : False;
     }
 
     /**
@@ -489,6 +635,24 @@ class CF_Container
                 "Unexpected HTTP return code: $return_code.");
         }
         return True;
+    }
+
+    /**
+     * Internal method to grab CDN/Container info if appropriate to do so
+     *
+     * @throws InvalidResponseException unexpected response
+     */
+    private function _cdn_initialize()
+    {
+        list($status, $reason, $cdn_enabled, $cdn_uri, $cdn_ttl) =
+            $this->cfs_http->head_cdn_container($this->name);
+        if (!in_array($status, array(204,404))) {
+            throw new InvalidResponseException(
+                "Invalid response: $status (".$this->cfs_http->get_error()).")";
+        }
+        $this->cdn_enabled = $cdn_enabled;
+        $this->cdn_uri = $cdn_uri;
+        $this->cdn_ttl = $cdn_ttl;
     }
 }
 
@@ -758,7 +922,7 @@ class CF_Object
      *
      * @param string $etag MD5 checksum hexidecimal string
      */
-    public function set_etag($etag)
+    function set_etag($etag)
     {
         $this->etag = $etag;
         $this->_etag_override = True;
@@ -771,7 +935,7 @@ class CF_Object
      *
      * @return string MD5 checksum hexidecimal string
      */
-    public function getETag()
+    function getETag()
     {
         return $this->etag;
     }
