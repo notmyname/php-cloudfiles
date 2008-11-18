@@ -100,6 +100,10 @@ This is the PHP Cloud Files API.<br /><br /><p>It uses the supporting &quot;clou
 <li><div class="src-line">&nbsp;&nbsp;&nbsp;<span class="src-comm">#&nbsp;email&nbsp;message,&nbsp;etc.</span></div></li>
 <li><div class="src-line">&nbsp;&nbsp;&nbsp;<span class="src-comm">#</span></div></li>
 <li><div class="src-line">&nbsp;&nbsp;&nbsp;<span class="src-var">$uri&nbsp;</span>=&nbsp;<span class="src-var">$images</span><span class="src-sym">-&gt;</span><span class="src-id">make_public</span><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;<span class="src-comm">#&nbsp;Or...&nbsp;print&nbsp;out&nbsp;the&nbsp;Object's&nbsp;public&nbsp;URI</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;<span class="src-comm">#</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;print&nbsp;<span class="src-var">$bday</span><span class="src-sym">-&gt;</span><span class="src-id">public_uri</span><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
 </ol></p><p>See the included tests directory for additional sample code.</p><p>Requres PHP 5.x (for Exceptions and OO syntax) and PHP's cURL module.</p><p>See COPYING for license information.</p><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -115,14 +119,14 @@ This is the PHP Cloud Files API.<br /><br /><p>It uses the supporting &quot;clou
 <br /><br />
 <h4>Includes:</h4>
 <div class="tags">
-require(<a href="../php-cloudfiles-http/_cloudfiles_http.php.html">"cloudfiles_http.php"</a>) [line 56]<br />
-require_once(<a href="../php-cloudfiles-exceptions/_cloudfiles_exceptions.php.html">"cloudfiles_exceptions.php"</a>) [line 55]<br />
+require(<a href="../php-cloudfiles-http/_cloudfiles_http.php.html">"cloudfiles_http.php"</a>) [line 60]<br />
+require_once(<a href="../php-cloudfiles-exceptions/_cloudfiles_exceptions.php.html">"cloudfiles_exceptions.php"</a>) [line 59]<br />
 </div>
 <br /><br />
 <br /><br />
   <hr />
 	<a name="defineDEFAULT_CF_API_VERSION"></a>
-	<h3>DEFAULT_CF_API_VERSION <span class="smalllinenumber">[line 57]</span></h3>
+	<h3>DEFAULT_CF_API_VERSION <span class="smalllinenumber">[line 61]</span></h3>
 	<div class="tags">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -135,7 +139,7 @@ require_once(<a href="../php-cloudfiles-exceptions/_cloudfiles_exceptions.php.ht
 	<div class="top">[ <a href="#top">Top</a> ]</div><br /><br />
   <hr />
 	<a name="defineMAX_CONTAINER_NAME_LEN"></a>
-	<h3>MAX_CONTAINER_NAME_LEN <span class="smalllinenumber">[line 58]</span></h3>
+	<h3>MAX_CONTAINER_NAME_LEN <span class="smalllinenumber">[line 62]</span></h3>
 	<div class="tags">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -148,7 +152,7 @@ require_once(<a href="../php-cloudfiles-exceptions/_cloudfiles_exceptions.php.ht
 	<div class="top">[ <a href="#top">Top</a> ]</div><br /><br />
   <hr />
 	<a name="defineMAX_OBJECT_NAME_LEN"></a>
-	<h3>MAX_OBJECT_NAME_LEN <span class="smalllinenumber">[line 59]</span></h3>
+	<h3>MAX_OBJECT_NAME_LEN <span class="smalllinenumber">[line 63]</span></h3>
 	<div class="tags">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -163,7 +167,7 @@ require_once(<a href="../php-cloudfiles-exceptions/_cloudfiles_exceptions.php.ht
 
         <div class="credit">
 		    <hr />
-		    Documentation generated on Tue, 18 Nov 2008 12:46:49 -0600 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.2</a>
+		    Documentation generated on Tue, 18 Nov 2008 15:08:15 -0600 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.2</a>
 	      </div>
       </td></tr></table>
     </td>
