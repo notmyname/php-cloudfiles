@@ -140,8 +140,7 @@ class CF_Authentication
                 "Expected headers missing from auth service.");
         }
         $this->storage_url = $surl;
-        //$this->cdnm_url = $curl;
-        $this->cdnm_url = "https://cdn.clouddrive.com/v1/MossoCloudFS_7d025175-6423-48e3-9e86-9f0536d79aa5";
+        $this->cdnm_url = $curl;
         $this->auth_token = $atoken;
         return True;
     }

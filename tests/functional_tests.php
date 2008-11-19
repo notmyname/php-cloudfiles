@@ -58,6 +58,18 @@ assert('$container');
 print $container."\n";
 
 
+echo "======= CREATE CONTAINER (with ' ' in name) =================\n";
+$space_container = $conn->create_container("php cloudfiles");
+assert('$space_container');
+print $space_container."\n";
+
+
+echo "======= DELETE CONTAINER (with ' ' in name) =================\n";
+$result = $conn->delete_container($space_container);
+assert('$result');
+print "SUCCESS: space container deleted\n";
+
+
 echo "======= CREATE NEW LONG OBJECT ==============================\n";
 $long_name = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
 $long_name .= "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
