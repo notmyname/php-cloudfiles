@@ -156,9 +156,11 @@ class CF_Authentication
 }
 
 /**
- * Class for establishing connections to the Cloud Files storage system.  Connection
- * instances are used to communicate with the storage system at the account
- * level; listing and deleting Containers and returning Container instances.
+ * Class for establishing connections to the Cloud Files storage system.
+ * Connection instances are used to communicate with the storage system at
+ * the account level; listing and deleting Containers and returning Container
+ * instances.
+ *
  * @package php-cloudfiles
  */
 class CF_Connection
@@ -220,7 +222,7 @@ class CF_Connection
                 $this->cfs_http->head_account();
         if ($status < 200 || $status > 299) {
             throw new InvalidResponseException(
-                "Invalid response: ".$this->cfs_http->get_error());
+                "Invalid response (".$status."): ".$this->cfs_http->get_error());
         }
         return array($container_count, $total_bytes);
     }
@@ -254,11 +256,13 @@ class CF_Connection
 
         $return_code = $this->cfs_http->create_container($container_name);
         if (!$return_code) {
-            throw new InvalidResponseException($this->cfs_http->get_error());
+            throw new InvalidResponseException("Invalid response ("
+                . $return_code. "): " . $this->cfs_http->get_error());
         }
         if ($return_code != 201 && $return_code != 202) {
             throw new InvalidResponseException(
-                "Unexpected return code: ".$return_code);
+                "Invalid response (".$return_code."): "
+                    . $this->cfs_http->get_error());
         }
         return new CF_Container($this->cfs_http, $container_name);
     }
@@ -305,7 +309,8 @@ class CF_Connection
         }
         if ($return_code != 204) {
             throw new InvalidResponseException(
-                "Unexpected return code: $return_code");
+                "Invalid response (".$return_code."): "
+                . $this->cfs_http->get_error());
         }
         return True;
     }
@@ -348,7 +353,7 @@ class CF_Connection
         list($status, $reason, $containers) = $this->cfs_http->list_containers();
         if ($status < 200 || $status > 299) {
             throw new InvalidResponseException(
-                "Invalid response: ".$this->cfs_http->get_error());
+                "Invalid response (".$status."): ".$this->cfs_http->get_error());
         }
         return $containers;
     }
@@ -356,7 +361,7 @@ class CF_Connection
     /**
      * Return list of Containers that have been published to the CDN.
      *
-     * Return an array of strings containing the names of all published Containers.
+     * Return an array of strings containing the names of published Containers.
      *
      * @return array list of published Container names
      * @throws InvalidResponseException unexpected response
@@ -367,7 +372,7 @@ class CF_Connection
                 $this->cfs_http->list_cdn_containers();
         if ($status < 200 || $status > 299) {
             throw new InvalidResponseException(
-                "Invalid response: ".$this->cfs_http->get_error());
+                "Invalid response (".$status."): ".$this->cfs_http->get_error());
         }
         return $containers;
     }
@@ -418,7 +423,7 @@ class CF_Container
             throw new SyntaxException("Container name exceeds "
                 . "maximum allowed length.");
         }
-        if (strpos($container_name, "/") !== False) {
+        if (strpos($name, "/") !== False) {
             throw new SyntaxException(
                 "Container names cannot contain a '/' character.");
         }
@@ -493,7 +498,7 @@ class CF_Container
         }
         if (!in_array($status, array(201,202))) {
             throw new InvalidResponseException(
-                "Invalid response: ".$this->cfs_http->get_error());
+                "Invalid response (".$status."): ".$this->cfs_http->get_error());
         }
         $this->cdn_enabled = True;
         $this->cdn_ttl = $ttl;
@@ -529,7 +534,7 @@ class CF_Container
         }
         if (!in_array($status, array(202,404))) {
             throw new InvalidResponseException(
-                "Invalid response: ".$this->cfs_http->get_error());
+                "Invalid response (".$status."): ".$this->cfs_http->get_error());
         }
         $this->cdn_enabled = False;
         $this->cdn_ttl = NULL;
@@ -596,7 +601,7 @@ class CF_Container
                     $limit, $offset, $prefix);
         if ($status < 200 || $status > 299) {
             throw new InvalidResponseException(
-                "Invalid response: ".$this->cfs_http->get_error());
+                "Invalid response (".$status."): ".$this->cfs_http->get_error());
         }
         return $obj_list;
     }
@@ -635,7 +640,7 @@ class CF_Container
         }
         if ($status != 204) {
             throw new InvalidResponseException(
-                "Unexpected HTTP return code: $return_code.");
+                "Invalid response (".$status."): ".$this->cfs_http->get_error());
         }
         return True;
     }
@@ -651,7 +656,7 @@ class CF_Container
             $this->cfs_http->head_cdn_container($this->name);
         if (!in_array($status, array(204,404))) {
             throw new InvalidResponseException(
-                "Invalid response: $status (".$this->cfs_http->get_error()).")";
+                "Invalid response (".$status."): ".$this->cfs_http->get_error());
         }
         $this->cdn_enabled = $cdn_enabled;
         $this->cdn_uri = $cdn_uri;
@@ -753,7 +758,7 @@ class CF_Object
             $this->container->cfs_http->get_object_to_string($this,$hdrs);
         if (($status < 200) || ($status > 299
                 && $status != 412 && $status != 304)) {
-            throw new InvalidResponseException("Invalid response: "
+            throw new InvalidResponseException("Invalid response (".$status."): "
                 . $this->container->cfs_http->get_error());
         }
         return $data;
@@ -782,7 +787,8 @@ class CF_Object
                         $fp,$hdrs);
         if (($status < 200) || ($status > 299
                 && $status != 412 && $status != 304)) {
-            throw new InvalidResponseException("Invalid response: ".$reason);
+            throw new InvalidResponseException("Invalid response (".$status."): "
+                .$reason);
         }
         return True;
     }
@@ -801,8 +807,8 @@ class CF_Object
         if (!empty($this->metadata)) {
             $status = $this->container->cfs_http->update_object($this);
             if ($status != 202) {
-                throw new InvalidResponseException(
-                    $this->container->cfs_http->get_error());
+                throw new InvalidResponseException("Invalid response ("
+                    .$status."): ".$this->container->cfs_http->get_error());
             }
             return True;
         }
@@ -852,7 +858,7 @@ class CF_Object
             $this->content_length = strlen($data);
         } else {
             if (!$size) {
-                throw new SyntaxException("Missing required size for object data.");
+                throw new SyntaxException("Missing required size for data.");
             } else {
                 $this->content_length = $size;
             }
@@ -872,8 +878,8 @@ class CF_Object
         }
         if ($status != 201) {
             if ($close_fh) { fclose($fp); }
-            throw new InvalidResponseException("Invalid response: ".
-                $this->container->cfs_http->get_error());
+            throw new InvalidResponseException("Invalid response (".$status."): "
+                . $this->container->cfs_http->get_error());
         }
         if (!$verify) {
             $this->etag = $etag;
@@ -901,7 +907,7 @@ class CF_Object
     {
         $fp = @fopen($filename, "r");
         if (!$fp) {
-            throw new IOException("Could not open file for reading: " . $filename);
+            throw new IOException("Could not open file for reading: ".$filename);
         }
         $size = filesize($filename);
         $this->content_type = mime_content_type($filename);
@@ -925,7 +931,7 @@ class CF_Object
     {
         $fp = @fopen($filename, "w");
         if (!$fp) {
-            throw new IOException("Could not open file for writing: " . $filename);
+            throw new IOException("Could not open file for writing: ".$filename);
         }
         $result = $this->stream($fp);
         fclose($fp);
@@ -1000,8 +1006,8 @@ class CF_Object
             return False;
         }
         if ($status < 200 || $status > 299) {
-            throw new InvalidResponseException("Invalid response: ".
-                $this->container->cfs_http->get_error());
+            throw new InvalidResponseException("Invalid response (".$status."): "
+                . $this->container->cfs_http->get_error());
         }
         $this->etag = $etag;
         $this->last_modified = $last_modified;
