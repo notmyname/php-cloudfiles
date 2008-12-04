@@ -1,9 +1,34 @@
 <?php
+
+if (!$USER || !$API_KEY) {
+    # Running the tests from PHP command-line
+    require("cloudfiles_ini.php");  # account settings
+    $HTML_OUT = False;
+} else {
+    # Running tests from index.php
+    $HTML_OUT = True;
+}
+
 require("cloudfiles.php");
-require("cloudfiles_ini.php");  # account settings
+require("test_utils.php");
+
+# Variables for random tests
+$NUM_CONTAINERS = 4;
+$NUM_OBJECTS = 8;
+$NUM_METADATA = 16;
+$CONT_NAME_LENGTH = 32;
+$OBJ_NAME_LENGTH = 64;
+$META_NAME_LENGTH = 8;
+$META_VALUE_LENGTH = 32;
+$OBJECT_DATA = "This is some sample text as object data.";
+
+
+$TEMP_NAM = tempnam("/tmp", "php-cloudfiles");
 
 function assert_callback($file, $line, $code)
 {
+    global $TEMP_NAM;
+    unlink($TEMP_NAM);
     print "Assertion failed:\n";
     print "  File: " . $file . "\n";
     print "  Line: " . $line . "\n";
@@ -16,16 +41,29 @@ assert_options(ASSERT_WARNING, 0);
 assert_options(ASSERT_QUIET_EVAL, 1);
 assert_options(ASSERT_CALLBACK, "assert_callback");
 
+if ($HTML_OUT) {
+    print "<pre>\n";
+}
 
 echo "======= AUTHENTICATING ======================================\n";
 $auth = new CF_Authentication($USER,$API_KEY,$ACCOUNT,$HOST);
 //$auth->setDebug(1);  # toggle to enable cURL verbose output
 $auth->authenticate();
 assert('$auth->storage_url != NULL');
+assert('$auth->cdnm_url != NULL');
 assert('$auth->auth_token != NULL');
 $conn = new CF_Connection($auth);
 //$conn->setDebug(1);  # toggle to enable cURL verbose output
 
+
+echo "======= ORIGINAL ACCOUNT INFO ===============================\n";
+$orig_info = $conn->get_info();
+$orig_container_list = $conn->list_containers();
+assert('is_array($orig_info)');
+print_r($orig_info);
+
+
+echo "======= STARTING FUNCTIONAL TESTS ===========================\n";
 
 echo "======= LIST CONTAINERS =====================================\n";
 $orig_containers = $conn->list_containers();
@@ -235,28 +273,28 @@ print "If-None-Match passes (matched)\n";
 
 echo "======= IF-MODIFIED-SINCE (PAST TIMESTAMP) ==================\n";
 $ifmatch = $container->get_object($o1->name);
-$ifdata = $ifmatch->read(array("If-Modified-Since" => http_date(time()-86400)));
+$ifdata = $ifmatch->read(array("If-Modified-Since" => httpDate(time()-86400)));
 assert('$ifdata == $text');
 print "If-Modified-Since passes (old timestamp)\n";
 
 
 echo "======= IF-MODIFIED-SINCE (FUTURE TIMESTAMP) ================\n";
 $ifmatch = $container->get_object($o1->name);
-$ifdata = $ifmatch->read(array("If-Modified-Since" => http_date(time()+86400)));
+$ifdata = $ifmatch->read(array("If-Modified-Since" => httpDate(time()+86400)));
 assert('$ifdata != $text');
 print "If-Modified-Since passes (future timestamp)\n";
 
 
 echo "======= IF-UNMODIFIED-SINCE (PAST TIMESTAMP) ================\n";
 $ifmatch = $container->get_object($o1->name);
-$ifdata = $ifmatch->read(array("If-Unmodified-Since" => http_date(time()-86400)));
+$ifdata = $ifmatch->read(array("If-Unmodified-Since" => httpDate(time()-86400)));
 assert('$ifdata != $text');
 print "If-Unmodified-Since passes (old timestamp)\n";
 
 
 echo "======= IF-UNMODIFIED-SINCE (FUTURE TIMESTAMP) ==============\n";
 $ifmatch = $container->get_object($o1->name);
-$ifdata = $ifmatch->read(array("If-Unmodified-Since" => http_date(time()+86400)));
+$ifdata = $ifmatch->read(array("If-Unmodified-Since" => httpDate(time()+86400)));
 assert('$ifdata == $text');
 print "If-Unmodified-Since passes (future timestamp)\n";
 
@@ -321,10 +359,10 @@ print $o5."\n";
 
 
 echo "======= DOWNLOAD OBJECT TO FILENAME =========================\n";
-$result = $o4->save_to_filename("/tmp/fuzzy.txt");
+$result = $o4->save_to_filename($TEMP_NAM);
 assert('$result');
-print "WROTE DATA TO /tmp/fuzzy.txt, cat /tmp/fuzzy.txt\n";
-passthru("cat /tmp/fuzzy.txt");
+print "WROTE DATA TO ".$TEMP_NAM.", cat ".$TEMP_NAM."\n";
+passthru("cat ".$TEMP_NAM);
 print "\n";
 
 
@@ -393,12 +431,257 @@ $result = $conn->delete_container($container);
 assert('$result');
 print "SUCCESS: container deleted\n";
 
-echo "======= LIST CONTAINERS =====================================\n";
-$containers = $conn->list_containers();
-assert('$containers == $orig_containers');
-print_r($orig_containers);
-print_r($containers);
 
+echo "======= ACCOUNT INFO AFTER FUNCTIONAL TESTS =================\n";
+$info = $conn->get_info();
+assert('$info == $orig_info');
+
+
+echo "\n\n\n\n";
+
+
+echo "======= CHECK ACCOUNT INFO BEFORE CDN TESTS =================\n";
+$cnames = array();
+$cdn_info = $conn->get_info();
+print_r($cdn_info);
+
+echo "======= CREATE NEW TEST CONTAINER (ASCII) ===================\n";
+$n1 = "cdn-ascii-test";
+$ascii_cont = $conn->create_container($n1);
+$cnames[$n1] = $ascii_cont;
+assert('$ascii_cont');
+print $ascii_cont . "\n";
+
+
+echo "======= CREATE NEW GOOP CONTAINER (ASCII) ===================\n";
+$n2 = "#$%^&*()-_=+{}[]\|;:'><,'";
+$goop_cont = $conn->create_container($n2);
+$cnames[$n2] = $goop_cont;
+assert('$goop_cont');
+print $goop_cont . "\n";
+
+
+echo "======= CREATE NEW TEST CONTAINER (UTF-8) ===================\n";
+$n3 = "©Ï&mMMÂaxÔ¾¶Áºá±â÷³¡YDéBSQÜO´ãánÉ¤°Bxn¹tðÁVètØBñü+3Pe-¹ùðVÚ_";
+$utf8_cont = $conn->create_container($n3);
+$cnames[$n3] = $utf8_cont;
+assert('$utf8_cont');
+print $utf8_cont . "\n";
+
+
+# Test CDN-enabling each container for an hour
+#
+echo "======= CDN-ENABLE CONTAINERS ===============================\n";
+foreach ($cnames as $name => $cont) {
+    $uri = $cont->make_public(3600);
+    assert('$cont->is_public()');
+    print $uri . "\n";
+    print $cont . "\n";
+}
+
+echo "======= TEST CONTAINER ATTRIBUTES ===========================\n";
+foreach ($cnames as $name => $cont) {
+    $tcont = $conn->get_container($name);    
+    print $tcont . "\n";
+    print $cont . "\n";
+    assert('$tcont->is_public()');
+    assert('$tcont->name == $name');
+    assert('$tcont->cdn_uri == $cont->cdn_uri');
+    assert('$tcont->cdn_ttl == $cont->cdn_ttl');
+}
+
+echo "======= ADJUST TTL ==========================================\n";
+foreach ($cnames as $name => $cont) {
+    $uri = $cont->make_public(7200);
+    assert('$cont->is_public()');
+    print $uri . "\n";
+    print $cont . "\n";
+}
+
+echo "======= TEST CONTAINER ATTRIBUTES ===========================\n";
+foreach ($cnames as $name => $cont) {
+    $tcont = $conn->get_container($name);    
+    print $tcont . "\n";
+    print $cont . "\n";
+    assert('$tcont->is_public()');
+    assert('$tcont->name == $name');
+    assert('$tcont->cdn_uri == $cont->cdn_uri');
+    assert('$tcont->cdn_ttl == $cont->cdn_ttl');
+}
+
+echo "======= UPLOAD STORAGE OBJECT AND FETCH FROM CDN ============\n";
+$contents = "This is a sample text file.";
+$o = $ascii_cont->create_object("foo.txt");
+$o->write($contents);
+sleep(2);
+print $o->public_uri() . "\n";
+$fp = fopen($o->public_uri(), "r");
+$cdn_contents = fread($fp, 1024);
+fclose($fp);
+assert('$contents == substr($cdn_contents, -strlen($contents))');
+
+
+echo "======= DISABLE CDN =========================================\n";
+foreach ($cnames as $name => $cont) {
+    $uri = $cont->make_private();
+    assert('$cont->is_public() == False');
+    print $cont . "\n";
+    $tcont = $conn->get_container($name);
+    assert('$tcont->is_public() == False');
+}
+
+echo "======= CLEAN-UP AND DELETE =================================\n";
+$ascii_cont->delete_object("foo.txt");
+foreach ($cnames as $name => $cont) {
+    $conn->delete_container($cont);
+}
+
+echo "======= CHECK ACCOUNT INFO AFTER CDN TESTS ==================\n";
+$info = $conn->get_info();
+assert('$info == $cdn_info');
+
+echo "\n\n\n\n";
+
+echo "======= STARTING RANDOM CHARACTER TESTS =====================\n";
+$data_md5 = md5($OBJECT_DATA);
+
+echo "======= CHECK ACCOUNT INFO BEFORE RANDOM TESTS ==============\n";
+$random_info = $conn->get_info();
+
+# Initialize and record test data
+#
+$test_data = array();
+for ($i=0; $i < $NUM_CONTAINERS; $i++) {
+    $container_name = genUTF8($CONT_NAME_LENGTH, array(47,63)); # skip '/','?'
+
+    $obj_names = array();
+    for ($j=0; $j < $NUM_OBJECTS; $j++) {
+        $obj_name = genUTF8($OBJ_NAME_LENGTH, array(63)); # skip '?'
+
+        $meta = array();
+        for ($l=0; $l < $NUM_METADATA; $l++) {
+            $meta_name = genUTF8($META_NAME_LENGTH, array(58)); # skip ':'
+            $meta_val = genUTF8($META_VALUE_LENGTH, array(58)); # skip ':'
+            $meta_name = trim(strtolower($meta_name));
+            $meta[$meta_name] = trim($meta_val);
+        }
+        $obj_names[$obj_name] = $meta;
+    }
+    $test_data[$container_name] = $obj_names;
+}
+
+
+echo "==> CREATE TEST DATA ===============================\n";
+foreach ($test_data as $cont_name => $obj_arr) {
+    print "==> Container: " . $cont_name . "\n";
+    $test_cont = $conn->create_container($cont_name);
+    assert('get_class($test_cont) == "CF_Container"');
+    foreach ($obj_arr as $obj_name => $metadata) {
+        print "  +--> Object: " . $obj_name . "\n";
+        $obj = $test_cont->create_object($obj_name);
+        assert('get_class($obj) == "CF_Object"');
+        assert('$obj->getETag() == NULL');
+        $obj->metadata = $metadata;
+        $obj->write($OBJECT_DATA);
+        assert('$obj->getETag() == $data_md5');
+    }
+    unset($obj_name);
+    unset($metadata);
+}
+unset($cont_name);
+unset($obj_arr);
+
+echo "==> FETCH TEST DATA AND COMPARE ====================\n";
+foreach ($test_data as $cont_name => $obj_arr) {
+    if (!in_array($cont_name,$orig_container_list)) {
+        print "==> Check container: ".$cont_name."\n";
+        $container = $conn->get_container($cont_name);
+        try {
+            assert('$container->name == $cont_name');
+        } catch (Exception $e) {
+            print "** Container: " . $container->name . "\n";
+            print "** Container: " . $cont_name . "\n";
+            exit();
+        }
+        $obj_list = $container->list_objects();
+        $test_list = array_keys($test_data[$cont_name]);
+        sort($obj_list); sort($test_list);
+        try {
+            assert('$obj_list == $test_list');
+        } catch (Exception $e) {
+            print " ** container: " . $cont_name . "\n";
+            print " ** obj_list:\n"; print_r($obj_list);
+            print " ** test_list:\n"; print_r($test_list);
+            exit();
+        }
+        foreach ($obj_list as $idx => $obj_name) {
+            print "  +--> Check object: ".$obj_name."\n";
+            $obj = $container->get_object($obj_name);
+            $md = $obj->metadata;
+            $test_md = $test_data[$cont_name][$obj_name];
+            assert('count($md) == count($test_md)');
+            asort($md, SORT_STRING); asort($test_md, SORT_STRING);
+            try {
+                assert('$md == $test_md');
+            } catch (Exception $e) {
+                print " ** container: " . $cont_name . "\n";
+                print " ** object: " . $obj_name . "\n";
+                print " ** md:\n"; print_r($md);
+                print " ** test_md:\n"; print_r($test_md);
+                exit();
+            }
+        }
+        unset($obj_name);
+        unset($idx);
+    }
+}
+unset($cont_name);
+unset($obj_arr);
+
+echo "==> PURGE ALL TEST DATA ============================\n";
+$cont_list = $conn->list_containers();
+foreach ($cont_list as $idx => $cont_name) {
+    if (!in_array($cont_name,$orig_container_list)) {
+        $container = $conn->get_container($cont_name);
+        $obj_list = $container->list_objects();
+        foreach ($obj_list as $idx2 => $obj_name) {
+            try {
+                print "  +--> Delete obj: ".$obj_name."\n";
+                $container->delete_object($obj_name);
+            } catch (Exception $e) {
+                print "** Error deleting object: '".$obj_name."': ".$e."\n";
+                exit();
+            }
+        }
+        try {
+            print "==> Delete container: ".$cont_name."\n";
+            $conn->delete_container($container);
+        } catch (Exception $e) {
+            print "** Error deleting container: '".$container->name."': ".$e."\n";
+            exit();
+        }
+        unset($obj_name);
+        unset($idx2);
+    }
+}
+unset($idx);
+unset($cont_name);
+
+echo "======= CHECK ACCOUNT INFO AFTER RANDOM TESTS ===============\n";
+$info = $conn->get_info();
+assert('$info == $random_info');
+
+
+echo "======= CHECK ACCOUNT INFO AFTER ALL TESTING ================\n";
+print_r($orig_info);
+print_r($info);
+assert('$info == $orig_info');
+print "=> Done...\n";
+
+if ($HTML_OUT) {
+    print "</pre>\n";
+}
+unlink($TEMP_NAM);
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
