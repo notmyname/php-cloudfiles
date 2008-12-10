@@ -125,9 +125,9 @@
 							<dt><b>CDN_URI</b></dt>
 				<dd>in file cloudfiles_http.php, constant <a href="php-cloudfiles-http/_cloudfiles_http.php.html#defineCDN_URI">CDN_URI</a></dd>
 							<dt><b>CF_Authentication</b></dt>
-				<dd>in file cloudfiles.php, class <a href="php-cloudfiles/CF_Authentication.html">CF_Authentication</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Class for handling Cloud Files Authentication, call it's <a href="php-cloudfiles-http/CF_Http.html#methodauthenticate">authenticate()</a>  method to obtain authorized service urls and authentication token.</dd>
+				<dd>in file cloudfiles.php, class <a href="php-cloudfiles/CF_Authentication.html">CF_Authentication</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Class for handling Cloud Files Authentication, call it's <a href="php-cloudfiles-http/CF_Http.html#methodauthenticate">authenticate()</a>  method to obtain authorized service urls and an authentication token.</dd>
 							<dt><b>CF_Connection</b></dt>
-				<dd>in file cloudfiles.php, class <a href="php-cloudfiles/CF_Connection.html">CF_Connection</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Class for establishing connections to the Cloud Files storage system.  Connection  instances are used to communicate with the storage system at the account  level; listing and deleting Containers and returning Container instances.</dd>
+				<dd>in file cloudfiles.php, class <a href="php-cloudfiles/CF_Connection.html">CF_Connection</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Class for establishing connections to the Cloud Files storage system.</dd>
 							<dt><b>CF_Container</b></dt>
 				<dd>in file cloudfiles.php, class <a href="php-cloudfiles/CF_Container.html">CF_Container</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Container operations</dd>
 							<dt><b>CF_Http</b></dt>
@@ -360,10 +360,18 @@
 				<dd>in file cloudfiles.php, method <a href="php-cloudfiles/CF_Authentication.html#methodsetDebug">CF_Authentication::setDebug()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Toggle debugging - set cURL verbose flag</dd>
 							<dt><b>setDebug</b></dt>
 				<dd>in file cloudfiles.php, method <a href="php-cloudfiles/CF_Connection.html#methodsetDebug">CF_Connection::setDebug()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Toggle debugging of instance and back-end HTTP module</dd>
+							<dt><b>setReadProgressFunc</b></dt>
+				<dd>in file cloudfiles_http.php, method <a href="php-cloudfiles-http/CF_Http.html#methodsetReadProgressFunc">CF_Http::setReadProgressFunc()</a></dd>
 							<dt><b>setStorageUrl</b></dt>
 				<dd>in file cloudfiles_http.php, method <a href="php-cloudfiles-http/CF_Http.html#methodsetStorageUrl">CF_Http::setStorageUrl()</a></dd>
+							<dt><b>setWriteProgressFunc</b></dt>
+				<dd>in file cloudfiles_http.php, method <a href="php-cloudfiles-http/CF_Http.html#methodsetWriteProgressFunc">CF_Http::setWriteProgressFunc()</a></dd>
 							<dt><b>set_etag</b></dt>
 				<dd>in file cloudfiles.php, method <a href="php-cloudfiles/CF_Object.html#methodset_etag">CF_Object::set_etag()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Set Object's MD5 checksum</dd>
+							<dt><b>set_read_progress_function</b></dt>
+				<dd>in file cloudfiles.php, method <a href="php-cloudfiles/CF_Connection.html#methodset_read_progress_function">CF_Connection::set_read_progress_function()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Set a user-supplied callback function to report download progress</dd>
+							<dt><b>set_write_progress_function</b></dt>
+				<dd>in file cloudfiles.php, method <a href="php-cloudfiles/CF_Connection.html#methodset_write_progress_function">CF_Connection::set_write_progress_function()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Set a user-supplied callback function to report upload progress</dd>
 							<dt><b>STORAGE_URL</b></dt>
 				<dd>in file cloudfiles_http.php, constant <a href="php-cloudfiles-http/_cloudfiles_http.php.html#defineSTORAGE_URL">STORAGE_URL</a></dd>
 							<dt><b>stream</b></dt>
@@ -425,7 +433,7 @@
 	<a href="elementindex.html#top">top</a><br>
         <div class="credit">
 		    <hr />
-		    Documentation generated on Tue, 18 Nov 2008 15:08:15 -0600 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.2</a>
+		    Documentation generated on Wed, 10 Dec 2008 16:14:11 -0600 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.2</a>
 	      </div>
       </td></tr></table>
     </td>

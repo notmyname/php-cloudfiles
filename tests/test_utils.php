@@ -36,4 +36,15 @@ function genUTF8($len=10, $excludes=array())
     return utf8_encode($r);
 }
 
+# generate a big string
+#
+function big_string($length)
+{
+    $r = array();
+    for ($i=0; $i < $length; $i++) {
+        $r[] = "a";
+    }
+    return join("", $r);
+}
+
 ?>

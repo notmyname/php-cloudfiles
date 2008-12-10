@@ -73,6 +73,8 @@ class CF_Http
 
     # Variables used for content/header callbacks
     #
+    private $_user_read_progress_callback_func;
+    private $_user_write_progress_callback_func;
     private $_write_callback_type;
     private $_text_list;
     private $_account_container_count;
@@ -116,6 +118,8 @@ class CF_Http
             "DEL_POST"  => NULL, # DELETE containers/objects, POST objects
         );
 
+        $this->_user_read_progress_callback_func = NULL;
+        $this->_user_write_progress_callback_func = NULL;
         $this->_write_callback_type = NULL;
         $this->_text_list = array();
         $this->_account_container_count = 0;
@@ -743,6 +747,16 @@ class CF_Http
         $this->auth_token = $stok;
     }
 
+    function setReadProgressFunc($func_name)
+    {
+        $this->_user_read_progress_callback_func = $func_name;
+    }
+
+    function setWriteProgressFunc($func_name)
+    {
+        $this->_user_write_progress_callback_func = $func_name;
+    }
+
 
     private function _header_cb($ch, $header)
     {
@@ -821,16 +835,39 @@ class CF_Http
         return strlen($header);
     }
 
+    private function _read_cb($ch, $fd, $length)
+    {
+        $data = fread($fd, $length);
+        $len = strlen($data);
+        if ($this->_user_write_progress_callback_func) {
+            call_user_func($this->_user_write_progress_callback_func, $len);
+        }
+        return $data;
+    }
+
     private function _write_cb($ch, $data)
     {
+        $amount = strlen($data);
         switch ($this->_write_callback_type) {
         case "TEXT_LIST":
             $this->_text_list[] = rtrim($data, "\r\n\0\x0B"); # keep tab,space
             break;
         case "OBJECT_STREAM":
-            return fwrite($this->_obj_write_resource, $data);
+            $written = 0;
+            while ($written < strlen($data)) {
+                $written += fwrite($this->_obj_write_resource, $data-$written);
+            }
+            if ($written > strlen($data)) {
+                throw new IOException(
+                    "Wrote more data to client than we should have?!");
+            }
+            break;
         case "OBJECT_STRING":
             $this->_obj_write_string .= $data;
+            break;
+        }
+        if ($this->_user_read_progress_callback_func) {
+            call_user_func($this->_user_read_progress_callback_func,strlen($data));
         }
         return strlen($data);
     }
@@ -910,12 +947,12 @@ class CF_Http
         curl_setopt($ch, CURLOPT_HEADERFUNCTION, array(&$this, '_header_cb'));
 
         if ($conn_type == "GET_CALL") {
-            curl_setopt($ch, CURLOPT_WRITEFUNCTION,
-                    array(&$this, '_write_cb'));
+            curl_setopt($ch, CURLOPT_WRITEFUNCTION, array(&$this, '_write_cb'));
         }
 
         if ($conn_type == "PUT_OBJ") {
             curl_setopt($ch, CURLOPT_PUT, 1);
+            curl_setopt($ch, CURLOPT_READFUNCTION, array(&$this, '_read_cb'));
         }
         if ($conn_type == "HEAD") {
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "HEAD");

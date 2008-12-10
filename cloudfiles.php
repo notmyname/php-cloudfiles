@@ -2,10 +2,6 @@
 /**
  * This is the PHP Cloud Files API.
  *
- * It uses the supporting "cloudfiles_http.php" module for HTTP(s) support and
- * allows for connection re-use and streaming of content into/out of Cloud Files
- * via PHP's cURL module.
- *
  * <code>
  *   # Authenticate to Cloud Files
  *   #
@@ -19,7 +15,7 @@
  *   # Create a remote Container and storage Object
  *   #
  *   $images = $conn->create_container("photos");
- *   $bday = $electronica->create_object("first_birthday.jpg");
+ *   $bday = $images->create_object("first_birthday.jpg");
  *
  *   # Upload content from a local file by streaming it
  *   #
@@ -47,6 +43,10 @@
  *
  * Requres PHP 5.x (for Exceptions and OO syntax) and PHP's cURL module.
  *
+ * It uses the supporting "cloudfiles_http.php" module for HTTP(s) support and
+ * allows for connection re-use and streaming of content into/out of Cloud Files
+ * via PHP's cURL module.
+ *
  * See COPYING for license information.
  *
  * @author Eric "EJ" Johnson <ej@racklabs.com>
@@ -64,7 +64,19 @@ define("MAX_OBJECT_NAME_LEN", 128);
 
 /**
  * Class for handling Cloud Files Authentication, call it's {@link authenticate()}
- * method to obtain authorized service urls and authentication token.
+ * method to obtain authorized service urls and an authentication token.
+ *
+ * Example:
+ * <code>
+ * # Create the authentication instance
+ * #
+ * $auth = new CF_Authentication("username", "api_key");
+ *
+ * # Perform authentication request
+ * #
+ * $auth->authenticate();
+ * </code>
+ *
  * @package php-cloudfiles
  */
 class CF_Authentication
@@ -116,6 +128,17 @@ class CF_Authentication
      * either returns <kbd>True</kbd> or throws an Exception.  Accepts a single
      * (optional) argument for the storage system API version.
      *
+     * Example:
+     * <code>
+     * # Create the authentication instance
+     * #
+     * $auth = new CF_Authentication("username", "api_key");
+     *
+     * # Perform authentication request
+     * #
+     * $auth->authenticate();
+     * </code>
+     *
      * @param string $version API version for Auth service (optional)
      * @return boolean <kbd>True</kbd> if successfully authenticated
      * @throws AuthenticationException invalid credentials
@@ -161,6 +184,22 @@ class CF_Authentication
  * the account level; listing and deleting Containers and returning Container
  * instances.
  *
+ * Example:
+ * <code>
+ * # Create the authentication instance
+ * #
+ * $auth = new CF_Authentication("username", "api_key");
+ *
+ * # Perform authentication request
+ * #
+ * $auth->authenticate();
+ *
+ * # Create a connection to the storage/cdn system(s) and pass in the
+ * # validated CF_Authentication instance.
+ * #
+ * $conn = new CF_Connection($auth);
+ * </code>
+ *
  * @package php-cloudfiles
  */
 class CF_Connection
@@ -174,6 +213,22 @@ class CF_Connection
 
     /**
      * Pass in a previously authenticated CF_Authentication instance.
+     *
+     * Example:
+     * <code>
+     * # Create the authentication instance
+     * #
+     * $auth = new CF_Authentication("username", "api_key");
+     *
+     * # Perform authentication request
+     * #
+     * $auth->authenticate();
+     *
+     * # Create a connection to the storage/cdn system(s) and pass in the
+     * # validated CF_Authentication instance.
+     * #
+     * $conn = new CF_Connection($auth);
+     * </code>
      *
      * @param obj $cfs_auth previously authenticated CF_Authentication instance
      * @throws AuthenticationException not authenticated
@@ -213,6 +268,17 @@ class CF_Connection
      * overflows PHP's 32-bit integer); number of containers on the account
      * and total bytes used for the account.
      *
+     * Example:
+     * <code>
+     * # ... authentication code excluded (see previous examples) ...
+     * #
+     * $conn = new CF_Authentication($auth);
+     *
+     * list($quantity, $bytes) = $conn->get_info();
+     * print "Number of containers: " . $quantity . "\n";
+     * print "Bytes stored in container: " . $bytes . "\n";
+     * </code>
+     *
      * @return array (number of containers, total bytes stored)
      * @throws InvalidResponseException unexpected response
      */
@@ -232,6 +298,15 @@ class CF_Connection
      *
      * Given a Container name, return a Container instance, creating a new
      * remote Container if it does not exit.
+     *
+     * Example:
+     * <code>
+     * # ... authentication code excluded (see previous examples) ...
+     * #
+     * $conn = new CF_Authentication($auth);
+     *
+     * $images = $conn->create_container("my photos");
+     * </code>
      *
      * @param string $container_name container name
      * @return CF_Container
@@ -272,6 +347,15 @@ class CF_Connection
      *
      * Given either a Container instance or name, remove the remote Container.
      * The Container must be empty prior to removing it.
+     *
+     * Example:
+     * <code>
+     * # ... authentication code excluded (see previous examples) ...
+     * #
+     * $conn = new CF_Authentication($auth);
+     *
+     * $conn->delete_container("my photos");
+     * </code>
      *
      * @param string|obj $container container name or instance
      * @return boolean <kbd>True</kbd> if successfully deleted
@@ -321,6 +405,17 @@ class CF_Connection
      * For the given name, return a Container instance if the remote Container
      * exists, otherwise throw a Not Found exception.
      *
+     * Example:
+     * <code>
+     * # ... authentication code excluded (see previous examples) ...
+     * #
+     * $conn = new CF_Authentication($auth);
+     *
+     * $images = $conn->get_container("my photos");
+     * print "Number of Objects: " . $images->size . "\n";
+     * print "Bytes stored in container: " . $images->bytes . "\n";
+     * </code>
+     *
      * @param string $container_name name of the remote Container
      * @return container CF_Container instance
      * @throws NoSuchContainerException thrown if no remote Container
@@ -345,6 +440,21 @@ class CF_Connection
      *
      * Return an array of strings containing the names of all remote Containers.
      *
+     * Example:
+     * <code>
+     * # ... authentication code excluded (see previous examples) ...
+     * #
+     * $conn = new CF_Authentication($auth);
+     *
+     * $container_list = $conn->list_containers();
+     * print_r($container_list);
+     * Array
+     * (
+     *     [0] => "my photos",
+     *     [1] => "my docs"
+     * )
+     * </code>
+     *
      * @return array list of remote Containers
      * @throws InvalidResponseException unexpected response
      */
@@ -362,6 +472,25 @@ class CF_Connection
      * Return list of Containers that have been published to the CDN.
      *
      * Return an array of strings containing the names of published Containers.
+     * Note that this function returns the list of any Container that has
+     * ever been CDN-enabled regardless of it's existence in the storage
+     * system.
+     *
+     * Example:
+     * <code>
+     * # ... authentication code excluded (see previous examples) ...
+     * #
+     * $conn = new CF_Authentication($auth);
+     *
+     * $public_containers = $conn->list_public_containers();
+     * print_r($public_containers);
+     * Array
+     * (
+     *     [0] => "images",
+     *     [1] => "css",
+     *     [2] => "javascript"
+     * )
+     * </code>
      *
      * @return array list of published Container names
      * @throws InvalidResponseException unexpected response
@@ -375,6 +504,83 @@ class CF_Connection
                 "Invalid response (".$status."): ".$this->cfs_http->get_error());
         }
         return $containers;
+    }
+
+    /**
+     * Set a user-supplied callback function to report download progress
+     *
+     * The callback function is used to report incremental progress of a data
+     * download functions (e.g. $container->list_objects(), $obj->read(), etc).
+     * The specified function will be periodically called with the number of
+     * bytes transferred until the entire download is complete.  This callback
+     * function can be useful for implementing "progress bars" for large
+     * downloads.
+     *
+     * The specified callback function should take a single integer parameter.
+     *
+     * <code>
+     * function read_callback($bytes_transferred) {
+     *     print ">> downloaded " . $bytes_transferred . " bytes.\n";
+     *     # ... do other things ...
+     *     return;
+     * }
+     *
+     * $conn = new CF_Connection($auth_obj);
+     * $conn->set_read_progress_function("read_callback");
+     * print_r($conn->list_containers());
+     *
+     * # output would look like this:
+     * #
+     * >> downloaded 10 bytes.
+     * >> downloaded 11 bytes.
+     * Array
+     * (
+     *      [0] => fuzzy.txt
+     *      [1] => space name
+     * )
+     * </code>
+     *
+     * @param string $func_name the name of the user callback function
+     */
+    function set_read_progress_function($func_name)
+    {
+        $this->cfs_http->setReadProgressFunc($func_name);
+    }
+
+    /**
+     * Set a user-supplied callback function to report upload progress
+     *
+     * The callback function is used to report incremental progress of a data
+     * upload functions (e.g. $obj->write() call).  The specified function will
+     * be periodically called with the number of bytes transferred until the
+     * entire upload is complete.  This callback function can be useful
+     * for implementing "progress bars" for large uploads/downloads.
+     *
+     * The specified callback function should take a single integer parameter.
+     *
+     * <code>
+     * function write_callback($bytes_transferred) {
+     *     print ">> uploaded " . $bytes_transferred . " bytes.\n";
+     *     # ... do other things ...
+     *     return;
+     * }
+     *
+     * $conn = new CF_Connection($auth_obj);
+     * $conn->set_write_progress_function("write_callback");
+     * $container = $conn->create_container("stuff");
+     * $obj = $container->create_object("foo");
+     * $obj->write("The callback function will be called during upload.");
+     *
+     * # output would look like this:
+     * # >> uploaded 51 bytes.
+     * #
+     * </code>
+     *
+     * @param string $func_name the name of the user callback function
+     */
+    function set_write_progress_function($func_name)
+    {
+        $this->cfs_http->setWriteProgressFunc($func_name);
     }
 }
 
@@ -465,6 +671,19 @@ class CF_Container
      * adjust its CDN attributes.  This Container will always return the
      * same CDN-enabled URI each time it is toggled public/private/public.
      *
+     * Example:
+     * <code>
+     * # ... authentication code excluded (see previous examples) ...
+     * #
+     * $conn = new CF_Authentication($auth);
+     *
+     * $public_container = $conn->create_container("public");
+     *
+     * # CDN-enable the container and set it's TTL for a month
+     * #
+     * $public_container->make_public(86400*30); # 30 days (86400 seconds/day)
+     * </code>
+     *
      * @param int $ttl the time in seconds content will be cached in the CDN
      * @returns string the CDN enabled Container's URI
      * @throws CDNNotEnabledException CDN functionality not returned during auth
@@ -517,6 +736,20 @@ class CF_Container
      *       TTL is typically one day, so "privatizing" the Container will take
      *       up to 24 hours before the content is purged from the CDN cache.
      *
+     * Example:
+     * <code>
+     * # ... authentication code excluded (see previous examples) ...
+     * #
+     * $conn = new CF_Authentication($auth);
+     *
+     * $public_container = $conn->get_container("public");
+     *
+     * # Disable CDN accessability
+     * # ... still cached up to a month based on previous example
+     * #
+     * $public_container->make_private();
+     * </code>
+     *
      * @returns boolean True if successful
      * @throws CDNNotEnabledException CDN functionality not returned during auth
      * @throws AuthenticationException if auth token is not valid/expired
@@ -548,6 +781,19 @@ class CF_Container
      * Use this method to determine if the Container's content is currently
      * available through the CDN.
      *
+     * Example:
+     * <code>
+     * # ... authentication code excluded (see previous examples) ...
+     * #
+     * $conn = new CF_Authentication($auth);
+     *
+     * $public_container = $conn->get_container("public");
+     *
+     * # Display CDN accessability
+     * #
+     * $public_container->is_public() ? print "Yes" : print "No";
+     * </code>
+     *
      * @returns boolean True if enabled, False otherwise
      */
     function is_public()
@@ -560,6 +806,20 @@ class CF_Container
      *
      * Return a new Object instance.  If the remote storage Object exists,
      * the instance's attributes are populated.
+     *
+     * Example:
+     * <code>
+     * # ... authentication code excluded (see previous examples) ...
+     * #
+     * $conn = new CF_Authentication($auth);
+     *
+     * $public_container = $conn->get_container("public");
+     *
+     * # This creates a local instance of a storage object but only creates
+     * # it in the storage system when the object's write() method is called.
+     * #
+     * $pic = $public_container->create_object("baby.jpg");
+     * </code>
      *
      * @param string $obj_name name of storage Object
      * @return obj CF_Object instance
@@ -575,6 +835,21 @@ class CF_Container
      * Given a name, return a Object instance representing the
      * remote storage object.
      *
+     * Example:
+     * <code>
+     * # ... authentication code excluded (see previous examples) ...
+     * #
+     * $conn = new CF_Authentication($auth);
+     *
+     * $public_container = $conn->get_container("public");
+     *
+     * # This call only fetches header information and not the content of
+     * # the storage object.  Use the Object's read() or stream() methods
+     * # to obtain the object's data.
+     * #
+     * $pic = $public_container->get_object("baby.jpg");
+     * </code>
+     *
      * @param string $obj_name name of storage Object
      * @return obj CF_Object instance
      */
@@ -587,6 +862,29 @@ class CF_Container
      * Return a list of Objects
      *
      * Return an array of strings listing the Object names in this Container.
+     *
+     * Example:
+     * <code>
+     * # ... authentication code excluded (see previous examples) ...
+     * #
+     * $conn = new CF_Authentication($auth);
+     *
+     * $images = $conn->get_container("my photos");
+     *
+     * # Grab the list of all storage objects
+     * #
+     * $all_objects = $images->list_objects();
+     *
+     * # Grab subsets of all storage objects
+     * #
+     * $first_ten = $images->list_objects(10);
+     * $next_ten = $images->list_objects(10,10);
+     *
+     * # Grab images starting with "birthday_party" and default limit/offset
+     * # to match all photos with that prefix
+     * #
+     * $prefixed = $images->list_objects(0,-1,"birthday_party");
+     * </code>
      *
      * @param int $limit <i>optional</i> only return $limit names
      * @param int $offset <i>optional</i> subset of names starting at $offset
@@ -611,6 +909,19 @@ class CF_Container
      *
      * Given an Object instance or name, permanently remove the remote Object
      * and all associated metadata.
+     *
+     * Example:
+     * <code>
+     * # ... authentication code excluded (see previous examples) ...
+     * #
+     * $conn = new CF_Authentication($auth);
+     *
+     * $images = $conn->get_container("my photos");
+     *
+     * # Delete specific object
+     * #
+     * $images->delete_object("disco_dancing.jpg");
+     * </code>
      *
      * @param obj $obj name or instance of Object to delete
      * @return boolean <kbd>True</kbd> if successfully removed
@@ -728,6 +1039,16 @@ class CF_Object
      * A string representing the Object's public URI assuming that it's
      * parent Container is CDN-enabled.
      *
+     * Example:
+     * <code>
+     * # ... authentication/connection/container code excluded
+     * # ... see previous examples
+     *
+     * # Print out the Object's CDN URI (if it has one) in an HTML img-tag
+     * #
+     * print "<img src='$pic->public_uri()' />\n";
+     * </code>
+     *
      * @return string Object's public URI or NULL
      */
     function public_uri()
@@ -748,6 +1069,20 @@ class CF_Object
      * Pass in $hdrs array to set specific custom HTTP headers such as
      * If-Match, If-None-Match, If-Modified-Since, Range, etc.
      *
+     * Example:
+     * <code>
+     * # ... authentication/connection/container code excluded
+     * # ... see previous examples
+     *
+     * $my_docs = $conn->get_container("documents");
+     * $doc = $my_docs->get_object("README");
+     * $data = $doc->read(); # read image content into a string variable
+     * print $data;
+     *
+     * # Or see stream() below for a different example.
+     * #
+     * </code>
+     *
      * @param array $hdrs user-defined headers (Range, If-Match, etc.)
      * @return string Object's data
      * @throws InvalidResponseException unexpected response
@@ -755,7 +1090,7 @@ class CF_Object
     function read($hdrs=array())
     {
         list($status, $reason, $data) =
-            $this->container->cfs_http->get_object_to_string($this,$hdrs);
+            $this->container->cfs_http->get_object_to_string($this, $hdrs);
         if (($status < 200) || ($status > 299
                 && $status != 412 && $status != 304)) {
             throw new InvalidResponseException("Invalid response (".$status."): "
@@ -775,6 +1110,32 @@ class CF_Object
      * Pass in $hdrs array to set specific custom HTTP headers such as
      * If-Match, If-None-Match, If-Modified-Since, Range, etc.
      *
+     * Example:
+     * <code>
+     * # ... authentication/connection/container code excluded
+     * # ... see previous examples
+     *
+     * # Assuming this is a web script to display the README to the
+     * # user's browser:
+     * #
+     * <?php
+     * // grab README from storage system
+     * //
+     * $my_docs = $conn->get_container("documents");
+     * $doc = $my_docs->get_object("README");
+     *
+     * // Hand it back to user's browser with appropriate content-type
+     * //
+     * header("Content-Type: " . $doc->content_type);
+     * $output = fopen("php://output", "w");
+     * $doc->stream($output); # stream object content to PHP's output buffer
+     * fclose($output);
+     * ?>
+     *
+     * # See read() above for a more simple example.
+     * #
+     * </code>
+     *
      * @param resource $fp open resource for writing data to
      * @param array $hdrs user-defined headers (Range, If-Match, etc.)
      * @return string Object's data
@@ -783,8 +1144,7 @@ class CF_Object
     function stream(&$fp, $hdrs=array())
     {
         list($status, $reason) = 
-                $this->container->cfs_http->get_object_to_stream($this,
-                        $fp,$hdrs);
+                $this->container->cfs_http->get_object_to_stream($this,$fp,$hdrs);
         if (($status < 200) || ($status > 299
                 && $status != 412 && $status != 304)) {
             throw new InvalidResponseException("Invalid response (".$status."): "
@@ -798,6 +1158,27 @@ class CF_Object
      *
      * Write's an Object's metadata to the remote Object.  This will overwrite
      * an prior Object metadata.
+     *
+     * Example:
+     * <code>
+     * # ... authentication/connection/container code excluded
+     * # ... see previous examples
+     *
+     * $my_docs = $conn->get_container("documents");
+     * $doc = $my_docs->get_object("README");
+     *
+     * # Define new metadata for the object
+     * #
+     * $doc->metadata = array(
+     *     "Author" => "EJ",
+     *     "Subject" => "How to use the PHP tests",
+     *     "Version" => "1.2.2"
+     * );
+     *
+     * # Push the new metadata up to the storage system
+     * #
+     * $doc->sync_metadata();
+     * </code>
      *
      * @return boolean <kbd>True</kbd> if successful, <kbd>False</kbd> otherwise
      * @throws InvalidResponseException unexpected response
@@ -822,6 +1203,19 @@ class CF_Object
      * PHP resource open for reading (see PHP's fopen() method) or an in-memory
      * variable.  If passing in a PHP resource, you must also include the $size
      * parameter.
+     *
+     * Example:
+     * <code>
+     * # ... authentication/connection/container code excluded
+     * # ... see previous examples
+     *
+     * $my_docs = $conn->get_container("documents");
+     * $doc = $my_docs->get_object("README");
+     *
+     * # Upload placeholder text in my README
+     * #
+     * $doc->write("This is just placeholder text for now...");
+     * </code>
      *
      * @param string|resource $data string or open resource
      * @param int $size amount of data to upload (required for resources)
@@ -895,6 +1289,19 @@ class CF_Object
      * True value for $verify will cause the method to compute the Object's MD5
      * checksum prior to uploading.
      *
+     * Example:
+     * <code>
+     * # ... authentication/connection/container code excluded
+     * # ... see previous examples
+     *
+     * $my_docs = $conn->get_container("documents");
+     * $doc = $my_docs->get_object("README");
+     *
+     * # Upload my local README's content
+     * #
+     * $doc->load_from_filename("/home/ej/cloudfiles/readme");
+     * </code>
+     *
      * @param string $filename full path to local file
      * @param boolean $verify enable local/remote MD5 checksum validation
      * @return boolean <kbd>True</kbd> if data uploaded successfully
@@ -921,6 +1328,19 @@ class CF_Object
      *
      * Given a local filename, the Object's data will be written to the newly
      * created file.
+     *
+     * Example:
+     * <code>
+     * # ... authentication/connection/container code excluded
+     * # ... see previous examples
+     *
+     * # Whoops!  I deleted my local README, let me download/save it
+     * #
+     * $my_docs = $conn->get_container("documents");
+     * $doc = $my_docs->get_object("README");
+     *
+     * $doc->save_to_filename("/home/ej/cloudfiles/readme.restored");
+     * </code>
      *
      * @param string $filename name of local file to write data to
      * @return boolean <kbd>True</kbd> if successful

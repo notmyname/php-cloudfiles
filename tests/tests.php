@@ -41,6 +41,16 @@ assert_options(ASSERT_WARNING, 0);
 assert_options(ASSERT_QUIET_EVAL, 1);
 assert_options(ASSERT_CALLBACK, "assert_callback");
 
+function read_callback_test($bytes)
+{
+    print "=> read_callback_test: transferred " . $bytes . " bytes\n";
+}
+
+function write_callback_test($bytes)
+{
+    print "=> write_callback_test: transferred " . $bytes . " bytes\n";
+}
+
 if ($HTML_OUT) {
     print "<pre>\n";
 }
@@ -53,6 +63,8 @@ assert('$auth->storage_url != NULL');
 assert('$auth->cdnm_url != NULL');
 assert('$auth->auth_token != NULL');
 $conn = new CF_Connection($auth);
+$conn->set_read_progress_function("read_callback_test");
+$conn->set_write_progress_function("write_callback_test");
 //$conn->setDebug(1);  # toggle to enable cURL verbose output
 
 
@@ -343,7 +355,7 @@ print_r($o4->metadata);
 
 
 echo "======= CREATE OBJECT =======================================\n";
-$o5 = $container->create_object("fubar.txt");
+$o5 = $container->create_object("fussy.txt");
 assert('$o5');
 print $o5."\n";
 

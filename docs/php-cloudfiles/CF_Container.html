@@ -115,7 +115,7 @@ Source Location: /cloudfiles.php<br /><br />
 <a name="class_details"></a>
 <h3>Class Details</h3>
 <div class="tags">
-[line 394]<br />
+[line 604]<br />
 Container operations<br /><br /><p>Containers are storage compartments where you put your data (objects).  A container is similar to a directory or folder on a conventional filesystem  with the exception that they exist in a flat namespace, you can not create  containers inside of containers.</p><p>You also have the option of marking a Container as &quot;public&quot; so that the  Objects stored in the Container are publicly available via the CDN.</p><p>NOTE: Due to the possible overflow of PHP's 32-bit integer, the Container's        object_count and size_used instance variables may either be a        integer or float.</p><br /></div><br /><br />
 <div class="top">[ <a href="#top">Top</a> ]</div><br />
 
@@ -126,7 +126,7 @@ Container operations<br /><br /><p>Containers are storage compartments where you
 	<a name="var$cdn_enabled"></a>
 	<p></p>
 	<h4>$cdn_enabled = <span class="value"></span></h4>
-	<p>[line 401]</p>
+	<p>[line 611]</p>
   <br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -150,7 +150,7 @@ Container operations<br /><br /><p>Containers are storage compartments where you
 	<a name="var$cdn_ttl"></a>
 	<p></p>
 	<h4>$cdn_ttl = <span class="value"></span></h4>
-	<p>[line 403]</p>
+	<p>[line 613]</p>
   <br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -174,7 +174,7 @@ Container operations<br /><br /><p>Containers are storage compartments where you
 	<a name="var$cdn_uri"></a>
 	<p></p>
 	<h4>$cdn_uri = <span class="value"></span></h4>
-	<p>[line 402]</p>
+	<p>[line 612]</p>
   <br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -198,7 +198,7 @@ Container operations<br /><br /><p>Containers are storage compartments where you
 	<a name="var$cfs_http"></a>
 	<p></p>
 	<h4>$cfs_http = <span class="value"></span></h4>
-	<p>[line 396]</p>
+	<p>[line 606]</p>
   <br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -222,7 +222,7 @@ Container operations<br /><br /><p>Containers are storage compartments where you
 	<a name="var$name"></a>
 	<p></p>
 	<h4>$name = <span class="value"></span></h4>
-	<p>[line 397]</p>
+	<p>[line 607]</p>
   <br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -246,7 +246,7 @@ Container operations<br /><br /><p>Containers are storage compartments where you
 	<a name="var$object_count"></a>
 	<p></p>
 	<h4>$object_count = <span class="value"></span></h4>
-	<p>[line 398]</p>
+	<p>[line 608]</p>
   <br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -270,7 +270,7 @@ Container operations<br /><br /><p>Containers are storage compartments where you
 	<a name="var$size_used"></a>
 	<p></p>
 	<h4>$size_used = <span class="value"></span></h4>
-	<p>[line 399]</p>
+	<p>[line 609]</p>
   <br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -300,7 +300,7 @@ Container operations<br /><br /><p>Containers are storage compartments where you
 
   <hr />
 	<a name="method__construct"></a>
-	<h3>constructor __construct <span class="smalllinenumber">[line 416]</span></h3>
+	<h3>constructor __construct <span class="smalllinenumber">[line 626]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -360,7 +360,7 @@ $cfs_http)</code>
   </div>
   <hr />
 	<a name="methodcreate_object"></a>
-	<h3>method create_object <span class="smalllinenumber">[line 563]</span></h3>
+	<h3>method create_object <span class="smalllinenumber">[line 827]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -370,7 +370,17 @@ $obj_name = NULL])</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		Create a new remote storage Object<br /><br /><p>Return a new Object instance.  If the remote storage Object exists,  the instance's attributes are populated.</p><br /><br /><br />
+		Create a new remote storage Object<br /><br /><p>Return a new Object instance.  If the remote storage Object exists,  the instance's attributes are populated.</p><p>Example:  <ol><li><div class="src-line">&nbsp;<span class="src-comm">#&nbsp;...&nbsp;authentication&nbsp;code&nbsp;excluded&nbsp;(see&nbsp;previous&nbsp;examples)&nbsp;...</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-comm">#</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-var">$conn&nbsp;</span>=&nbsp;<span class="src-key">new&nbsp;</span><span class="src-id"><a href="../php-cloudfiles/CF_Authentication.html">CF_Authentication</a></span><span class="src-sym">(</span><span class="src-var">$auth</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">&nbsp;<span class="src-var">$public_container&nbsp;</span>=&nbsp;<span class="src-var">$conn</span><span class="src-sym">-&gt;</span><span class="src-id">get_container</span><span class="src-sym">(</span><span class="src-str">&quot;public&quot;</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">&nbsp;<span class="src-comm">#&nbsp;This&nbsp;creates&nbsp;a&nbsp;local&nbsp;instance&nbsp;of&nbsp;a&nbsp;storage&nbsp;object&nbsp;but&nbsp;only&nbsp;creates</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-comm">#&nbsp;it&nbsp;in&nbsp;the&nbsp;storage&nbsp;system&nbsp;when&nbsp;the&nbsp;object's&nbsp;write()&nbsp;method&nbsp;is&nbsp;called.</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-comm">#</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-var">$pic&nbsp;</span>=&nbsp;<span class="src-var">$public_container</span><span class="src-sym">-&gt;</span><a href="../php-cloudfiles/CF_Container.html#methodcreate_object">create_object</a><span class="src-sym">(</span><span class="src-str">&quot;baby.jpg&quot;</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+</ol></p><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
@@ -396,7 +406,7 @@ $obj_name = NULL])</code>
   </div>
   <hr />
 	<a name="methoddelete_object"></a>
-	<h3>method delete_object <span class="smalllinenumber">[line 617]</span></h3>
+	<h3>method delete_object <span class="smalllinenumber">[line 932]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -406,7 +416,16 @@ $obj)</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		Delete a remote storage Object<br /><br /><p>Given an Object instance or name, permanently remove the remote Object  and all associated metadata.</p><br /><br /><br />
+		Delete a remote storage Object<br /><br /><p>Given an Object instance or name, permanently remove the remote Object  and all associated metadata.</p><p>Example:  <ol><li><div class="src-line">&nbsp;<span class="src-comm">#&nbsp;...&nbsp;authentication&nbsp;code&nbsp;excluded&nbsp;(see&nbsp;previous&nbsp;examples)&nbsp;...</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-comm">#</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-var">$conn&nbsp;</span>=&nbsp;<span class="src-key">new&nbsp;</span><span class="src-id"><a href="../php-cloudfiles/CF_Authentication.html">CF_Authentication</a></span><span class="src-sym">(</span><span class="src-var">$auth</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">&nbsp;<span class="src-var">$images&nbsp;</span>=&nbsp;<span class="src-var">$conn</span><span class="src-sym">-&gt;</span><span class="src-id">get_container</span><span class="src-sym">(</span><span class="src-str">&quot;my&nbsp;photos&quot;</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">&nbsp;<span class="src-comm">#&nbsp;Delete&nbsp;specific&nbsp;object</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-comm">#</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-var">$images</span><span class="src-sym">-&gt;</span><a href="../php-cloudfiles/CF_Container.html#methoddelete_object">delete_object</a><span class="src-sym">(</span><span class="src-str">&quot;disco_dancing.jpg&quot;</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+</ol></p><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
@@ -441,7 +460,7 @@ $obj)</code>
   </div>
   <hr />
 	<a name="methodget_object"></a>
-	<h3>method get_object <span class="smalllinenumber">[line 577]</span></h3>
+	<h3>method get_object <span class="smalllinenumber">[line 856]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -451,7 +470,18 @@ $obj_name = NULL])</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		Return an Object instance for the remote storage Object<br /><br /><p>Given a name, return a Object instance representing the  remote storage object.</p><br /><br /><br />
+		Return an Object instance for the remote storage Object<br /><br /><p>Given a name, return a Object instance representing the  remote storage object.</p><p>Example:  <ol><li><div class="src-line">&nbsp;<span class="src-comm">#&nbsp;...&nbsp;authentication&nbsp;code&nbsp;excluded&nbsp;(see&nbsp;previous&nbsp;examples)&nbsp;...</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-comm">#</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-var">$conn&nbsp;</span>=&nbsp;<span class="src-key">new&nbsp;</span><span class="src-id"><a href="../php-cloudfiles/CF_Authentication.html">CF_Authentication</a></span><span class="src-sym">(</span><span class="src-var">$auth</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">&nbsp;<span class="src-var">$public_container&nbsp;</span>=&nbsp;<span class="src-var">$conn</span><span class="src-sym">-&gt;</span><span class="src-id">get_container</span><span class="src-sym">(</span><span class="src-str">&quot;public&quot;</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">&nbsp;<span class="src-comm">#&nbsp;This&nbsp;call&nbsp;only&nbsp;fetches&nbsp;header&nbsp;information&nbsp;and&nbsp;not&nbsp;the&nbsp;content&nbsp;of</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-comm">#&nbsp;the&nbsp;storage&nbsp;object.&nbsp;&nbsp;Use&nbsp;the&nbsp;Object's&nbsp;read()&nbsp;or&nbsp;stream()&nbsp;methods</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-comm">#&nbsp;to&nbsp;obtain&nbsp;the&nbsp;object's&nbsp;data.</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-comm">#</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-var">$pic&nbsp;</span>=&nbsp;<span class="src-var">$public_container</span><span class="src-sym">-&gt;</span><a href="../php-cloudfiles/CF_Container.html#methodget_object">get_object</a><span class="src-sym">(</span><span class="src-str">&quot;baby.jpg&quot;</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+</ol></p><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
@@ -477,7 +507,7 @@ $obj_name = NULL])</code>
   </div>
   <hr />
 	<a name="methodis_public"></a>
-	<h3>method is_public <span class="smalllinenumber">[line 549]</span></h3>
+	<h3>method is_public <span class="smalllinenumber">[line 799]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -486,7 +516,16 @@ $obj_name = NULL])</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		Check if this Container is being publicly served via CDN<br /><br /><p>Use this method to determine if the Container's content is currently  available through the CDN.</p><br /><br /><br />
+		Check if this Container is being publicly served via CDN<br /><br /><p>Use this method to determine if the Container's content is currently  available through the CDN.</p><p>Example:  <ol><li><div class="src-line">&nbsp;<span class="src-comm">#&nbsp;...&nbsp;authentication&nbsp;code&nbsp;excluded&nbsp;(see&nbsp;previous&nbsp;examples)&nbsp;...</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-comm">#</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-var">$conn&nbsp;</span>=&nbsp;<span class="src-key">new&nbsp;</span><span class="src-id"><a href="../php-cloudfiles/CF_Authentication.html">CF_Authentication</a></span><span class="src-sym">(</span><span class="src-var">$auth</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">&nbsp;<span class="src-var">$public_container&nbsp;</span>=&nbsp;<span class="src-var">$conn</span><span class="src-sym">-&gt;</span><span class="src-id">get_container</span><span class="src-sym">(</span><span class="src-str">&quot;public&quot;</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">&nbsp;<span class="src-comm">#&nbsp;Display&nbsp;CDN&nbsp;accessability</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-comm">#</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-var">$public_container</span><span class="src-sym">-&gt;</span><a href="../php-cloudfiles/CF_Container.html#methodis_public">is_public</a><span class="src-sym">(</span><span class="src-sym">)&nbsp;</span>?&nbsp;print&nbsp;<span class="src-str">&quot;Yes&quot;&nbsp;</span>:&nbsp;print&nbsp;<span class="src-str">&quot;No&quot;</span><span class="src-sym">;</span></div></li>
+</ol></p><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
@@ -502,7 +541,7 @@ $obj_name = NULL])</code>
   </div>
   <hr />
 	<a name="methodlist_objects"></a>
-	<h3>method list_objects <span class="smalllinenumber">[line 593]</span></h3>
+	<h3>method list_objects <span class="smalllinenumber">[line 895]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -514,7 +553,26 @@ $prefix = &quot;&quot;])</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		Return a list of Objects<br /><br /><p>Return an array of strings listing the Object names in this Container.</p><br /><br /><br />
+		Return a list of Objects<br /><br /><p>Return an array of strings listing the Object names in this Container.</p><p>Example:  <ol><li><div class="src-line">&nbsp;<span class="src-comm">#&nbsp;...&nbsp;authentication&nbsp;code&nbsp;excluded&nbsp;(see&nbsp;previous&nbsp;examples)&nbsp;...</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-comm">#</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-var">$conn&nbsp;</span>=&nbsp;<span class="src-key">new&nbsp;</span><span class="src-id"><a href="../php-cloudfiles/CF_Authentication.html">CF_Authentication</a></span><span class="src-sym">(</span><span class="src-var">$auth</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">&nbsp;<span class="src-var">$images&nbsp;</span>=&nbsp;<span class="src-var">$conn</span><span class="src-sym">-&gt;</span><span class="src-id">get_container</span><span class="src-sym">(</span><span class="src-str">&quot;my&nbsp;photos&quot;</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">&nbsp;<span class="src-comm">#&nbsp;Grab&nbsp;the&nbsp;list&nbsp;of&nbsp;all&nbsp;storage&nbsp;objects</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-comm">#</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-var">$all_objects&nbsp;</span>=&nbsp;<span class="src-var">$images</span><span class="src-sym">-&gt;</span><a href="../php-cloudfiles/CF_Container.html#methodlist_objects">list_objects</a><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">&nbsp;<span class="src-comm">#&nbsp;Grab&nbsp;subsets&nbsp;of&nbsp;all&nbsp;storage&nbsp;objects</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-comm">#</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-var">$first_ten&nbsp;</span>=&nbsp;<span class="src-var">$images</span><span class="src-sym">-&gt;</span><a href="../php-cloudfiles/CF_Container.html#methodlist_objects">list_objects</a><span class="src-sym">(</span><span class="src-num">10</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-var">$next_ten&nbsp;</span>=&nbsp;<span class="src-var">$images</span><span class="src-sym">-&gt;</span><a href="../php-cloudfiles/CF_Container.html#methodlist_objects">list_objects</a><span class="src-sym">(</span><span class="src-num">10</span><span class="src-sym">,</span><span class="src-num">10</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">&nbsp;<span class="src-comm">#&nbsp;Grab&nbsp;images&nbsp;starting&nbsp;with&nbsp;&quot;birthday_party&quot;&nbsp;and&nbsp;default&nbsp;limit/offset</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-comm">#&nbsp;to&nbsp;match&nbsp;all&nbsp;photos&nbsp;with&nbsp;that&nbsp;prefix</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-comm">#</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-var">$prefixed&nbsp;</span>=&nbsp;<span class="src-var">$images</span><span class="src-sym">-&gt;</span><a href="../php-cloudfiles/CF_Container.html#methodlist_objects">list_objects</a><span class="src-sym">(</span><span class="src-num">0</span><span class="src-sym">,</span>-<span class="src-num">1</span><span class="src-sym">,</span><span class="src-str">&quot;birthday_party&quot;</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+</ol></p><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
@@ -553,7 +611,7 @@ $prefix = &quot;&quot;])</code>
   </div>
   <hr />
 	<a name="methodmake_private"></a>
-	<h3>method make_private <span class="smalllinenumber">[line 521]</span></h3>
+	<h3>method make_private <span class="smalllinenumber">[line 758]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -562,7 +620,17 @@ $prefix = &quot;&quot;])</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		Disable the CDN sharing for this container<br /><br /><p>Use this method to disallow distribution into the CDN of this Container's  content.</p><p>NOTE: Any content already cached in the CDN will continue to be served        from its cache until the TTL expiration transpires.  The default        TTL is typically one day, so &quot;privatizing&quot; the Container will take        up to 24 hours before the content is purged from the CDN cache.</p><br /><br /><br />
+		Disable the CDN sharing for this container<br /><br /><p>Use this method to disallow distribution into the CDN of this Container's  content.</p><p>NOTE: Any content already cached in the CDN will continue to be served        from its cache until the TTL expiration transpires.  The default        TTL is typically one day, so &quot;privatizing&quot; the Container will take        up to 24 hours before the content is purged from the CDN cache.</p><p>Example:  <ol><li><div class="src-line">&nbsp;<span class="src-comm">#&nbsp;...&nbsp;authentication&nbsp;code&nbsp;excluded&nbsp;(see&nbsp;previous&nbsp;examples)&nbsp;...</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-comm">#</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-var">$conn&nbsp;</span>=&nbsp;<span class="src-key">new&nbsp;</span><span class="src-id"><a href="../php-cloudfiles/CF_Authentication.html">CF_Authentication</a></span><span class="src-sym">(</span><span class="src-var">$auth</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">&nbsp;<span class="src-var">$public_container&nbsp;</span>=&nbsp;<span class="src-var">$conn</span><span class="src-sym">-&gt;</span><span class="src-id">get_container</span><span class="src-sym">(</span><span class="src-str">&quot;public&quot;</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">&nbsp;<span class="src-comm">#&nbsp;Disable&nbsp;CDN&nbsp;accessability</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-comm">#&nbsp;...&nbsp;still&nbsp;cached&nbsp;up&nbsp;to&nbsp;a&nbsp;month&nbsp;based&nbsp;on&nbsp;previous&nbsp;example</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-comm">#</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-var">$public_container</span><span class="src-sym">-&gt;</span><a href="../php-cloudfiles/CF_Container.html#methodmake_private">make_private</a><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+</ol></p><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
@@ -587,7 +655,7 @@ $prefix = &quot;&quot;])</code>
   </div>
   <hr />
 	<a name="methodmake_public"></a>
-	<h3>method make_public <span class="smalllinenumber">[line 470]</span></h3>
+	<h3>method make_public <span class="smalllinenumber">[line 693]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -597,7 +665,16 @@ $ttl = 86400])</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		Enable Container content to be served via CDN or modify CDN attributes<br /><br /><p>Either enable this Container's content to be served via CDN or  adjust its CDN attributes.  This Container will always return the  same CDN-enabled URI each time it is toggled public/private/public.</p><br /><br /><br />
+		Enable Container content to be served via CDN or modify CDN attributes<br /><br /><p>Either enable this Container's content to be served via CDN or  adjust its CDN attributes.  This Container will always return the  same CDN-enabled URI each time it is toggled public/private/public.</p><p>Example:  <ol><li><div class="src-line">&nbsp;<span class="src-comm">#&nbsp;...&nbsp;authentication&nbsp;code&nbsp;excluded&nbsp;(see&nbsp;previous&nbsp;examples)&nbsp;...</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-comm">#</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-var">$conn&nbsp;</span>=&nbsp;<span class="src-key">new&nbsp;</span><span class="src-id"><a href="../php-cloudfiles/CF_Authentication.html">CF_Authentication</a></span><span class="src-sym">(</span><span class="src-var">$auth</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">&nbsp;<span class="src-var">$public_container&nbsp;</span>=&nbsp;<span class="src-var">$conn</span><span class="src-sym">-&gt;</span><span class="src-id">create_container</span><span class="src-sym">(</span><span class="src-str">&quot;public&quot;</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">&nbsp;<span class="src-comm">#&nbsp;CDN-enable&nbsp;the&nbsp;container&nbsp;and&nbsp;set&nbsp;it's&nbsp;TTL&nbsp;for&nbsp;a&nbsp;month</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-comm">#</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-var">$public_container</span><span class="src-sym">-&gt;</span><a href="../php-cloudfiles/CF_Container.html#methodmake_public">make_public</a><span class="src-sym">(</span><span class="src-num">86400</span>*<span class="src-num">30</span><span class="src-sym">)</span><span class="src-sym">;&nbsp;</span><span class="src-comm">#&nbsp;30&nbsp;days&nbsp;(86400&nbsp;seconds/day)</span></div></li>
+</ol></p><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
@@ -632,7 +709,7 @@ $ttl = 86400])</code>
   </div>
   <hr />
 	<a name="method__toString"></a>
-	<h3>method __toString <span class="smalllinenumber">[line 445]</span></h3>
+	<h3>method __toString <span class="smalllinenumber">[line 655]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -660,7 +737,7 @@ $ttl = 86400])</code>
 
         <div class="credit">
 		    <hr />
-		    Documentation generated on Tue, 18 Nov 2008 15:08:16 -0600 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.2</a>
+		    Documentation generated on Wed, 10 Dec 2008 16:14:12 -0600 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.2</a>
 	      </div>
       </td></tr></table>
     </td>

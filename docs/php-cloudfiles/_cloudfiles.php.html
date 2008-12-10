@@ -60,9 +60,9 @@ Source Location: /cloudfiles.php<br /><br />
 <div class="contents">
 <h2>Classes:</h2>
 <dt><a href="../php-cloudfiles/CF_Authentication.html">CF_Authentication</a></dt>
-	<dd>Class for handling Cloud Files Authentication, call it's <a href="../php-cloudfiles-http/CF_Http.html#methodauthenticate">authenticate()</a>  method to obtain authorized service urls and authentication token.</dd>
+	<dd>Class for handling Cloud Files Authentication, call it's <a href="../php-cloudfiles-http/CF_Http.html#methodauthenticate">authenticate()</a>  method to obtain authorized service urls and an authentication token.</dd>
 <dt><a href="../php-cloudfiles/CF_Connection.html">CF_Connection</a></dt>
-	<dd>Class for establishing connections to the Cloud Files storage system.  Connection  instances are used to communicate with the storage system at the account  level; listing and deleting Containers and returning Container instances.</dd>
+	<dd>Class for establishing connections to the Cloud Files storage system.</dd>
 <dt><a href="../php-cloudfiles/CF_Container.html">CF_Container</a></dt>
 	<dd>Container operations</dd>
 <dt><a href="../php-cloudfiles/CF_Object.html">CF_Object</a></dt>
@@ -70,7 +70,7 @@ Source Location: /cloudfiles.php<br /><br />
 </div><br /><br />
 
 <h2>Page Details:</h2>
-This is the PHP Cloud Files API.<br /><br /><p>It uses the supporting &quot;cloudfiles_http.php&quot; module for HTTP(s) support and  allows for connection re-use and streaming of content into/out of Cloud Files  via PHP's cURL module.</p><p><ol><li><div class="src-line">&nbsp;&nbsp;&nbsp;<span class="src-comm">#&nbsp;Authenticate&nbsp;to&nbsp;Cloud&nbsp;Files</span></div></li>
+This is the PHP Cloud Files API.<br /><br /><p><ol><li><div class="src-line">&nbsp;&nbsp;&nbsp;<span class="src-comm">#&nbsp;Authenticate&nbsp;to&nbsp;Cloud&nbsp;Files</span></div></li>
 <li><div class="src-line">&nbsp;&nbsp;&nbsp;<span class="src-comm">#</span></div></li>
 <li><div class="src-line">&nbsp;&nbsp;&nbsp;<span class="src-var">$auth&nbsp;</span>=&nbsp;<span class="src-key">new&nbsp;</span><span class="src-id"><a href="../php-cloudfiles/CF_Authentication.html">CF_Authentication</a></span><span class="src-sym">(</span><span class="src-var">$username</span><span class="src-sym">,&nbsp;</span><span class="src-var">$api_key</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
 <li><div class="src-line">&nbsp;&nbsp;&nbsp;<span class="src-var">$auth</span><span class="src-sym">-&gt;</span><span class="src-id">authenticate</span><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
@@ -82,7 +82,7 @@ This is the PHP Cloud Files API.<br /><br /><p>It uses the supporting &quot;clou
 <li><div class="src-line">&nbsp;&nbsp;&nbsp;<span class="src-comm">#&nbsp;Create&nbsp;a&nbsp;remote&nbsp;Container&nbsp;and&nbsp;storage&nbsp;Object</span></div></li>
 <li><div class="src-line">&nbsp;&nbsp;&nbsp;<span class="src-comm">#</span></div></li>
 <li><div class="src-line">&nbsp;&nbsp;&nbsp;<span class="src-var">$images&nbsp;</span>=&nbsp;<span class="src-var">$conn</span><span class="src-sym">-&gt;</span><span class="src-id">create_container</span><span class="src-sym">(</span><span class="src-str">&quot;photos&quot;</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
-<li><div class="src-line">&nbsp;&nbsp;&nbsp;<span class="src-var">$bday&nbsp;</span>=&nbsp;<span class="src-var">$electronica</span><span class="src-sym">-&gt;</span><span class="src-id">create_object</span><span class="src-sym">(</span><span class="src-str">&quot;first_birthday.jpg&quot;</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;<span class="src-var">$bday&nbsp;</span>=&nbsp;<span class="src-var">$images</span><span class="src-sym">-&gt;</span><span class="src-id">create_object</span><span class="src-sym">(</span><span class="src-str">&quot;first_birthday.jpg&quot;</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
 <li><div class="src-line">&nbsp;</div></li>
 <li><div class="src-line">&nbsp;&nbsp;&nbsp;<span class="src-comm">#&nbsp;Upload&nbsp;content&nbsp;from&nbsp;a&nbsp;local&nbsp;file&nbsp;by&nbsp;streaming&nbsp;it</span></div></li>
 <li><div class="src-line">&nbsp;&nbsp;&nbsp;<span class="src-comm">#</span></div></li>
@@ -104,7 +104,7 @@ This is the PHP Cloud Files API.<br /><br /><p>It uses the supporting &quot;clou
 <li><div class="src-line">&nbsp;&nbsp;&nbsp;<span class="src-comm">#&nbsp;Or...&nbsp;print&nbsp;out&nbsp;the&nbsp;Object's&nbsp;public&nbsp;URI</span></div></li>
 <li><div class="src-line">&nbsp;&nbsp;&nbsp;<span class="src-comm">#</span></div></li>
 <li><div class="src-line">&nbsp;&nbsp;&nbsp;print&nbsp;<span class="src-var">$bday</span><span class="src-sym">-&gt;</span><span class="src-id">public_uri</span><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
-</ol></p><p>See the included tests directory for additional sample code.</p><p>Requres PHP 5.x (for Exceptions and OO syntax) and PHP's cURL module.</p><p>See COPYING for license information.</p><br /><br /><br />
+</ol></p><p>See the included tests directory for additional sample code.</p><p>Requres PHP 5.x (for Exceptions and OO syntax) and PHP's cURL module.</p><p>It uses the supporting &quot;cloudfiles_http.php&quot; module for HTTP(s) support and  allows for connection re-use and streaming of content into/out of Cloud Files  via PHP's cURL module.</p><p>See COPYING for license information.</p><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
@@ -167,7 +167,7 @@ require_once(<a href="../php-cloudfiles-exceptions/_cloudfiles_exceptions.php.ht
 
         <div class="credit">
 		    <hr />
-		    Documentation generated on Tue, 18 Nov 2008 15:08:15 -0600 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.2</a>
+		    Documentation generated on Wed, 10 Dec 2008 16:14:11 -0600 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.2</a>
 	      </div>
       </td></tr></table>
     </td>

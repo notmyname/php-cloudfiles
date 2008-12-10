@@ -60,7 +60,7 @@ Source Location: /cloudfiles.php<br /><br />
 
 <h3><a href="#class_details">Class Overview</a></h3>
 <pre></pre><br />
-<div class="description">Class for handling Cloud Files Authentication, call it's <a href="../php-cloudfiles-http/CF_Http.html#methodauthenticate">authenticate()</a>  method to obtain authorized service urls and authentication token.</div><br /><br />
+<div class="description">Class for handling Cloud Files Authentication, call it's <a href="../php-cloudfiles-http/CF_Http.html#methodauthenticate">authenticate()</a>  method to obtain authorized service urls and an authentication token.</div><br /><br />
 
 
 
@@ -110,8 +110,15 @@ Source Location: /cloudfiles.php<br /><br />
 <a name="class_details"></a>
 <h3>Class Details</h3>
 <div class="tags">
-[line 70]<br />
-Class for handling Cloud Files Authentication, call it's <a href="../php-cloudfiles-http/CF_Http.html#methodauthenticate">authenticate()</a>  method to obtain authorized service urls and authentication token.<br /><br /></div><br /><br />
+[line 82]<br />
+Class for handling Cloud Files Authentication, call it's <a href="../php-cloudfiles-http/CF_Http.html#methodauthenticate">authenticate()</a>  method to obtain authorized service urls and an authentication token.<br /><br /><p>Example:  <ol><li><div class="src-line">&nbsp;<span class="src-comm">#&nbsp;Create&nbsp;the&nbsp;authentication&nbsp;instance</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-comm">#</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-var">$auth&nbsp;</span>=&nbsp;<span class="src-key">new&nbsp;</span><span class="src-id"><a href="../php-cloudfiles/CF_Authentication.html">CF_Authentication</a></span><span class="src-sym">(</span><span class="src-str">&quot;username&quot;</span><span class="src-sym">,&nbsp;</span><span class="src-str">&quot;api_key&quot;</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">&nbsp;<span class="src-comm">#&nbsp;Perform&nbsp;authentication&nbsp;request</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-comm">#</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-var">$auth</span><span class="src-sym">-&gt;</span><a href="../php-cloudfiles/CF_Authentication.html#methodauthenticate">authenticate</a><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+</ol></p><br /></div><br /><br />
 <div class="top">[ <a href="#top">Top</a> ]</div><br />
 
 <hr />
@@ -121,7 +128,7 @@ Class for handling Cloud Files Authentication, call it's <a href="../php-cloudfi
 	<a name="var$account"></a>
 	<p></p>
 	<h4>$account = <span class="value"></span></h4>
-	<p>[line 76]</p>
+	<p>[line 88]</p>
   <br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -145,7 +152,7 @@ Class for handling Cloud Files Authentication, call it's <a href="../php-cloudfi
 	<a name="var$api_key"></a>
 	<p></p>
 	<h4>$api_key = <span class="value"></span></h4>
-	<p>[line 74]</p>
+	<p>[line 86]</p>
   <br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -169,7 +176,7 @@ Class for handling Cloud Files Authentication, call it's <a href="../php-cloudfi
 	<a name="var$auth_host"></a>
 	<p></p>
 	<h4>$auth_host = <span class="value"></span></h4>
-	<p>[line 75]</p>
+	<p>[line 87]</p>
   <br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -193,7 +200,7 @@ Class for handling Cloud Files Authentication, call it's <a href="../php-cloudfi
 	<a name="var$auth_token"></a>
 	<p></p>
 	<h4>$auth_token = <span class="value"></span></h4>
-	<p>[line 83]</p>
+	<p>[line 95]</p>
   <br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -217,7 +224,7 @@ Class for handling Cloud Files Authentication, call it's <a href="../php-cloudfi
 	<a name="var$cdnm_url"></a>
 	<p></p>
 	<h4>$cdnm_url = <span class="value"></span></h4>
-	<p>[line 82]</p>
+	<p>[line 94]</p>
   <br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -241,7 +248,7 @@ Class for handling Cloud Files Authentication, call it's <a href="../php-cloudfi
 	<a name="var$dbug"></a>
 	<p></p>
 	<h4>$dbug = <span class="value"></span></h4>
-	<p>[line 72]</p>
+	<p>[line 84]</p>
   <br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -265,7 +272,7 @@ Class for handling Cloud Files Authentication, call it's <a href="../php-cloudfi
 	<a name="var$storage_url"></a>
 	<p></p>
 	<h4>$storage_url = <span class="value"></span></h4>
-	<p>[line 81]</p>
+	<p>[line 93]</p>
   Instance variables that are set after successful authentication<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -289,7 +296,7 @@ Class for handling Cloud Files Authentication, call it's <a href="../php-cloudfi
 	<a name="var$username"></a>
 	<p></p>
 	<h4>$username = <span class="value"></span></h4>
-	<p>[line 73]</p>
+	<p>[line 85]</p>
   <br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -319,7 +326,7 @@ Class for handling Cloud Files Authentication, call it's <a href="../php-cloudfi
 
   <hr />
 	<a name="method__construct"></a>
-	<h3>constructor __construct <span class="smalllinenumber">[line 93]</span></h3>
+	<h3>constructor __construct <span class="smalllinenumber">[line 105]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -364,7 +371,7 @@ $auth_host = NULL])</code>
   </div>
   <hr />
 	<a name="methodauthenticate"></a>
-	<h3>method authenticate <span class="smalllinenumber">[line 124]</span></h3>
+	<h3>method authenticate <span class="smalllinenumber">[line 147]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -374,7 +381,14 @@ $version = DEFAULT_CF_API_VERSION])</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		Attempt to validate Username/API Access Key<br /><br /><p>Attempts to validate credentials with the authentication service.  It  either returns <kbd>True</kbd> or throws an Exception.  Accepts a single  (optional) argument for the storage system API version.</p><br /><br /><br />
+		Attempt to validate Username/API Access Key<br /><br /><p>Attempts to validate credentials with the authentication service.  It  either returns <kbd>True</kbd> or throws an Exception.  Accepts a single  (optional) argument for the storage system API version.</p><p>Example:  <ol><li><div class="src-line">&nbsp;<span class="src-comm">#&nbsp;Create&nbsp;the&nbsp;authentication&nbsp;instance</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-comm">#</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-var">$auth&nbsp;</span>=&nbsp;<span class="src-key">new&nbsp;</span><span class="src-id"><a href="../php-cloudfiles/CF_Authentication.html">CF_Authentication</a></span><span class="src-sym">(</span><span class="src-str">&quot;username&quot;</span><span class="src-sym">,&nbsp;</span><span class="src-str">&quot;api_key&quot;</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">&nbsp;<span class="src-comm">#&nbsp;Perform&nbsp;authentication&nbsp;request</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-comm">#</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-var">$auth</span><span class="src-sym">-&gt;</span><a href="../php-cloudfiles/CF_Authentication.html#methodauthenticate">authenticate</a><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+</ol></p><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
@@ -406,7 +420,7 @@ $version = DEFAULT_CF_API_VERSION])</code>
   </div>
   <hr />
 	<a name="methodsetDebug"></a>
-	<h3>method setDebug <span class="smalllinenumber">[line 152]</span></h3>
+	<h3>method setDebug <span class="smalllinenumber">[line 174]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -436,7 +450,7 @@ $bool)</code>
 
         <div class="credit">
 		    <hr />
-		    Documentation generated on Tue, 18 Nov 2008 15:08:15 -0600 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.2</a>
+		    Documentation generated on Wed, 10 Dec 2008 16:14:11 -0600 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.2</a>
 	      </div>
       </td></tr></table>
     </td>
