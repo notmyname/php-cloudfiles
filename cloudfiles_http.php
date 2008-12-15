@@ -44,6 +44,9 @@ define("STORAGE_URL", "X-Storage-Url");
 define("AUTH_TOKEN", "X-Auth-Token");
 define("AUTH_USER_HEADER", "X-Auth-User");
 define("AUTH_KEY_HEADER", "X-Auth-Key");
+define("AUTH_USER_HEADER_LEGACY", "X-Storage-User");
+define("AUTH_KEY_HEADER_LEGACY", "X-Storage-Pass");
+define("AUTH_TOKEN_LEGACY", "X-Storage-Token");
 
 /**
  * HTTP/cURL wrapper for Cloud Files
@@ -142,17 +145,21 @@ class CF_Http
     #
     function authenticate($user, $pass, $acct=NULL, $host=NULL)
     {
-        $headers = array(
-            sprintf("%s: %s", AUTH_USER_HEADER, $user),
-            sprintf("%s: %s", AUTH_KEY_HEADER, $pass),
-            );
 
         $path = array();
         if ($acct || $host) {
+            $headers = array(
+                sprintf("%s: %s", AUTH_USER_HEADER_LEGACY, $user),
+                sprintf("%s: %s", AUTH_KEY_HEADER_LEGACY, $pass),
+                );
             $path[] = $host;
             $path[] = rawurlencode(sprintf("v%d",$this->api_version));
             $path[] = rawurlencode($acct);
         } else {
+            $headers = array(
+                sprintf("%s: %s", AUTH_USER_HEADER, $user),
+                sprintf("%s: %s", AUTH_KEY_HEADER, $pass),
+                );
             $path[] = "https://api.mosso.com";
         }
         $path[] = "auth";
@@ -889,6 +896,9 @@ class CF_Http
         }
         if (stripos($header, AUTH_TOKEN) === 0) {
             $this->auth_token = trim(substr($header, strlen(AUTH_TOKEN)+1));
+        }
+        if (stripos($header, AUTH_TOKEN_LEGACY) === 0) {
+            $this->auth_token = trim(substr($header,strlen(AUTH_TOKEN_LEGACY)+1));
         }
         return strlen($header);
     }
