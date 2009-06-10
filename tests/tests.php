@@ -9,17 +9,31 @@ if (!$USER || !$API_KEY) {
     $HTML_OUT = True;
 }
 
+$COMPREHENSIVE = False;
+if ($_SERVER["argv"][1] == "full") {
+    $COMPREHENSIVE = True;
+}
+
 require("cloudfiles.php");
 require("test_utils.php");
 
+# check to see if this is windows
+switch ($_SERVER["OS"]) {
+    case 'Windows_NT':
+        $MS = True;
+        break;
+    default:
+        $MS = False;
+}
+
 # Variables for random tests
-$NUM_CONTAINERS = 4;
-$NUM_OBJECTS = 8;
-$NUM_METADATA = 16;
-$CONT_NAME_LENGTH = 32;
-$OBJ_NAME_LENGTH = 64;
+$NUM_CONTAINERS = 2;
+$NUM_OBJECTS = 4;
+$NUM_METADATA = 8;
+$CONT_NAME_LENGTH = 16;
+$OBJ_NAME_LENGTH = 32;
 $META_NAME_LENGTH = 8;
-$META_VALUE_LENGTH = 32;
+$META_VALUE_LENGTH = 16;
 $OBJECT_DATA = "This is some sample text as object data.";
 
 
@@ -58,6 +72,7 @@ if ($HTML_OUT) {
 echo "======= AUTHENTICATING ======================================\n";
 $auth = new CF_Authentication($USER,$API_KEY,$ACCOUNT,$HOST);
 //$auth->setDebug(1);  # toggle to enable cURL verbose output
+if ($MS) { $auth->ssl_use_cabundle(); }
 $auth->authenticate();
 assert('$auth->storage_url != NULL');
 assert('$auth->auth_token != NULL');
@@ -67,6 +82,7 @@ if (!$ACCOUNT) {
     $has_cdn = True;
 }
 $conn = new CF_Connection($auth);
+if ($MS) { $conn->ssl_use_cabundle(); }
 $conn->set_read_progress_function("read_callback_test");
 $conn->set_write_progress_function("write_callback_test");
 //$conn->setDebug(1);  # toggle to enable cURL verbose output
@@ -224,6 +240,10 @@ assert('$partial == "Some sample"');
 print "Range[0-10]: ".$partial."\n";
 
 
+echo "======= CHECK LAST-MODIFIED =================================\n";
+assert('substr($orange->last_modified, -3) == "GMT"');
+
+
 echo "======= CREATE OBJECT =======================================\n";
 $o1 = $container->create_object("fuzzy.txt");
 assert('$o1');
@@ -316,10 +336,20 @@ assert('$ifdata == $text');
 print "If-Unmodified-Since passes (future timestamp)\n";
 
 
+echo "======= TEST BADCONTENTTYPE EXCEPTION =======================\n";
+$o2 = $container->create_object("bad-content-type");
+try {
+    $o2->write(pack("n*", 0xf00f, 0xdead, 0xbeef, 0x0100, 0x0ff0));
+} catch (BadContentTypeException $e) {
+    print "SUCCESS: " . $e->getMessage() . "\n";
+}
+
+
 echo "======= UPLOAD OBJECT FROM FILE =============================\n";
 $fname = basename(__FILE__);
 $md5 = md5_file($fname);
 $o2 = $container->create_object($fname);
+$o2->content_type = "text/plain";
 $result = $o2->load_from_filename($fname);
 assert('$result');
 assert('$o2->getETag() == $md5');
@@ -530,6 +560,7 @@ if ($has_cdn) {
     echo "======= UPLOAD STORAGE OBJECT AND FETCH FROM CDN ============\n";
     $contents = "This is a sample text file.";
     $o = $ascii_cont->create_object("foo.txt");
+    $o->content_type = "text/plain";
     $o->write($contents);
     sleep(2);
     print $o->public_uri() . "\n";
@@ -572,17 +603,20 @@ $random_info = $conn->get_info();
 #
 $test_data = array();
 for ($i=0; $i < $NUM_CONTAINERS; $i++) {
-    $container_name = genUTF8($CONT_NAME_LENGTH, array(47,63)); # skip '/','?'
+    $container_name = genUTF8($CONT_NAME_LENGTH, array(47)); # skip '/'
 
     $obj_names = array();
     for ($j=0; $j < $NUM_OBJECTS; $j++) {
-        $obj_name = genUTF8($OBJ_NAME_LENGTH, array(63)); # skip '?'
+        $obj_name = genUTF8($OBJ_NAME_LENGTH);
+        if ($obj_name[0] == '/') {
+            $obj_name = substr($obj_name, 1);
+        }
 
         $meta = array();
         for ($l=0; $l < $NUM_METADATA; $l++) {
             $meta_name = genUTF8($META_NAME_LENGTH, array(58)); # skip ':'
             $meta_val = genUTF8($META_VALUE_LENGTH, array(58)); # skip ':'
-            $meta_name = trim(strtolower($meta_name));
+            $meta_name = trim($meta_name);
             $meta[$meta_name] = trim($meta_val);
         }
         $obj_names[$obj_name] = $meta;
@@ -602,6 +636,7 @@ foreach ($test_data as $cont_name => $obj_arr) {
         assert('get_class($obj) == "CF_Object"');
         assert('$obj->getETag() == NULL');
         $obj->metadata = $metadata;
+        $obj->content_type = "text/plain";
         $obj->write($OBJECT_DATA);
         assert('$obj->getETag() == $data_md5');
     }
@@ -640,12 +675,28 @@ foreach ($test_data as $cont_name => $obj_arr) {
             $md = $obj->metadata;
             $test_md = $test_data[$cont_name][$obj_name];
             assert('count($md) == count($test_md)');
-            asort($md, SORT_STRING); asort($test_md, SORT_STRING);
+
+            # values are the same?
+            $test_vals = asort(array_values($test_md), SORT_STRING);
+            $md_vals = asort(array_values($test_md), SORT_STRING);
             try {
-                assert('$md == $test_md');
+                assert('$md_vals == $test_vals');
+             } catch (Exception $e) {
+                print " ** metadata values not equal\n";
+                print " ** cont/obj: " . $cont_name . "/" . $obj_name . "\n";
+                print " ** md:\n"; print_r($md);
+                print " ** test_md:\n"; print_r($test_md);
+                exit();
+            }
+            # header keys are the same?
+            $test_keys = asort(array_map("strtolower", array_keys($test_md)),
+                SORT_STRING);
+            $md_keys = asort(array_map("strtolower", array_keys($md)),SORT_STRING);
+            try {
+                assert('$md_keys == $test_keys');
             } catch (Exception $e) {
-                print " ** container: " . $cont_name . "\n";
-                print " ** object: " . $obj_name . "\n";
+                print " ** metadata keys are not equal\n";
+                print " ** cont/obj: " . $cont_name . "/" . $obj_name . "\n";
                 print " ** md:\n"; print_r($md);
                 print " ** test_md:\n"; print_r($test_md);
                 exit();
@@ -691,6 +742,58 @@ echo "======= CHECK ACCOUNT INFO AFTER RANDOM TESTS ===============\n";
 $info = $conn->get_info();
 assert('$info == $random_info');
 
+# Run extra "big" tests
+#
+if ($COMPREHENSIVE) {
+    echo "======= GENERATE/UPLOAD LARGE FILE ==========================\n";
+    $fname = "big-file.dat";
+    if (!file_exists($fname)) {
+        $size = 1 * 1024 * 1024 * 1024;
+        $chunk = 8192;
+        $fp = fopen($fname, "wb");
+        for ($i=1; $i <= $size;) {
+            $tmp = "";
+            for ($j=1; $j < $chunk; $j++) {
+                $tmp .= sprintf("%d", $j*$i);
+            }
+            fwrite($fp, $tmp);
+            $i += strlen($tmp);
+        }
+        fclose($fp);
+    }
+    $md5 = md5_file($fname);
+    $comp_cont = $conn->create_container("big-php");
+    $obj = $comp_cont->create_object($fname);
+    $obj->content_type = "application/octet-stream";
+    $obj->set_etag($md5);
+    $fp = fopen($fname, "rb");
+    $s = time();
+    echo "======= STARTING UPLOAD: " . $s . "\n";
+    $obj->write($fp);
+    fclose($fp);
+    $e = time();
+    echo "======= FINISHED UPLOAD: " . $e . "\n";
+    echo "======= DURATION UPLOAD: " . ($e - $s) . "\n";
+
+
+    echo "======= GRAB A COPY =========================================\n";
+    $o2 = $comp_cont->get_object($fname);
+    $s = time();
+    echo "======= STARTING DOWNLOAD ===================================\n";
+    $o2->save_to_filename("copy.dat");
+    $e = time();
+    echo "======= FINISHED DOWNLOAD: " . $e . "\n";
+    echo "======= DURATION DOWNLOAD: " . ($e - $s) . "\n";
+    $new_md5 = md5_file("copy.dat");
+    print $md5 . " : " . $new_md5. "\n";
+    assert('$md5 == $new_md5');
+
+
+    echo "======= CLEAN-UP ============================================\n";
+    $comp_cont->delete_object($fname);
+    unlink($fname);
+    unlink("copy.dat");
+}
 
 echo "======= CHECK ACCOUNT INFO AFTER ALL TESTING ================\n";
 print_r($orig_info);

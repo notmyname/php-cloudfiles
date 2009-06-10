@@ -3,24 +3,39 @@
  * This is the PHP Cloud Files API.
  *
  * <code>
- *   # Authenticate to Cloud Files
+ *   # Authenticate to Cloud Files.  The default is to automatically try
+ *   # to re-authenticate if an authentication token expires.
+ *   #
+ *   # NOTE: Some versions of cURL include an outdated certificate authority (CA)
+ *   #       file.  This API ships with a newer version obtained directly from
+ *   #       cURL's web site (http://curl.haxx.se).  To use the newer CA bundle,
+ *   #       call the CF_Authentication instance's 'ssl_use_cabundle()' method.
  *   #
  *   $auth = new CF_Authentication($username, $api_key);
+ *   # $auth->ssl_use_cabundle();  # bypass cURL's old CA bundle
  *   $auth->authenticate();
  *
  *   # Establish a connection to the storage system
  *   #
+ *   # NOTE: Some versions of cURL include an outdated certificate authority (CA)
+ *   #       file.  This API ships with a newer version obtained directly from
+ *   #       cURL's web site (http://curl.haxx.se).  To use the newer CA bundle,
+ *   #       call the CF_Connection instance's 'ssl_use_cabundle()' method.
+ *   #
  *   $conn = new CF_Connection($auth);
+ *   # $conn->ssl_use_cabundle();  # bypass cURL's old CA bundle
  *
  *   # Create a remote Container and storage Object
  *   #
  *   $images = $conn->create_container("photos");
  *   $bday = $images->create_object("first_birthday.jpg");
  *
- *   # Upload content from a local file by streaming it
+ *   # Upload content from a local file by streaming it.  Note that we use
+ *   # a "float" for the file size to overcome PHP's 32-bit integer limit for
+ *   # very large files.
  *   #
  *   $fname = "/home/user/photos/birthdays/birthday1.jpg";  # filename to upload
- *   $size = filesize($fname);
+ *   $size = (float) sprintf("%u", filesize($fname));
  *   $fp = open($fname, "r");
  *   $bday->write($fp, $size);
  *
@@ -59,8 +74,9 @@
 require_once("cloudfiles_exceptions.php");
 require("cloudfiles_http.php");
 define("DEFAULT_CF_API_VERSION", 1);
-define("MAX_CONTAINER_NAME_LEN", 64);
-define("MAX_OBJECT_NAME_LEN", 128);
+define("MAX_CONTAINER_NAME_LEN", 256);
+define("MAX_OBJECT_NAME_LEN", 1024);
+define("MAX_OBJECT_SIZE", 5*1024*1024*1024+1); # bigger than S3! ;-)
 
 /**
  * Class for handling Cloud Files Authentication, call it's {@link authenticate()}
@@ -71,6 +87,13 @@ define("MAX_OBJECT_NAME_LEN", 128);
  * # Create the authentication instance
  * #
  * $auth = new CF_Authentication("username", "api_key");
+ *
+ * # NOTE: Some versions of cURL include an outdated certificate authority (CA)
+ * #       file.  This API ships with a newer version obtained directly from
+ * #       cURL's web site (http://curl.haxx.se).  To use the newer CA bundle,
+ * #       call the CF_Authentication instance's 'ssl_use_cabundle()' method.
+ * #
+ * # $auth->ssl_use_cabundle(); # bypass cURL's old CA bundle
  *
  * # Perform authentication request
  * #
@@ -122,6 +145,32 @@ class CF_Authentication
     }
 
     /**
+     * Use the Certificate Authority bundle included with this API
+     *
+     * Most versions of PHP with cURL support include an outdated Certificate
+     * Authority (CA) bundle (the file that lists all valid certificate
+     * signing authorities).  The SSL certificates used by the Cloud Files
+     * storage system are perfectly valid but have been created/signed by
+     * a CA not listed in these outdated cURL distributions.
+     *
+     * As a work-around, we've included an updated CA bundle obtained
+     * directly from cURL's web site (http://curl.haxx.se).  You can direct
+     * the API to use this CA bundle by calling this method prior to making
+     * any remote calls.  The best place to use this method is right after
+     * the CF_Authentication instance has been instantiated.
+     *
+     * You can specify your own CA bundle by passing in the full pathname
+     * to the bundle.  You can use the included CA bundle by leaving the
+     * argument blank.
+     *
+     * @param string $path Specify path to CA bundle (default to included)
+     */
+    function ssl_use_cabundle($path=NULL)
+    {
+        $this->cfs_http->ssl_use_cabundle($path);
+    }
+
+    /**
      * Attempt to validate Username/API Access Key
      *
      * Attempts to validate credentials with the authentication service.  It
@@ -169,6 +218,22 @@ class CF_Authentication
     }
 
     /**
+     * Make sure the CF_Authentication instance has authenticated.
+     *
+     * Ensures that the instance variables necessary to communicate with
+     * Cloud Files have been set from a previous authenticate() call.
+     *
+     * @return boolean <kbd>True</kbd> if successfully authenticated
+     */
+    function authenticated()
+    {
+        if (!($this->storage_url || $this->cdnm_url) || !$this->auth_token) {
+            return False;
+        }
+        return True;
+    }
+
+    /**
      * Toggle debugging - set cURL verbose flag
      */
     function setDebug($bool)
@@ -198,6 +263,13 @@ class CF_Authentication
  * # validated CF_Authentication instance.
  * #
  * $conn = new CF_Connection($auth);
+ *
+ * # NOTE: Some versions of cURL include an outdated certificate authority (CA)
+ * #       file.  This API ships with a newer version obtained directly from
+ * #       cURL's web site (http://curl.haxx.se).  To use the newer CA bundle,
+ * #       call the CF_Authentication instance's 'ssl_use_cabundle()' method.
+ * #
+ * # $conn->ssl_use_cabundle(); # bypass cURL's old CA bundle
  * </code>
  *
  * @package php-cloudfiles
@@ -206,10 +278,7 @@ class CF_Connection
 {
     public $dbug;
     public $cfs_http;
-
-    public $storage_url;
-    public $cdnm_url;
-    public $auth_token;
+    public $cfs_auth;
 
     /**
      * Pass in a previously authenticated CF_Authentication instance.
@@ -236,17 +305,13 @@ class CF_Connection
     function __construct($cfs_auth)
     {
         $this->cfs_http = new CF_Http(DEFAULT_CF_API_VERSION);
-        $this->storage_url = $cfs_auth->storage_url;
-        $this->cdnm_url = $cfs_auth->cdnm_url;
-        $this->auth_token = $cfs_auth->auth_token;
-        if (!($this->storage_url || $this->cdnm_url) || !$this->auth_token) {
+        $this->cfs_auth = $cfs_auth;
+        if (!$this->cfs_auth->authenticated()) {
             $e = "Need to pass in a previously authenticated ";
             $e .= "CF_Authentication instance.";
             throw new AuthenticationException($e);
         }
-        $this->cfs_http->setStorageUrl($this->storage_url);
-        $this->cfs_http->setCDNMUrl($this->cdnm_url);
-        $this->cfs_http->setAuthToken($this->auth_token);
+        $this->cfs_http->setCFAuth($this->cfs_auth);
         $this->dbug = False;
     }
 
@@ -264,9 +329,8 @@ class CF_Connection
     /**
      * Cloud Files account information
      *
-     * Return an array of two integers (or possibly floats if the value
-     * overflows PHP's 32-bit integer); number of containers on the account
-     * and total bytes used for the account.
+     * Return an array of two floats (since PHP only supports 32-bit integers);
+     * number of containers on the account and total bytes used for the account.
      *
      * Example:
      * <code>
@@ -286,6 +350,9 @@ class CF_Connection
     {
         list($status, $reason, $container_count, $total_bytes) =
                 $this->cfs_http->head_account();
+        #if ($status == 401 && $this->_re_auth()) {
+        #    return $this->get_info();
+        #}
         if ($status < 200 || $status > 299) {
             throw new InvalidResponseException(
                 "Invalid response (".$status."): ".$this->cfs_http->get_error());
@@ -323,9 +390,9 @@ class CF_Connection
             $r .= "' cannot contain a '/' character.";
             throw new SyntaxException($r);
         }
-        if (mb_strlen($container_name, "UTF-8") > MAX_CONTAINER_NAME_LEN) {
+        if (strlen($container_name) > MAX_CONTAINER_NAME_LEN) {
             throw new SyntaxException(sprintf(
-                "Container name exeeds %d characters.",
+                "Container name exeeds %d bytes.",
                 MAX_CONTAINER_NAME_LEN));
         }
 
@@ -334,12 +401,15 @@ class CF_Connection
             throw new InvalidResponseException("Invalid response ("
                 . $return_code. "): " . $this->cfs_http->get_error());
         }
+        #if ($status == 401 && $this->_re_auth()) {
+        #    return $this->create_container($container_name);
+        #}
         if ($return_code != 201 && $return_code != 202) {
             throw new InvalidResponseException(
                 "Invalid response (".$return_code."): "
                     . $this->cfs_http->get_error());
         }
-        return new CF_Container($this->cfs_http, $container_name);
+        return new CF_Container($this->cfs_auth, $this->cfs_http, $container_name);
     }
 
     /**
@@ -383,6 +453,9 @@ class CF_Connection
         if (!$return_code) {
             throw new InvalidResponseException("Failed to obtain http response");
         }
+        #if ($status == 401 && $this->_re_auth()) {
+        #    return $this->delete_container($container);
+        #}
         if ($return_code == 409) {
             throw new NonEmptyContainerException(
                 "Container must be empty prior to removing it.");
@@ -412,7 +485,7 @@ class CF_Connection
      * $conn = new CF_Authentication($auth);
      *
      * $images = $conn->get_container("my photos");
-     * print "Number of Objects: " . $images->size . "\n";
+     * print "Number of Objects: " . $images->count . "\n";
      * print "Bytes stored in container: " . $images->bytes . "\n";
      * </code>
      *
@@ -423,8 +496,11 @@ class CF_Connection
      */
     function get_container($container_name=NULL)
     {
-        list($status, $reason, $size, $bytes) =
+        list($status, $reason, $count, $bytes) =
                 $this->cfs_http->head_container($container_name);
+        #if ($status == 401 && $this->_re_auth()) {
+        #    return $this->get_container($container_name);
+        #}
         if ($status == 404) {
             throw new NoSuchContainerException("Container not found.");
         }
@@ -432,7 +508,51 @@ class CF_Connection
             throw new InvalidResponseException(
                 "Invalid response: ".$this->cfs_http->get_error());
         }
-        return new CF_Container($this->cfs_http,$container_name,$size,$bytes);
+        return new CF_Container($this->cfs_auth, $this->cfs_http,
+            $container_name, $count, $bytes);
+    }
+
+    /**
+     * Return array of Container instances
+     *
+     * Return an array of CF_Container instances on the account.  The instances
+     * will be fully populated with Container attributes (bytes stored and
+     * Object count)
+     *
+     * Example:
+     * <code>
+     * # ... authentication code excluded (see previous examples) ...
+     * #
+     * $conn = new CF_Authentication($auth);
+     *
+     * $clist = $conn->get_containers();
+     * foreach ($clist as $cont) {
+     *     print "Container name: " . $cont->name . "\n";
+     *     print "Number of Objects: " . $cont->count . "\n";
+     *     print "Bytes stored in container: " . $cont->bytes . "\n";
+     * }
+     * </code>
+     *
+     * @return array An array of CF_Container instances
+     * @throws InvalidResponseException unexpected response
+     */
+    function get_containers($limit=0, $marker=NULL)
+    {
+        list($status, $reason, $container_info) =
+                $this->cfs_http->list_containers_info($limit, $marker);
+        #if ($status == 401 && $this->_re_auth()) {
+        #    return $this->get_containers();
+        #}
+        if ($status < 200 || $status > 299) {
+            throw new InvalidResponseException(
+                "Invalid response: ".$this->cfs_http->get_error());
+        }
+        $containers = array();
+        foreach ($container_info as $name => $info) {
+            $containers[] = new CF_Container($this->cfs_auth, $this->cfs_http,
+                $name, $info["count"], $info["bytes"], False);
+        }
+        return $containers;
     }
 
     /**
@@ -455,17 +575,71 @@ class CF_Connection
      * )
      * </code>
      *
+     * @param integer $limit restrict results to $limit Containers
+     * @param string $marker return results greater than $marker
      * @return array list of remote Containers
      * @throws InvalidResponseException unexpected response
      */
-    function list_containers()
+    function list_containers($limit=0, $marker=NULL)
     {
-        list($status, $reason, $containers) = $this->cfs_http->list_containers();
+        list($status, $reason, $containers) =
+            $this->cfs_http->list_containers($limit, $marker);
+        #if ($status == 401 && $this->_re_auth()) {
+        #    return $this->list_containers($limit, $marker);
+        #}
         if ($status < 200 || $status > 299) {
             throw new InvalidResponseException(
                 "Invalid response (".$status."): ".$this->cfs_http->get_error());
         }
         return $containers;
+    }
+
+    /**
+     * Return array of information about remote Containers
+     *
+     * Return a nested array structure of Container info.
+     *
+     * Example:
+     * <code>
+     * # ... authentication code excluded (see previous examples) ...
+     * #
+     *
+     * $container_info = $conn->list_containers_info();
+     * print_r($container_info);
+     * Array
+     * (
+     *     ["my photos"] =>
+     *         Array
+     *         (
+     *             ["bytes"] => 78,
+     *             ["count"] => 2
+     *         )
+     *     ["docs"] =>
+     *         Array
+     *         (
+     *             ["bytes"] => 37323,
+     *             ["count"] => 12
+     *         )
+     * )
+     * </code>
+     *
+     * @param integer $limit restrict results to $limit Containers
+     * @param string $marker return results greater than $marker
+     * @return array nested array structure of Container info
+     * @throws InvalidResponseException unexpected response
+     */
+    function list_containers_info($limit=0, $marker=NULL)
+    {
+        list($status, $reason, $container_info) = 
+                $this->cfs_http->list_containers_info($limit, $marker);
+        #if ($status == 401 && $this->_re_auth()) {
+        #    return $this->list_containers_info($limit, $marker);
+        #}
+        if ($status < 200 || $status > 299) {
+            throw new InvalidResponseException(
+                "Invalid response (".$status."): ".$this->cfs_http->get_error());
+        }
+        return $container_info;
     }
 
     /**
@@ -499,6 +673,9 @@ class CF_Connection
     {
         list($status, $reason, $containers) =
                 $this->cfs_http->list_cdn_containers();
+        #if ($status == 401 && $this->_re_auth()) {
+        #    return $this->list_public_containers();
+        #}
         if ($status < 200 || $status > 299) {
             throw new InvalidResponseException(
                 "Invalid response (".$status."): ".$this->cfs_http->get_error());
@@ -582,6 +759,45 @@ class CF_Connection
     {
         $this->cfs_http->setWriteProgressFunc($func_name);
     }
+
+    /**
+     * Use the Certificate Authority bundle included with this API
+     *
+     * Most versions of PHP with cURL support include an outdated Certificate
+     * Authority (CA) bundle (the file that lists all valid certificate
+     * signing authorities).  The SSL certificates used by the Cloud Files
+     * storage system are perfectly valid but have been created/signed by
+     * a CA not listed in these outdated cURL distributions.
+     *
+     * As a work-around, we've included an updated CA bundle obtained
+     * directly from cURL's web site (http://curl.haxx.se).  You can direct
+     * the API to use this CA bundle by calling this method prior to making
+     * any remote calls.  The best place to use this method is right after
+     * the CF_Authentication instance has been instantiated.
+     *
+     * You can specify your own CA bundle by passing in the full pathname
+     * to the bundle.  You can use the included CA bundle by leaving the
+     * argument blank.
+     *
+     * @param string $path Specify path to CA bundle (default to included)
+     */
+    function ssl_use_cabundle($path=NULL)
+    {
+        $this->cfs_http->ssl_use_cabundle($path);
+    }
+
+    #private function _re_auth()
+    #{
+    #    $new_auth = new CF_Authentication(
+    #        $this->cfs_auth->username,
+    #        $this->cfs_auth->api_key,
+    #        $this->cfs_auth->auth_host,
+    #        $this->cfs_auth->account);
+    #    $new_auth->authenticate();
+    #    $this->cfs_auth = $new_auth;
+    #    $this->cfs_http->setCFAuth($this->cfs_auth);
+    #    return True;
+    #}
 }
 
 /**
@@ -595,18 +811,15 @@ class CF_Connection
  * You also have the option of marking a Container as "public" so that the
  * Objects stored in the Container are publicly available via the CDN.
  *
- * NOTE: Due to the possible overflow of PHP's 32-bit integer, the Container's
- *       object_count and size_used instance variables may either be a
- *       integer or float.
- *
  * @package php-cloudfiles
  */
 class CF_Container
 {
+    public $cfs_auth;
     public $cfs_http;
     public $name;
     public $object_count;
-    public $size_used;
+    public $bytes_used;
 
     public $cdn_enabled;
     public $cdn_uri;
@@ -617,15 +830,17 @@ class CF_Container
      *
      * Constructor for Container
      *
+     * @param obj $cfs_auth CF_Authentication instance
      * @param obj $cfs_http HTTP connection manager
      * @param string $name name of Container
      * @param int $count number of Objects stored in this Container
      * @param int $bytes number of bytes stored in this Container
      * @throws SyntaxException invalid Container name
      */
-    function __construct(&$cfs_http, $name, $count=0, $bytes=0)
+    function __construct(&$cfs_auth, &$cfs_http, $name, $count=0,
+        $bytes=0, $docdn=True)
     {
-        if (mb_strlen($name, "UTF-8") > MAX_CONTAINER_NAME_LEN) {
+        if (strlen($name) > MAX_CONTAINER_NAME_LEN) {
             throw new SyntaxException("Container name exceeds "
                 . "maximum allowed length.");
         }
@@ -633,6 +848,7 @@ class CF_Container
             throw new SyntaxException(
                 "Container names cannot contain a '/' character.");
         }
+        $this->cfs_auth = $cfs_auth;
         $this->cfs_http = $cfs_http;
         $this->name = $name;
         $this->object_count = $count;
@@ -640,7 +856,7 @@ class CF_Container
         $this->cdn_enabled = NULL;
         $this->cdn_uri = NULL;
         $this->cdn_ttl = NULL;
-        if ($this->cfs_http->getCDNMUrl() != NULL) {
+        if ($this->cfs_http->getCDNMUrl() != NULL && $docdn) {
             $this->_cdn_initialize();
         }
     }
@@ -700,6 +916,9 @@ class CF_Container
             # previously published, assume we're setting new attributes
             list($status, $reason, $cdn_uri) =
                 $this->cfs_http->update_cdn_container($this->name,$ttl);
+            #if ($status == 401 && $this->_re_auth()) {
+            #    return $this->make_public($ttl);
+            #}
             if ($status == 404) {
                 # this instance _thinks_ the container was published, but the
                 # cdn management system thinks otherwise - try again with a PUT
@@ -712,9 +931,9 @@ class CF_Container
             list($status, $reason, $cdn_uri) =
                 $this->cfs_http->add_cdn_container($this->name,$ttl);
         }
-        if ($status == 401) {
-            throw new AuthenticationException("Unauthorized");
-        }
+        #if ($status == 401 && $this->_re_auth()) {
+        #    return $this->make_public($ttl);
+        #}
         if (!in_array($status, array(201,202))) {
             throw new InvalidResponseException(
                 "Invalid response (".$status."): ".$this->cfs_http->get_error());
@@ -762,9 +981,9 @@ class CF_Container
                 "Authentication response did not indicate CDN availability");
         }
         list($status,$reason) = $this->cfs_http->remove_cdn_container($this->name);
-        if ($status == 401) {
-            throw new AuthenticationException("Unauthorized");
-        }
+        #if ($status == 401 && $this->_re_auth()) {
+        #    return $this->make_private();
+        #}
         if (!in_array($status, array(202,404))) {
             throw new InvalidResponseException(
                 "Invalid response (".$status."): ".$this->cfs_http->get_error());
@@ -867,8 +1086,6 @@ class CF_Container
      * <code>
      * # ... authentication code excluded (see previous examples) ...
      * #
-     * $conn = new CF_Authentication($auth);
-     *
      * $images = $conn->get_container("my photos");
      *
      * # Grab the list of all storage objects
@@ -878,30 +1095,113 @@ class CF_Container
      * # Grab subsets of all storage objects
      * #
      * $first_ten = $images->list_objects(10);
-     * $next_ten = $images->list_objects(10,10);
+     * 
+     * # Note the use of the previous result's last object name being
+     * # used as the 'marker' parameter to fetch the next 10 objects
+     * #
+     * $next_ten = $images->list_objects(10, $first_ten[count($first_ten)-1]);
      *
-     * # Grab images starting with "birthday_party" and default limit/offset
+     * # Grab images starting with "birthday_party" and default limit/marker
      * # to match all photos with that prefix
      * #
-     * $prefixed = $images->list_objects(0,-1,"birthday_party");
+     * $prefixed = $images->list_objects(0, NULL, "birthday");
+     *
+     * # Assuming you have created the appropriate directory marker Objects,
+     * # you can traverse your pseudo-hierarchical containers
+     * # with the "path" argument.
+     * #
+     * $animals = $images->list_objects(0,NULL,NULL,"pictures/animals");
+     * $dogs = $images->list_objects(0,NULL,NULL,"pictures/animals/dogs");
      * </code>
      *
      * @param int $limit <i>optional</i> only return $limit names
-     * @param int $offset <i>optional</i> subset of names starting at $offset
+     * @param int $marker <i>optional</i> subset of names starting at $marker
      * @param string $prefix <i>optional</i> Objects whose names begin with $prefix
+     * @param string $path <i>optional</i> only return results under "pathname"
      * @return array array of strings
      * @throws InvalidResponseException unexpected response
      */
-    function list_objects($limit=0, $offset=-1, $prefix="")
+    function list_objects($limit=0, $marker=NULL, $prefix=NULL, $path=NULL)
     {
         list($status, $reason, $obj_list) =
-            $this->cfs_http->get_container($this->name,
-                    $limit, $offset, $prefix);
+            $this->cfs_http->list_objects($this->name, $limit,
+                $marker, $prefix, $path);
+        #if ($status == 401 && $this->_re_auth()) {
+        #    return $this->list_objects($limit, $marker, $prefix, $path);
+        #}
         if ($status < 200 || $status > 299) {
             throw new InvalidResponseException(
                 "Invalid response (".$status."): ".$this->cfs_http->get_error());
         }
         return $obj_list;
+    }
+
+    /**
+     * Return an array of Objects
+     *
+     * Return an array of Object instances in this Container.
+     *
+     * Example:
+     * <code>
+     * # ... authentication code excluded (see previous examples) ...
+     * #
+     * $images = $conn->get_container("my photos");
+     *
+     * # Grab the list of all storage objects
+     * #
+     * $all_objects = $images->get_objects();
+     *
+     * # Grab subsets of all storage objects
+     * #
+     * $first_ten = $images->get_objects(10);
+     *
+     * # Note the use of the previous result's last object name being
+     * # used as the 'marker' parameter to fetch the next 10 objects
+     * #
+     * $next_ten = $images->list_objects(10, $first_ten[count($first_ten)-1]);
+     *
+     * # Grab images starting with "birthday_party" and default limit/marker
+     * # to match all photos with that prefix
+     * #
+     * $prefixed = $images->get_objects(0, NULL, "birthday");
+     *
+     * # Assuming you have created the appropriate directory marker Objects,
+     * # you can traverse your pseudo-hierarchical containers
+     * # with the "path" argument.
+     * #
+     * $animals = $images->get_objects(0,NULL,NULL,"pictures/animals");
+     * $dogs = $images->get_objects(0,NULL,NULL,"pictures/animals/dogs");
+     * </code>
+     *
+     * @param int $limit <i>optional</i> only return $limit names
+     * @param int $marker <i>optional</i> subset of names starting at $marker
+     * @param string $prefix <i>optional</i> Objects whose names begin with $prefix
+     * @param string $path <i>optional</i> only return results under "pathname"
+     * @return array array of strings
+     * @throws InvalidResponseException unexpected response
+     */
+    function get_objects($limit=0, $marker=NULL, $prefix=NULL, $path=NULL)
+    {
+        list($status, $reason, $obj_array) =
+            $this->cfs_http->get_objects($this->name, $limit,
+                $marker, $prefix, $path);
+        #if ($status == 401 && $this->_re_auth()) {
+        #    return $this->get_objects($limit, $marker, $prefix, $path);
+        #}
+        if ($status < 200 || $status > 299) {
+            throw new InvalidResponseException(
+                "Invalid response (".$status."): ".$this->cfs_http->get_error());
+        }
+        $objects = array();
+        foreach ($obj_array as $obj) {
+            $tmp = new CF_Object($this, $obj["name"], False, False);
+            $tmp->content_type = $obj["content_type"];
+            $tmp->content_length = (float) $obj["bytes"];
+            $tmp->set_etag($obj["hash"]);
+            $tmp->last_modified = $obj["last_modified"];
+            $objects[] = $tmp;
+        }
+        return $objects;
     }
 
     /**
@@ -944,6 +1244,9 @@ class CF_Container
             throw new SyntaxException("Object name not set.");
         }
         $status = $this->cfs_http->delete_object($this->name, $obj_name);
+        #if ($status == 401 && $this->_re_auth()) {
+        #    return $this->delete_object($obj);
+        #}
         if ($status == 404) {
             $m = "Specified object '".$this->name."/".$obj_name;
             $m.= "' did not exist to delete.";
@@ -957,6 +1260,35 @@ class CF_Container
     }
 
     /**
+     * Helper function to create "path" elements for a given Object name
+     *
+     * Given an Object whos name contains '/' path separators, this function
+     * will create the "directory marker" Objects of one byte with the
+     * Content-Type of "application/folder".
+     *
+     * It assumes the last element of the full path is the "real" Object
+     * and does NOT create a remote storage Object for that last element.
+     */
+    function create_paths($path_name)
+    {
+        if ($path_name[0] == '/') {
+            $path_name = mb_substr($path_name, 0, 1);
+        }
+        $elements = explode('/', $path_name, -1);
+        $build_path = "";
+        foreach ($elements as $idx => $val) {
+            if (!$build_path) {
+                $build_path = $val;
+            } else {
+                $build_path .= "/" . $val;
+            }
+            $obj = new CF_Object($this, $build_path);
+            $obj->content_type = "application/directory";
+            $obj->write(".", 1);
+        }
+    }
+
+    /**
      * Internal method to grab CDN/Container info if appropriate to do so
      *
      * @throws InvalidResponseException unexpected response
@@ -965,6 +1297,9 @@ class CF_Container
     {
         list($status, $reason, $cdn_enabled, $cdn_uri, $cdn_ttl) =
             $this->cfs_http->head_cdn_container($this->name);
+        #if ($status == 401 && $this->_re_auth()) {
+        #    return $this->_cdn_initialize();
+        #}
         if (!in_array($status, array(204,404))) {
             throw new InvalidResponseException(
                 "Invalid response (".$status."): ".$this->cfs_http->get_error());
@@ -973,6 +1308,19 @@ class CF_Container
         $this->cdn_uri = $cdn_uri;
         $this->cdn_ttl = $cdn_ttl;
     }
+
+    #private function _re_auth()
+    #{
+    #    $new_auth = new CF_Authentication(
+    #        $this->cfs_auth->username,
+    #        $this->cfs_auth->api_key,
+    #        $this->cfs_auth->auth_host,
+    #        $this->cfs_auth->account);
+    #    $new_auth->authenticate();
+    #    $this->cfs_auth = $new_auth;
+    #    $this->cfs_http->setCFAuth($this->cfs_auth);
+    #    return True;
+    #}
 }
 
 
@@ -1002,9 +1350,14 @@ class CF_Object
      * @param string $name name of Object
      * @param boolean $force_exists if set, throw an error if Object doesn't exist
      */
-    function __construct(&$container, $name, $force_exists=False)
+    function __construct(&$container, $name, $force_exists=False, $dohead=True)
     {
-        if (mb_strlen($name, "UTF-8") > MAX_OBJECT_NAME_LEN) {
+        if ($name[0] == "/") {
+            $r = "Object name '".$name;
+            $r .= "' cannot contain begin with a '/' character.";
+            throw new SyntaxException($r);
+        }
+        if (strlen($name) > MAX_OBJECT_NAME_LEN) {
             throw new SyntaxException("Object name exceeds "
                 . "maximum allowed length.");
         }
@@ -1016,8 +1369,10 @@ class CF_Object
         $this->content_type = NULL;
         $this->content_length = 0;
         $this->metadata = array();
-        if (!$this->_initialize() && $force_exists) {
-            throw new NoSuchObjectException("No such object '".$name."'");
+        if ($dohead) {
+            if (!$this->_initialize() && $force_exists) {
+                throw new NoSuchObjectException("No such object '".$name."'");
+            }
         }
     }
 
@@ -1091,6 +1446,9 @@ class CF_Object
     {
         list($status, $reason, $data) =
             $this->container->cfs_http->get_object_to_string($this, $hdrs);
+        #if ($status == 401 && $this->_re_auth()) {
+        #    return $this->read($hdrs);
+        #}
         if (($status < 200) || ($status > 299
                 && $status != 412 && $status != 304)) {
             throw new InvalidResponseException("Invalid response (".$status."): "
@@ -1145,6 +1503,9 @@ class CF_Object
     {
         list($status, $reason) = 
                 $this->container->cfs_http->get_object_to_stream($this,$fp,$hdrs);
+        #if ($status == 401 && $this->_re_auth()) {
+        #    return $this->stream($fp, $hdrs);
+        #}
         if (($status < 200) || ($status > 299
                 && $status != 412 && $status != 304)) {
             throw new InvalidResponseException("Invalid response (".$status."): "
@@ -1187,6 +1548,9 @@ class CF_Object
     {
         if (!empty($this->metadata)) {
             $status = $this->container->cfs_http->update_object($this);
+            #if ($status == 401 && $this->_re_auth()) {
+            #    return $this->sync_metadata();
+            #}
             if ($status != 202) {
                 throw new InvalidResponseException("Invalid response ("
                     .$status."): ".$this->container->cfs_http->get_error());
@@ -1201,7 +1565,7 @@ class CF_Object
      *
      * Write data to the remote Object.  The $data argument can either be a
      * PHP resource open for reading (see PHP's fopen() method) or an in-memory
-     * variable.  If passing in a PHP resource, you must also include the $size
+     * variable.  If passing in a PHP resource, you must also include the $bytes
      * parameter.
      *
      * Example:
@@ -1218,17 +1582,21 @@ class CF_Object
      * </code>
      *
      * @param string|resource $data string or open resource
-     * @param int $size amount of data to upload (required for resources)
+     * @param float $bytes amount of data to upload (required for resources)
      * @param boolean $verify generate, send, and compare MD5 checksums
      * @return boolean <kbd>True</kbd> when data uploaded successfully
      * @throws SyntaxException missing required parameters
+     * @throws BadContentTypeException if no Content-Type was/could be set
      * @throws MisMatchedChecksumException $verify is set and checksums unequal
      * @throws InvalidResponseException unexpected response
      */
-    function write($data=NULL, $size=0, $verify=True)
+    function write($data=NULL, $bytes=0, $verify=True)
     {
         if (!$data) {
-            throw new SyntaxException("Missing required data source.");
+            throw new SyntaxException("Missing data source.");
+        }
+        if ($bytes > MAX_OBJECT_SIZE) {
+            throw new SyntaxException("Bytes exceeds maximum object size.");
         }
         if ($verify) {
             if (!$this->_etag_override) {
@@ -1238,29 +1606,61 @@ class CF_Object
             $this->etag = NULL;
         }
 
-        if (!$this->content_type) {
-            $this->content_type = "application/octet-stream";
-        }
-
         $close_fh = False;
         if (!is_resource($data)) {
-            # hack to treat string data as a file handle
-            $fp = fopen("php://memory", "r+");
-            fwrite($fp, $data);
+            # A hack to treat string data as a file handle.  php://memory feels
+            # like a better option, but it seems to break on Windows so use
+            # a temporary file instead.
+            #
+            $fp = fopen("php://temp", "wb+");
+            #$fp = fopen("php://memory", "wb+");
+            fwrite($fp, $data, strlen($data));
             rewind($fp);
             $close_fh = True;
-            $this->content_length = strlen($data);
-        } else {
-            if (!$size) {
-                throw new SyntaxException("Missing required size for data.");
-            } else {
-                $this->content_length = $size;
+            $this->content_length = (float) strlen($data);
+            if ($this->content_length > MAX_OBJECT_SIZE) {
+                throw new SyntaxException("Data exceeds maximum object size");
             }
+            $ct_data = substr($data, 0, 64);
+        } else {
+            $this->content_length = $bytes;
             $fp = $data;
+            $ct_data = fread($data, 64);
+            rewind($data);
+        }
+
+        if (!$this->content_type) {
+            if (function_exists("finfo_open")) {
+                $finfo = @finfo_open(FILEINFO_MIME);
+                if ($finfo) {
+                    $ct = @finfo_buffer($finfo, $ct_data);
+                    @finfo_close($finfo);
+                    if ($ct) {
+                        $this->content_type = $ct;
+                    }
+                } else {
+                    # try included magic file
+                    $local_magic = dirname(__FILE__) . "/share/magic";
+                    $finfo = @finfo_open(FILEINFO_MIME, $local_magic);
+                    if ($finfo) {
+                        $ct = @finfo_buffer($finfo, $ct_data);
+                        @finfo_close($finfo);
+                        if ($ct) {
+                            $this->content_type = $ct;
+                        }
+                    }
+                }
+            }
+        }
+        if (!$this->content_type) {
+            throw new BadContentTypeException("Required Content-Type not set");
         }
 
         list($status, $reason, $etag) =
                 $this->container->cfs_http->put_object($this, $fp);
+        #if ($status == 401 && $this->_re_auth()) {
+        #    return $this->write($data, $bytes, $verify);
+        #}
         if ($status == 412) {
             if ($close_fh) { fclose($fp); }
             throw new SyntaxException("Missing Content-Type header");
@@ -1306,6 +1706,7 @@ class CF_Object
      * @param boolean $verify enable local/remote MD5 checksum validation
      * @return boolean <kbd>True</kbd> if data uploaded successfully
      * @throws SyntaxException missing required parameters
+     * @throws BadContentTypeException if no Content-Type was/could be set
      * @throws MisMatchedChecksumException $verify is set and checksums unequal
      * @throws InvalidResponseException unexpected response
      * @throws IOException error opening file
@@ -1316,8 +1717,27 @@ class CF_Object
         if (!$fp) {
             throw new IOException("Could not open file for reading: ".$filename);
         }
-        $size = filesize($filename);
-        $this->content_type = mime_content_type($filename);
+        $size = (float) sprintf("%u", filesize($filename));
+        if ($size > MAX_OBJECT_SIZE) {
+            throw new SyntaxException("File size exceeds maximum object size.");
+        }
+
+        if (!$this->content_type && function_exists("finfo_open")) {
+            $finfo = @finfo_open(FILEINFO_MIME);
+            if ($finfo) {
+                $ct = @finfo_file($finfo, $filename);
+                @finfo_close($finfo);
+                if ($ct) {
+                    $this->content_type = $ct;
+                }
+            }
+        }
+        if (!$this->content_type && function_exists("mime_content_type")) {
+            $this->content_type = @mime_content_type($filename);
+        }
+        if (!$this->content_type) {
+            throw new BadContentTypeException("Required Content-Type not set");
+        }
         $this->write($fp, $size, $verify);
         fclose($fp);
         return True;
@@ -1349,7 +1769,7 @@ class CF_Object
      */
     function save_to_filename($filename)
     {
-        $fp = @fopen($filename, "w");
+        $fp = @fopen($filename, "wb");
         if (!$fp) {
             throw new IOException("Could not open file for writing: ".$filename);
         }
@@ -1392,7 +1812,13 @@ class CF_Object
      * may either be a local filename, open resource for reading, or a string.
      *
      * <b>WARNING:</b> If $data is a resource, the entire contents are read
-     * into a local variable (memory) before computing the checksum!
+     * into a local variable (memory) before computing the checksum!  PHP
+     * will cap it's memory usage based on the php.ini settings of
+     * "memory_limit" and "max_execution_time".  If you set these values too
+     * high, you may exhaust your system's RAM.  If you plan to use this API
+     * to stream large files into Cloud Files, you should consider either
+     * buffering to disk first to compute the MD5 checksum, or setting
+     * the $verify parameter to False in the write() method.
      *
      * @param filename|obj|string $data filename, open resource, or string
      * @return string MD5 checksum hexidecimal string
@@ -1403,7 +1829,7 @@ class CF_Object
         if (is_file($data)) {
             $md5 = md5_file($data);
         } elseif (is_resource($data)) {
-            # let's hope this isn't a BIG file
+            # let's hope this isn't a BIG file (see WARNING above)
             $contents = stream_get_contents($data); # PHP 5 and up
             $md5 = md5($contents);
             rewind($data);
@@ -1421,7 +1847,9 @@ class CF_Object
         list($status, $reason, $etag, $last_modified, $content_type,
             $content_length, $metadata) =
                 $this->container->cfs_http->head_object($this);
-
+        #if ($status == 401 && $this->_re_auth()) {
+        #    return $this->_initialize();
+        #}
         if ($status == 404) {
             return False;
         }
@@ -1436,6 +1864,19 @@ class CF_Object
         $this->metadata = $metadata;
         return True;
     }
+
+    #private function _re_auth()
+    #{
+    #    $new_auth = new CF_Authentication(
+    #        $this->cfs_auth->username,
+    #        $this->cfs_auth->api_key,
+    #        $this->cfs_auth->auth_host,
+    #        $this->cfs_auth->account);
+    #    $new_auth->authenticate();
+    #    $this->container->cfs_auth = $new_auth;
+    #    $this->container->cfs_http->setCFAuth($this->cfs_auth);
+    #    return True;
+    #}
 }
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */

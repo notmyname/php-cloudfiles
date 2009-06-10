@@ -25,6 +25,8 @@ class NoSuchAccountException extends Exception { }
 class MisMatchedChecksumException extends Exception { }
 class IOException extends Exception { }
 class CDNNotEnabledException extends Exception { }
+class BadContentTypeException extends Exception { }
+class InvalidUTF8Exception extends Exception { }
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 

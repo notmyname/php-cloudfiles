@@ -26,13 +26,15 @@
   <tr valign="top">
     <td width="200" class="menu">
 	<div id="ric">
+					<p><a href="ric_AUTHORS.html">AUTHORS</a></p>
+					<p><a href="ric_COPYING.html">COPYING</a></p>
 					<p><a href="ric_Changelog.html">Changelog</a></p>
 					<p><a href="ric_README.html">README</a></p>
 			</div>
       <b>Packages:</b><br />
-              <a href="li_php-cloudfiles-http.html">php-cloudfiles-http</a><br />
-              <a href="li_php-cloudfiles.html">php-cloudfiles</a><br />
               <a href="li_php-cloudfiles-exceptions.html">php-cloudfiles-exceptions</a><br />
+              <a href="li_php-cloudfiles.html">php-cloudfiles</a><br />
+              <a href="li_php-cloudfiles-http.html">php-cloudfiles-http</a><br />
             <br /><br />
                         <b>Files:</b><br />
       	  <div class="package">
@@ -55,6 +57,7 @@
 <a name="top"></a>
 <h1>Element index for package php-cloudfiles</h1>
 	[ <a href="elementindex_php-cloudfiles.html#a">a</a> ]
+	[ <a href="elementindex_php-cloudfiles.html#b">b</a> ]
 	[ <a href="elementindex_php-cloudfiles.html#c">c</a> ]
 	[ <a href="elementindex_php-cloudfiles.html#d">d</a> ]
 	[ <a href="elementindex_php-cloudfiles.html#g">g</a> ]
@@ -103,10 +106,20 @@
 				<dd>in file cloudfiles.php, variable <a href="php-cloudfiles/CF_Authentication.html#var$auth_host">CF_Authentication::$auth_host</a></dd>
 							<dt><b>$auth_token</b></dt>
 				<dd>in file cloudfiles.php, variable <a href="php-cloudfiles/CF_Authentication.html#var$auth_token">CF_Authentication::$auth_token</a></dd>
-							<dt><b>$auth_token</b></dt>
-				<dd>in file cloudfiles.php, variable <a href="php-cloudfiles/CF_Connection.html#var$auth_token">CF_Connection::$auth_token</a></dd>
 							<dt><b>authenticate</b></dt>
 				<dd>in file cloudfiles.php, method <a href="php-cloudfiles/CF_Authentication.html#methodauthenticate">CF_Authentication::authenticate()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Attempt to validate Username/API Access Key</dd>
+							<dt><b>authenticated</b></dt>
+				<dd>in file cloudfiles.php, method <a href="php-cloudfiles/CF_Authentication.html#methodauthenticated">CF_Authentication::authenticated()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Make sure the CF_Authentication instance has authenticated.</dd>
+					</dl>
+	</div>
+	<a href="elementindex_php-cloudfiles.html#top">top</a><br>
+  <hr />
+	<a name="b"></a>
+	<div>
+		<h2>b</h2>
+		<dl>
+							<dt><b>$bytes_used</b></dt>
+				<dd>in file cloudfiles.php, variable <a href="php-cloudfiles/CF_Container.html#var$bytes_used">CF_Container::$bytes_used</a></dd>
 					</dl>
 	</div>
 	<a href="elementindex_php-cloudfiles.html#top">top</a><br>
@@ -116,8 +129,6 @@
 		<h2>c</h2>
 		<dl>
 							<dt><b>$cdnm_url</b></dt>
-				<dd>in file cloudfiles.php, variable <a href="php-cloudfiles/CF_Connection.html#var$cdnm_url">CF_Connection::$cdnm_url</a></dd>
-							<dt><b>$cdnm_url</b></dt>
 				<dd>in file cloudfiles.php, variable <a href="php-cloudfiles/CF_Authentication.html#var$cdnm_url">CF_Authentication::$cdnm_url</a></dd>
 							<dt><b>$cdn_enabled</b></dt>
 				<dd>in file cloudfiles.php, variable <a href="php-cloudfiles/CF_Container.html#var$cdn_enabled">CF_Container::$cdn_enabled</a></dd>
@@ -125,6 +136,10 @@
 				<dd>in file cloudfiles.php, variable <a href="php-cloudfiles/CF_Container.html#var$cdn_ttl">CF_Container::$cdn_ttl</a></dd>
 							<dt><b>$cdn_uri</b></dt>
 				<dd>in file cloudfiles.php, variable <a href="php-cloudfiles/CF_Container.html#var$cdn_uri">CF_Container::$cdn_uri</a></dd>
+							<dt><b>$cfs_auth</b></dt>
+				<dd>in file cloudfiles.php, variable <a href="php-cloudfiles/CF_Container.html#var$cfs_auth">CF_Container::$cfs_auth</a></dd>
+							<dt><b>$cfs_auth</b></dt>
+				<dd>in file cloudfiles.php, variable <a href="php-cloudfiles/CF_Connection.html#var$cfs_auth">CF_Connection::$cfs_auth</a></dd>
 							<dt><b>$cfs_http</b></dt>
 				<dd>in file cloudfiles.php, variable <a href="php-cloudfiles/CF_Connection.html#var$cfs_http">CF_Connection::$cfs_http</a></dd>
 							<dt><b>$cfs_http</b></dt>
@@ -151,6 +166,8 @@
 				<dd>in file cloudfiles.php, method <a href="php-cloudfiles/CF_Connection.html#methodcreate_container">CF_Connection::create_container()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Create a Container</dd>
 							<dt><b>create_object</b></dt>
 				<dd>in file cloudfiles.php, method <a href="php-cloudfiles/CF_Container.html#methodcreate_object">CF_Container::create_object()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Create a new remote storage Object</dd>
+							<dt><b>create_paths</b></dt>
+				<dd>in file cloudfiles.php, method <a href="php-cloudfiles/CF_Container.html#methodcreate_paths">CF_Container::create_paths()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Helper function to create &quot;path&quot; elements for a given Object name</dd>
 					</dl>
 	</div>
 	<a href="elementindex_php-cloudfiles.html#top">top</a><br>
@@ -181,10 +198,14 @@
 				<dd>in file cloudfiles.php, method <a href="php-cloudfiles/CF_Object.html#methodgetETag">CF_Object::getETag()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Object's MD5 checksum</dd>
 							<dt><b>get_container</b></dt>
 				<dd>in file cloudfiles.php, method <a href="php-cloudfiles/CF_Connection.html#methodget_container">CF_Connection::get_container()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Return a Container instance</dd>
+							<dt><b>get_containers</b></dt>
+				<dd>in file cloudfiles.php, method <a href="php-cloudfiles/CF_Connection.html#methodget_containers">CF_Connection::get_containers()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Return array of Container instances</dd>
 							<dt><b>get_info</b></dt>
 				<dd>in file cloudfiles.php, method <a href="php-cloudfiles/CF_Connection.html#methodget_info">CF_Connection::get_info()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Cloud Files account information</dd>
 							<dt><b>get_object</b></dt>
 				<dd>in file cloudfiles.php, method <a href="php-cloudfiles/CF_Container.html#methodget_object">CF_Container::get_object()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Return an Object instance for the remote storage Object</dd>
+							<dt><b>get_objects</b></dt>
+				<dd>in file cloudfiles.php, method <a href="php-cloudfiles/CF_Container.html#methodget_objects">CF_Container::get_objects()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Return an array of Objects</dd>
 					</dl>
 	</div>
 	<a href="elementindex_php-cloudfiles.html#top">top</a><br>
@@ -207,6 +228,8 @@
 				<dd>in file cloudfiles.php, variable <a href="php-cloudfiles/CF_Object.html#var$last_modified">CF_Object::$last_modified</a></dd>
 							<dt><b>list_containers</b></dt>
 				<dd>in file cloudfiles.php, method <a href="php-cloudfiles/CF_Connection.html#methodlist_containers">CF_Connection::list_containers()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Return list of remote Containers</dd>
+							<dt><b>list_containers_info</b></dt>
+				<dd>in file cloudfiles.php, method <a href="php-cloudfiles/CF_Connection.html#methodlist_containers_info">CF_Connection::list_containers_info()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Return array of information about remote Containers</dd>
 							<dt><b>list_objects</b></dt>
 				<dd>in file cloudfiles.php, method <a href="php-cloudfiles/CF_Container.html#methodlist_objects">CF_Container::list_objects()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Return a list of Objects</dd>
 							<dt><b>list_public_containers</b></dt>
@@ -231,6 +254,8 @@
 				<dd>in file cloudfiles.php, constant <a href="php-cloudfiles/_cloudfiles.php.html#defineMAX_CONTAINER_NAME_LEN">MAX_CONTAINER_NAME_LEN</a></dd>
 							<dt><b>MAX_OBJECT_NAME_LEN</b></dt>
 				<dd>in file cloudfiles.php, constant <a href="php-cloudfiles/_cloudfiles.php.html#defineMAX_OBJECT_NAME_LEN">MAX_OBJECT_NAME_LEN</a></dd>
+							<dt><b>MAX_OBJECT_SIZE</b></dt>
+				<dd>in file cloudfiles.php, constant <a href="php-cloudfiles/_cloudfiles.php.html#defineMAX_OBJECT_SIZE">MAX_OBJECT_SIZE</a></dd>
 					</dl>
 	</div>
 	<a href="elementindex_php-cloudfiles.html#top">top</a><br>
@@ -281,10 +306,6 @@
 	<div>
 		<h2>s</h2>
 		<dl>
-							<dt><b>$size_used</b></dt>
-				<dd>in file cloudfiles.php, variable <a href="php-cloudfiles/CF_Container.html#var$size_used">CF_Container::$size_used</a></dd>
-							<dt><b>$storage_url</b></dt>
-				<dd>in file cloudfiles.php, variable <a href="php-cloudfiles/CF_Connection.html#var$storage_url">CF_Connection::$storage_url</a></dd>
 							<dt><b>$storage_url</b></dt>
 				<dd>in file cloudfiles.php, variable <a href="php-cloudfiles/CF_Authentication.html#var$storage_url">CF_Authentication::$storage_url</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Instance variables that are set after successful authentication</dd>
 							<dt><b>save_to_filename</b></dt>
@@ -299,6 +320,10 @@
 				<dd>in file cloudfiles.php, method <a href="php-cloudfiles/CF_Connection.html#methodset_read_progress_function">CF_Connection::set_read_progress_function()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Set a user-supplied callback function to report download progress</dd>
 							<dt><b>set_write_progress_function</b></dt>
 				<dd>in file cloudfiles.php, method <a href="php-cloudfiles/CF_Connection.html#methodset_write_progress_function">CF_Connection::set_write_progress_function()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Set a user-supplied callback function to report upload progress</dd>
+							<dt><b>ssl_use_cabundle</b></dt>
+				<dd>in file cloudfiles.php, method <a href="php-cloudfiles/CF_Connection.html#methodssl_use_cabundle">CF_Connection::ssl_use_cabundle()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Use the Certificate Authority bundle included with this API</dd>
+							<dt><b>ssl_use_cabundle</b></dt>
+				<dd>in file cloudfiles.php, method <a href="php-cloudfiles/CF_Authentication.html#methodssl_use_cabundle">CF_Authentication::ssl_use_cabundle()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Use the Certificate Authority bundle included with this API</dd>
 							<dt><b>stream</b></dt>
 				<dd>in file cloudfiles.php, method <a href="php-cloudfiles/CF_Object.html#methodstream">CF_Object::stream()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Streaming read of Object's data</dd>
 							<dt><b>sync_metadata</b></dt>
@@ -328,7 +353,7 @@
 	<a href="elementindex_php-cloudfiles.html#top">top</a><br>
         <div class="credit">
 		    <hr />
-		    Documentation generated on Wed, 10 Dec 2008 16:44:10 -0600 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.2</a>
+		    Documentation generated on Wed, 10 Jun 2009 13:11:08 -0500 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.2</a>
 	      </div>
       </td></tr></table>
     </td>

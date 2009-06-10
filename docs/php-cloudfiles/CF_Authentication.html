@@ -26,6 +26,8 @@
   <tr valign="top">
     <td width="200" class="menu">
 	<div id="ric">
+					<p><a href="../ric_AUTHORS.html">AUTHORS</a></p>
+					<p><a href="../ric_COPYING.html">COPYING</a></p>
 					<p><a href="../ric_Changelog.html">Changelog</a></p>
 					<p><a href="../ric_README.html">README</a></p>
 			</div>
@@ -91,7 +93,9 @@ Source Location: /cloudfiles.php<br /><br />
 <ul>
     <li><a href="../php-cloudfiles/CF_Authentication.html#method__construct">__construct</a></li>
     <li><a href="../php-cloudfiles/CF_Authentication.html#methodauthenticate">authenticate</a></li>
+    <li><a href="../php-cloudfiles/CF_Authentication.html#methodauthenticated">authenticated</a></li>
     <li><a href="../php-cloudfiles/CF_Authentication.html#methodsetDebug">setDebug</a></li>
+    <li><a href="../php-cloudfiles/CF_Authentication.html#methodssl_use_cabundle">ssl_use_cabundle</a></li>
   </ul>
 </td>
 
@@ -111,10 +115,17 @@ Source Location: /cloudfiles.php<br /><br />
 <a name="class_details"></a>
 <h3>Class Details</h3>
 <div class="tags">
-[line 82]<br />
+[line 105]<br />
 Class for handling Cloud Files Authentication, call it's <a href="../php-cloudfiles-http/CF_Http.html#methodauthenticate">authenticate()</a>  method to obtain authorized service urls and an authentication token.<br /><br /><p>Example:  <ol><li><div class="src-line">&nbsp;<span class="src-comm">#&nbsp;Create&nbsp;the&nbsp;authentication&nbsp;instance</span></div></li>
 <li><div class="src-line">&nbsp;<span class="src-comm">#</span></div></li>
 <li><div class="src-line">&nbsp;<span class="src-var">$auth&nbsp;</span>=&nbsp;<span class="src-key">new&nbsp;</span><span class="src-id"><a href="../php-cloudfiles/CF_Authentication.html">CF_Authentication</a></span><span class="src-sym">(</span><span class="src-str">&quot;username&quot;</span><span class="src-sym">,&nbsp;</span><span class="src-str">&quot;api_key&quot;</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">&nbsp;<span class="src-comm">#&nbsp;NOTE:&nbsp;Some&nbsp;versions&nbsp;of&nbsp;cURL&nbsp;include&nbsp;an&nbsp;outdated&nbsp;certificate&nbsp;authority&nbsp;(CA)</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-comm">#&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;file.&nbsp;&nbsp;This&nbsp;API&nbsp;ships&nbsp;with&nbsp;a&nbsp;newer&nbsp;version&nbsp;obtained&nbsp;directly&nbsp;from</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-comm">#&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cURL's&nbsp;web&nbsp;site&nbsp;(http://curl.haxx.se).&nbsp;&nbsp;To&nbsp;use&nbsp;the&nbsp;newer&nbsp;CA&nbsp;bundle,</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-comm">#&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;call&nbsp;the&nbsp;CF_Authentication&nbsp;instance's&nbsp;'ssl_use_cabundle()'&nbsp;method.</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-comm">#</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-comm">#&nbsp;$auth-&gt;ssl_use_cabundle();&nbsp;#&nbsp;bypass&nbsp;cURL's&nbsp;old&nbsp;CA&nbsp;bundle</span></div></li>
 <li><div class="src-line">&nbsp;</div></li>
 <li><div class="src-line">&nbsp;<span class="src-comm">#&nbsp;Perform&nbsp;authentication&nbsp;request</span></div></li>
 <li><div class="src-line">&nbsp;<span class="src-comm">#</span></div></li>
@@ -129,7 +140,7 @@ Class for handling Cloud Files Authentication, call it's <a href="../php-cloudfi
 	<a name="var$account"></a>
 	<p></p>
 	<h4>$account = <span class="value"></span></h4>
-	<p>[line 88]</p>
+	<p>[line 111]</p>
   <br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -153,7 +164,7 @@ Class for handling Cloud Files Authentication, call it's <a href="../php-cloudfi
 	<a name="var$api_key"></a>
 	<p></p>
 	<h4>$api_key = <span class="value"></span></h4>
-	<p>[line 86]</p>
+	<p>[line 109]</p>
   <br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -177,7 +188,7 @@ Class for handling Cloud Files Authentication, call it's <a href="../php-cloudfi
 	<a name="var$auth_host"></a>
 	<p></p>
 	<h4>$auth_host = <span class="value"></span></h4>
-	<p>[line 87]</p>
+	<p>[line 110]</p>
   <br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -201,7 +212,7 @@ Class for handling Cloud Files Authentication, call it's <a href="../php-cloudfi
 	<a name="var$auth_token"></a>
 	<p></p>
 	<h4>$auth_token = <span class="value"></span></h4>
-	<p>[line 95]</p>
+	<p>[line 118]</p>
   <br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -225,7 +236,7 @@ Class for handling Cloud Files Authentication, call it's <a href="../php-cloudfi
 	<a name="var$cdnm_url"></a>
 	<p></p>
 	<h4>$cdnm_url = <span class="value"></span></h4>
-	<p>[line 94]</p>
+	<p>[line 117]</p>
   <br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -249,7 +260,7 @@ Class for handling Cloud Files Authentication, call it's <a href="../php-cloudfi
 	<a name="var$dbug"></a>
 	<p></p>
 	<h4>$dbug = <span class="value"></span></h4>
-	<p>[line 84]</p>
+	<p>[line 107]</p>
   <br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -273,7 +284,7 @@ Class for handling Cloud Files Authentication, call it's <a href="../php-cloudfi
 	<a name="var$storage_url"></a>
 	<p></p>
 	<h4>$storage_url = <span class="value"></span></h4>
-	<p>[line 93]</p>
+	<p>[line 116]</p>
   Instance variables that are set after successful authentication<br /><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -297,7 +308,7 @@ Class for handling Cloud Files Authentication, call it's <a href="../php-cloudfi
 	<a name="var$username"></a>
 	<p></p>
 	<h4>$username = <span class="value"></span></h4>
-	<p>[line 85]</p>
+	<p>[line 108]</p>
   <br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -327,7 +338,7 @@ Class for handling Cloud Files Authentication, call it's <a href="../php-cloudfi
 
   <hr />
 	<a name="method__construct"></a>
-	<h3>constructor __construct <span class="smalllinenumber">[line 105]</span></h3>
+	<h3>constructor __construct <span class="smalllinenumber">[line 128]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -372,7 +383,7 @@ $auth_host = NULL])</code>
   </div>
   <hr />
 	<a name="methodauthenticate"></a>
-	<h3>method authenticate <span class="smalllinenumber">[line 147]</span></h3>
+	<h3>method authenticate <span class="smalllinenumber">[line 196]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -420,8 +431,33 @@ $version = DEFAULT_CF_API_VERSION])</code>
         <div class="top">[ <a href="#top">Top</a> ]</div>
   </div>
   <hr />
+	<a name="methodauthenticated"></a>
+	<h3>method authenticated <span class="smalllinenumber">[line 228]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>boolean authenticated(
+)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Make sure the CF_Authentication instance has authenticated.<br /><br /><p>Ensures that the instance variables necessary to communicate with  Cloud Files have been set from a previous authenticate() call.</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td><kbd>True</kbd> if successfully authenticated</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+	
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
 	<a name="methodsetDebug"></a>
-	<h3>method setDebug <span class="smalllinenumber">[line 174]</span></h3>
+	<h3>method setDebug <span class="smalllinenumber">[line 239]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -446,12 +482,39 @@ $bool)</code>
     </div><br />
         <div class="top">[ <a href="#top">Top</a> ]</div>
   </div>
+  <hr />
+	<a name="methodssl_use_cabundle"></a>
+	<h3>method ssl_use_cabundle <span class="smalllinenumber">[line 168]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>void ssl_use_cabundle(
+[string
+$path = NULL])</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Use the Certificate Authority bundle included with this API<br /><br /><p>Most versions of PHP with cURL support include an outdated Certificate  Authority (CA) bundle (the file that lists all valid certificate  signing authorities).  The SSL certificates used by the Cloud Files  storage system are perfectly valid but have been created/signed by  a CA not listed in these outdated cURL distributions.</p><p>As a work-around, we've included an updated CA bundle obtained  directly from cURL's web site (http://curl.haxx.se).  You can direct  the API to use this CA bundle by calling this method prior to making  any remote calls.  The best place to use this method is right after  the CF_Authentication instance has been instantiated.</p><p>You can specify your own CA bundle by passing in the full pathname  to the bundle.  You can use the included CA bundle by leaving the  argument blank.</p><br /><br /><br />
+
+	
+        <h4>Parameters:</h4>
+    <div class="tags">
+    <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+        <td class="type">string&nbsp;&nbsp;</td>
+        <td><b>$path</b>&nbsp;&nbsp;</td>
+        <td>Specify path to CA bundle (default to included)</td>
+      </tr>
+        </table>
+    </div><br />
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
 </div><br />
 
 
         <div class="credit">
 		    <hr />
-		    Documentation generated on Wed, 10 Dec 2008 16:44:10 -0600 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.2</a>
+		    Documentation generated on Wed, 10 Jun 2009 13:11:09 -0500 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.2</a>
 	      </div>
       </td></tr></table>
     </td>

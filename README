@@ -13,8 +13,10 @@
 ;;
 ;; Requirements
 ;; ------------------------------------------------------------------------
-;;   PHP version 5.x (developed against 5.2.0)
-;;   PHP's cURL module
+;;   [mandatory] PHP version 5.x (developed against 5.2.0)
+;;   [mandatory] PHP's cURL module
+;;   [mandatory] PHP enabled with mbstring (multi-byte string) support
+;;   [suggested] PEAR FileInfo module (for Content-Type detection)
 ;;
 ;; Examples
 ;; ------------------------------------------------------------------------
@@ -53,5 +55,6 @@ defaultpackagename = php-cloudfiles
 defaultcategoryname = php-cloudfiles
 target = docs
 directory = .
-ignore = examples/,tests/
+ignore = share/,examples/,tests/,.git/,.gitignore,*.ini,*.swp
 output=HTML:Smarty:PHP
+readmeinstallchangelog = README,COPYING,AUTHORS,Changelog

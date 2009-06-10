@@ -29,7 +29,7 @@
  */
 require_once("cloudfiles_exceptions.php");
 
-define("PHP_CF_VERSION", "1.2.3");
+define("PHP_CF_VERSION", "1.3.1");
 define("USER_AGENT", sprintf("PHP-CloudFiles/%s", PHP_CF_VERSION));
 define("ACCOUNT_CONTAINER_COUNT", "X-Account-Container-Count");
 define("ACCOUNT_BYTES_USED", "X-Account-Bytes-Used");
@@ -60,6 +60,7 @@ class CF_Http
 {
     private $error_str;
     private $dbug;
+    private $cabundle_path;
     private $api_version;
 
     # Authentication instance variables
@@ -98,6 +99,7 @@ class CF_Http
     function __construct($api_version)
     {
         $this->dbug = False;
+        $this->cabundle_path = NULL;
         $this->api_version = $api_version;
         $this->error_str = NULL;
 
@@ -141,13 +143,26 @@ class CF_Http
         $this->_cdn_ttl = NULL;
     }
 
+    function ssl_use_cabundle($path=NULL)
+    {
+        if ($path) {
+            $this->cabundle_path = $path;
+        } else {
+            $this->cabundle_path = dirname(__FILE__) . "/share/cacert.pem";
+        }
+        if (!file_exists($this->cabundle_path)) {
+            throw new IOException("Could not use CA bundle: "
+                . $this->cabundle_path);
+        }
+        return;
+    }
+
     # Uses separate cURL connection to authenticate
     #
     function authenticate($user, $pass, $acct=NULL, $host=NULL)
     {
-
         $path = array();
-        if ($acct || $host) {
+        if (isset($acct) || isset($host)) {
             $headers = array(
                 sprintf("%s: %s", AUTH_USER_HEADER_LEGACY, $user),
                 sprintf("%s: %s", AUTH_KEY_HEADER_LEGACY, $pass),
@@ -166,6 +181,10 @@ class CF_Http
         $url = implode("/", $path);
 
         $curl_ch = curl_init();
+        if (!is_null($this->cabundle_path)) {
+            curl_setopt($curl_ch, CURLOPT_SSL_VERIFYPEER, True);
+            curl_setopt($curl_ch, CURLOPT_CAINFO, $this->cabundle_path);
+        }
         curl_setopt($curl_ch, CURLOPT_VERBOSE, $this->dbug);
         curl_setopt($curl_ch, CURLOPT_FOLLOWLOCATION, 1);
         curl_setopt($curl_ch, CURLOPT_MAXREDIRS, 4);
@@ -192,7 +211,7 @@ class CF_Http
         $return_code = $this->_send_request($conn_type, $url_path);
 
         if (!$return_code) {
-            $this->error_str = "Failed to obtain http response";
+            $this->error_str .= ": Failed to obtain valid HTTP response.";
             array(0,$this->error_str,array());
         }
         if ($return_code == 401) {
@@ -302,7 +321,7 @@ class CF_Http
         $return_code = $this->_send_request($conn_type, $url_path);
 
         if (!$return_code) {
-            $this->error_str = "Failed to obtain http response";
+            $this->error_str .= ": Failed to obtain valid HTTP response.";
             array(0,$this->error_str,NULL,NULL,NULL);
         }
         if ($return_code == 401) {
@@ -320,16 +339,28 @@ class CF_Http
 
     # GET /v1/Account
     #
-    function list_containers()
+    function list_containers($limit=0, $marker=NULL)
     {
         $conn_type = "GET_CALL";
         $url_path = $this->_make_path();
+
+        $limit = intval($limit);
+        $params = array();
+        if ($limit > 0) {
+            $params[] = "limit=$limit";
+        }
+        if ($marker) {
+            $params[] = "marker=".rawurlencode($marker);
+        }
+        if (!empty($params)) {
+            $url_path .= "?" . implode("&", $params);
+        }
 
         $this->_write_callback_type = "TEXT_LIST";
         $return_code = $this->_send_request($conn_type, $url_path);
 
         if (!$return_code) {
-            $this->error_str = "Failed to obtain valid HTTP response.";
+            $this->error_str .= ": Failed to obtain valid HTTP response.";
             return array(0,$this->error_str,array());
         }
         if ($return_code == 204) {
@@ -346,6 +377,47 @@ class CF_Http
         return array($return_code,$this->error_str,array());
     }
 
+    # GET /v1/Account?format=json
+    #
+    function list_containers_info($limit=0, $marker=NULL)
+    {
+        $conn_type = "GET_CALL";
+        $url_path = $this->_make_path() . "?format=json";
+
+        $limit = intval($limit);
+        $params = array();
+        if ($limit > 0) {
+            $params[] = "limit=$limit";
+        }
+        if ($marker) {
+            $params[] = "marker=".rawurlencode($marker);
+        }
+        if (!empty($params)) {
+            $url_path .= "&" . implode("&", $params);
+        }
+
+        $this->_write_callback_type = "OBJECT_STRING";
+        $return_code = $this->_send_request($conn_type, $url_path);
+
+        if (!$return_code) {
+            $this->error_str .= ": Failed to obtain valid HTTP response.";
+            return array(0,$this->error_str,array());
+        }
+        if ($return_code == 204) {
+            return array($return_code, "Account has no containers.", array());
+        }
+        if ($return_code == 404) {
+            $this->error_str = "Invalid account name for authentication token.";
+            return array($return_code,$this->error_str,array());
+        }
+        if ($return_code == 200) {
+            $json_body = json_decode($this->_obj_write_string, True);
+            return array($return_code, $this->response_reason, $json_body);
+        }
+        $this->error_str = "Unexpected HTTP response: ".$this->response_reason;
+        return array($return_code,$this->error_str,array());
+    }
+
     # HEAD /v1/Account
     #
     function head_account()
@@ -356,7 +428,7 @@ class CF_Http
         $return_code = $this->_send_request($conn_type,$url_path);
 
         if (!$return_code) {
-            $this->error_str = "Failed to obtain http response";
+            $this->error_str .= ": Failed to obtain valid HTTP response.";
             array(0,$this->error_str,0,0);
         }
         if ($return_code == 404) {
@@ -381,7 +453,7 @@ class CF_Http
         $return_code = $this->_send_request("PUT_CONT",$url_path);
 
         if (!$return_code) {
-            $this->error_str = "Failed to obtain http response";
+            $this->error_str .= ": Failed to obtain valid HTTP response.";
             return False;
         }
         return $return_code;
@@ -399,7 +471,7 @@ class CF_Http
         $return_code = $this->_send_request("DEL_POST",$url_path,array(),"DELETE");
 
         if (!$return_code) {
-            $this->error_str = "Failed to obtain http response";
+            $this->error_str .= ": Failed to obtain valid HTTP response.";
         }
         if ($return_code == 409) {
             $this->error_str = "Container must be empty prior to removing it.";
@@ -415,26 +487,28 @@ class CF_Http
 
     # GET /v1/Account/Container
     #
-    function get_container($container_name,$limit=0,$offset=-1,$prefix="")
+    function list_objects($cname,$limit=0,$marker=NULL,$prefix=NULL,$path=NULL)
     {
-        if (!$container_name) {
+        if (!$cname) {
             $this->error_str = "Container name not set.";
             return array(0, $this->error_str, array());
         }
 
-        $url_path = $this->_make_path("STORAGE", $container_name);
+        $url_path = $this->_make_path("STORAGE", $cname);
 
         $limit = intval($limit);
-        $offset = intval($offset);
         $params = array();
         if ($limit > 0) {
             $params[] = "limit=$limit";
         }
-        if ($offset > 0) {
-            $params[] = "offset=$offset";
+        if ($marker) {
+            $params[] = "marker=".rawurlencode($marker);
         }
         if ($prefix) {
             $params[] = "prefix=".rawurlencode($prefix);
+        }
+        if ($path) {
+            $params[] = "path=".rawurlencode($path);
         }
         if (!empty($params)) {
             $url_path .= "?" . implode("&", $params);
@@ -445,7 +519,7 @@ class CF_Http
         $return_code = $this->_send_request($conn_type,$url_path);
 
         if (!$return_code) {
-            $this->error_str = "Failed to obtain http response";
+            $this->error_str .= ": Failed to obtain valid HTTP response.";
             return array(0,$this->error_str,array());
         }
         if ($return_code == 204) {
@@ -463,6 +537,61 @@ class CF_Http
         return array(0,$this->error_str,array());
     }
 
+    # GET /v1/Account/Container?format=json
+    #
+    function get_objects($cname,$limit=0,$marker=NULL,$prefix=NULL,$path=NULL)
+    {
+        if (!$cname) {
+            $this->error_str = "Container name not set.";
+            return array(0, $this->error_str, array());
+        }
+
+        $url_path = $this->_make_path("STORAGE", $cname);
+
+        $limit = intval($limit);
+        $params = array();
+        $params[] = "format=json";
+        if ($limit > 0) {
+            $params[] = "limit=$limit";
+        }
+        if ($marker) {
+            $params[] = "marker=".rawurlencode($marker);
+        }
+        if ($prefix) {
+            $params[] = "prefix=".rawurlencode($prefix);
+        }
+        if ($path) {
+            $params[] = "path=".rawurlencode($path);
+        }
+        if (!empty($params)) {
+            $url_path .= "?" . implode("&", $params);
+        }
+ 
+        $conn_type = "GET_CALL";
+        $this->_write_callback_type = "OBJECT_STRING";
+        $return_code = $this->_send_request($conn_type,$url_path);
+
+        if (!$return_code) {
+            $this->error_str .= ": Failed to obtain valid HTTP response.";
+            return array(0,$this->error_str,array());
+        }
+        if ($return_code == 204) {
+            $this->error_str = "Container has no Objects.";
+            return array($return_code,$this->error_str,array());
+        }
+        if ($return_code == 404) {
+            $this->error_str = "Container has no Objects.";
+            return array($return_code,$this->error_str,array());
+        }
+        if ($return_code == 200) {
+            $json_body = json_decode($this->_obj_write_string, True);
+            return array($return_code,$this->response_reason, $json_body);
+        }
+        $this->error_str = "Unexpected HTTP response code: $return_code";
+        return array(0,$this->error_str,array());
+    }
+
+
     # HEAD /v1/Account/Container
     #
     function head_container($container_name)
@@ -478,7 +607,7 @@ class CF_Http
         $return_code = $this->_send_request($conn_type,$url_path);
 
         if (!$return_code) {
-            $this->error_str = "Failed to obtain http response";
+            $this->error_str .= ": Failed to obtain valid HTTP response.";
             array(0,$this->error_str,0,0);
         }
         if ($return_code == 404) {
@@ -507,7 +636,7 @@ class CF_Http
         $return_code = $this->_send_request($conn_type,$url_path,$hdrs);
 
         if (!$return_code) {
-            $this->error_str = "Failed to obtain http response";
+            $this->error_str .= ": Failed to obtain valid HTTP response.";
             return array($return_code0,$this->error_str,NULL);
         }
         if ($return_code == 404) {
@@ -543,7 +672,7 @@ class CF_Http
         $return_code = $this->_send_request($conn_type,$url_path,$hdrs);
 
         if (!$return_code) {
-            $this->error_str = "Failed to obtain http response";
+            $this->error_str .= ": Failed to obtain valid HTTP response.";
             return array($return_code,$this->error_str);
         }
         if ($return_code == 404) {
@@ -566,23 +695,16 @@ class CF_Http
             throw new SyntaxException(
                 "Method argument is not a valid CF_Object.");
         }
-
-        if (!$obj->content_length) {
-            throw new SyntaxException(
-                "Missing required content_length on object");
-        }
-
         if (!is_resource($fp)) {
             throw new SyntaxException(
                 "File pointer argument is not a valid resource.");
         }
 
         $conn_type = "PUT_OBJ";
-
         $url_path = $this->_make_path("STORAGE", $obj->container->name,$obj->name);
 
         $hdrs = $this->_metadata_headers($obj);
-        if ($etag) {
+        if (isset($etag)) {
             $hdrs[] = "ETag: " . $etag;
         }
         if (!$obj->content_type) {
@@ -594,12 +716,21 @@ class CF_Http
         $this->_init($conn_type);
         curl_setopt($this->connections[$conn_type],
                 CURLOPT_INFILE, $fp);
-        curl_setopt($this->connections[$conn_type],
-                CURLOPT_INFILESIZE, $obj->content_length);
+        if (!$obj->content_length) {
+            # We don't know the Content-Length, so assumed "chunked" PUT
+            #
+            curl_setopt($this->connections[$conn_type], CURLOPT_UPLOAD, True);
+            $hdrs[] = 'Transfer-Encoding: chunked';
+        } else {
+            # We know the Content-Length, so use regular transfer
+            #
+            curl_setopt($this->connections[$conn_type],
+                    CURLOPT_INFILESIZE, $obj->content_length);
+        }
 
         $return_code = $this->_send_request($conn_type,$url_path,$hdrs);
         if (!$return_code) {
-            $this->error_str = "Failed to obtain http response";
+            $this->error_str .= ": Failed to obtain valid HTTP response.";
             return array(0,$this->error_str,NULL);
         }
         if ($return_code == 412) {
@@ -636,7 +767,7 @@ class CF_Http
         $hdrs = $this->_metadata_headers($obj);
         $return_code = $this->_send_request("DEL_POST",$url_path,$hdrs,"POST");
         if (!$return_code) {
-            $this->error_str = "Failed to obtain http response";
+            $this->error_str .= ": Failed to obtain valid HTTP response.";
             return 0;
         }
         if ($return_code == 404) {
@@ -663,7 +794,7 @@ class CF_Http
         $return_code = $this->_send_request($conn_type,$url_path);
 
         if (!$return_code) {
-            $this->error_str = "Failed to obtain http response";
+            $this->error_str .= ": Failed to obtain valid HTTP response.";
             return array(0, $this->error_str." ".$this->response_reason,
                 NULL, NULL, NULL, NULL, array());
         }
@@ -697,7 +828,7 @@ class CF_Http
         $url_path = $this->_make_path("STORAGE", $container_name,$object_name);
         $return_code = $this->_send_request("DEL_POST",$url_path,NULL,"DELETE");
         if (!$return_code) {
-            $this->error_str = "Failed to obtain http response";
+            $this->error_str .= ": Failed to obtain valid HTTP response.";
             return 0;
         }
         if ($return_code == 404) {
@@ -739,19 +870,11 @@ class CF_Http
         return $this->auth_token;
     }
 
-    function setCDNMUrl($curl)
+    function setCFAuth($cfs_auth)
     {
-        $this->cdnm_url = $curl;
-    }
-
-    function setStorageUrl($surl)
-    {
-        $this->storage_url = $surl;
-    }
-
-    function setAuthToken($stok)
-    {
-        $this->auth_token = $stok;
+        $this->storage_url = $cfs_auth->storage_url;
+        $this->auth_token = $cfs_auth->auth_token;
+        $this->cdnm_url = $cfs_auth->cdnm_url;
     }
 
     function setReadProgressFunc($func_name)
@@ -764,14 +887,13 @@ class CF_Http
         $this->_user_write_progress_callback_func = $func_name;
     }
 
-
     private function _header_cb($ch, $header)
     {
         preg_match("/^HTTP\/1\.[01] (\d{3}) (.*)/", $header, $matches);
-        if ($matches[1]) {
+        if (isset($matches[1])) {
             $this->response_status = $matches[1];
         }
-        if ($matches[2]) {
+        if (isset($matches[2])) {
             $this->response_reason = $matches[2];
         }
         if (stripos($header, CDN_ENABLED) === 0) {
@@ -794,49 +916,56 @@ class CF_Http
             return strlen($header);
         }
         if (stripos($header, ACCOUNT_CONTAINER_COUNT) === 0) {
-            $this->_account_container_count = trim(substr($header,
+            $this->_account_container_count = (float) trim(substr($header,
                     strlen(ACCOUNT_CONTAINER_COUNT)+1))+0;
             return strlen($header);
         }
         if (stripos($header, ACCOUNT_BYTES_USED) === 0) {
-            $this->_account_bytes_used = trim(substr($header,
+            $this->_account_bytes_used = (float) trim(substr($header,
                     strlen(ACCOUNT_BYTES_USED)+1))+0;
             return strlen($header);
         }
         if (stripos($header, CONTAINER_OBJ_COUNT) === 0) {
-            $this->_container_object_count = trim(substr($header,
+            $this->_container_object_count = (float) trim(substr($header,
                     strlen(CONTAINER_OBJ_COUNT)+1))+0;
             return strlen($header);
         }
         if (stripos($header, CONTAINER_BYTES_USED) === 0) {
-            $this->_container_bytes_used = trim(substr($header,
+            $this->_container_bytes_used = (float) trim(substr($header,
                     strlen(CONTAINER_BYTES_USED)+1))+0;
             return strlen($header);
         }
         if (stripos($header, METADATA_HEADER) === 0) {
+            # $header => X-Object-Meta-Foo: bar baz
             $temp = substr($header, strlen(METADATA_HEADER));
+            # $temp => Foo: bar baz
             $parts = explode(":", $temp);
-            $this->_obj_metadata[strtolower($parts[0])] = trim($parts[1]);
+            # $parts[0] => Foo
+            $val = substr(strstr($temp, ":"), 1);
+            # $val => bar baz
+            $this->_obj_metadata[$parts[0]] = trim($val);
             return strlen($header);
         }
-        if (stripos($header, "ETag") === 0) {
-            $parts = explode(":", $header);
-            $this->_obj_etag = trim($parts[1]);
+        if (stripos($header, "ETag:") === 0) {
+            # $header => ETag: abc123def456...
+            $val = substr(strstr($header, ":"), 1);
+            # $val => abc123def456...
+            $this->_obj_etag = trim($val);
             return strlen($header);
         }
-        if (stripos($header, "Last-Modified") === 0) {
-            $parts = explode(":", $header);
-            $this->_obj_last_modified = trim($parts[1]);
+        if (stripos($header, "Last-Modified:") === 0) {
+            $val = substr(strstr($header, ":"), 1);
+            $this->_obj_last_modified = trim($val);
             return strlen($header);
         }
-        if (stripos($header, "Content-Type") === 0) {
-            $parts = explode(":", $header);
-            $this->_obj_content_type = trim($parts[1]);
+        if (stripos($header, "Content-Type:") === 0) {
+            $val = substr(strstr($header, ":"), 1);
+            $this->_obj_content_type = trim($val);
             return strlen($header);
         }
-        if (stripos($header, "Content-Length") === 0) {
-            $parts = explode(":", $header);
-            $this->_obj_content_length = trim($parts[1])+0;
+        if (stripos($header, "Content-Length:") === 0) {
+            $val = substr(strstr($header, ":"), 1);
+            $this->_obj_content_length = (float) trim($val)+0;
             return strlen($header);
         }
         return strlen($header);
@@ -846,7 +975,7 @@ class CF_Http
     {
         $data = fread($fd, $length);
         $len = strlen($data);
-        if ($this->_user_write_progress_callback_func) {
+        if (isset($this->_user_write_progress_callback_func)) {
             call_user_func($this->_user_write_progress_callback_func, $len);
         }
         return $data;
@@ -854,38 +983,31 @@ class CF_Http
 
     private function _write_cb($ch, $data)
     {
-        $amount = strlen($data);
+        $dlen = strlen($data);
         switch ($this->_write_callback_type) {
         case "TEXT_LIST":
             $this->_text_list[] = rtrim($data, "\r\n\0\x0B"); # keep tab,space
             break;
         case "OBJECT_STREAM":
-            $written = 0;
-            while ($written < strlen($data)) {
-                $written += fwrite($this->_obj_write_resource, $data-$written);
-            }
-            if ($written > strlen($data)) {
-                throw new IOException(
-                    "Wrote more data to client than we should have?!");
-            }
+            fwrite($this->_obj_write_resource, $data, $dlen);
             break;
         case "OBJECT_STRING":
             $this->_obj_write_string .= $data;
             break;
         }
-        if ($this->_user_read_progress_callback_func) {
-            call_user_func($this->_user_read_progress_callback_func,strlen($data));
+        if (isset($this->_user_read_progress_callback_func)) {
+            call_user_func($this->_user_read_progress_callback_func, $dlen);
         }
-        return strlen($data);
+        return $dlen;
     }
 
     private function _auth_hdr_cb($ch, $header)
     {
         preg_match("/^HTTP\/1\.[01] (\d{3}) (.*)/", $header, $matches);
-        if ($matches[1]) {
+        if (isset($matches[1])) {
             $this->response_status = $matches[1];
         }
-        if ($matches[2]) {
+        if (isset($matches[2])) {
             $this->response_reason = $matches[2];
         }
         if (stripos($header, STORAGE_URL) === 0) {
@@ -913,7 +1035,7 @@ class CF_Http
                 if (is_int($h)) {
                     $parts = explode(":", $v);
                     $header = $parts[0];
-                    $value = trim($parts[1]);
+                    $value = trim(substr(strstr($v, ":"), 1));
                 } else {
                     $header = $h;
                     $value = trim($v);
@@ -949,7 +1071,13 @@ class CF_Http
         } else {
             return;
         }
+
         if ($this->dbug) { curl_setopt($ch, CURLOPT_VERBOSE, 1); }
+
+        if (!is_null($this->cabundle_path)) {
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, True);
+            curl_setopt($ch, CURLOPT_CAINFO, $this->cabundle_path);
+        }
 
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
         curl_setopt($ch, CURLOPT_MAXREDIRS, 4);
@@ -1023,11 +1151,11 @@ class CF_Http
     {
         $hdrs = array();
         foreach ($obj->metadata as $k => $v) {
-            if (strpos($k,":") !== False || strpos($v,":") !== False) {
+            if (strpos($k,":") !== False) {
                 throw new SyntaxException(
-                    "Metadata cannot contain a ':' character.");
+                    "Metadata keys cannot contain a ':' character.");
             }
-            $k = strtolower(trim($k));
+            $k = trim($k);
             $key = sprintf("%s%s", METADATA_HEADER, $k);
             if (!array_key_exists($key, $hdrs)) {
                 if (strlen($k) > 128 || strlen($v) > 256) {

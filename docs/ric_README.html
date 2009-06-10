@@ -26,6 +26,8 @@
   <tr valign="top">
     <td width="200" class="menu">
 	<div id="ric">
+					<p><a href="ric_AUTHORS.html">AUTHORS</a></p>
+					<p><a href="ric_COPYING.html">COPYING</a></p>
 					<p><a href="ric_Changelog.html">Changelog</a></p>
 					<p><a href="ric_README.html">README</a></p>
 			</div>
@@ -57,8 +59,10 @@
 ;;
 ;; Requirements
 ;; ------------------------------------------------------------------------
-;;   PHP version 5.x (developed against 5.2.0)
-;;   PHP's cURL module
+;;   [mandatory] PHP version 5.x (developed against 5.2.0)
+;;   [mandatory] PHP's cURL module
+;;   [mandatory] PHP enabled with mbstring (multi-byte string) support
+;;   [suggested] PEAR FileInfo module (for Content-Type detection)
 ;;
 ;; Examples
 ;; ------------------------------------------------------------------------
@@ -97,13 +101,14 @@ defaultpackagename = php-cloudfiles
 defaultcategoryname = php-cloudfiles
 target = docs
 directory = .
-ignore = examples/,tests/
+ignore = share/,examples/,tests/,.git/,.gitignore,*.ini,*.swp
 output=HTML:Smarty:PHP
+readmeinstallchangelog = README,COPYING,AUTHORS,Changelog
 
 </pre>
         <div class="credit">
 		    <hr />
-		    Documentation generated on Wed, 10 Dec 2008 16:44:10 -0600 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.2</a>
+		    Documentation generated on Wed, 10 Jun 2009 13:11:09 -0500 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.2</a>
 	      </div>
       </td></tr></table>
     </td>

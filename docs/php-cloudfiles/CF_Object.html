@@ -26,6 +26,8 @@
   <tr valign="top">
     <td width="200" class="menu">
 	<div id="ric">
+					<p><a href="../ric_AUTHORS.html">AUTHORS</a></p>
+					<p><a href="../ric_COPYING.html">COPYING</a></p>
 					<p><a href="../ric_Changelog.html">Changelog</a></p>
 					<p><a href="../ric_README.html">README</a></p>
 			</div>
@@ -118,7 +120,7 @@ Source Location: /cloudfiles.php<br /><br />
 <a name="class_details"></a>
 <h3>Class Details</h3>
 <div class="tags">
-[line 988]<br />
+[line 1336]<br />
 Object operations<br /><br /><p>An Object is analogous to a file on a conventional filesystem. You can  read data from, or write data to your Objects. You can also associate  arbitrary metadata with them.</p><br /></div><br /><br />
 <div class="top">[ <a href="#top">Top</a> ]</div><br />
 
@@ -129,7 +131,7 @@ Object operations<br /><br /><p>An Object is analogous to a file on a convention
 	<a name="var$container"></a>
 	<p></p>
 	<h4>$container = <span class="value"></span></h4>
-	<p>[line 990]</p>
+	<p>[line 1338]</p>
   <br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -153,7 +155,7 @@ Object operations<br /><br /><p>An Object is analogous to a file on a convention
 	<a name="var$content_length"></a>
 	<p></p>
 	<h4>$content_length = <span class="value"></span></h4>
-	<p>[line 994]</p>
+	<p>[line 1342]</p>
   <br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -177,7 +179,7 @@ Object operations<br /><br /><p>An Object is analogous to a file on a convention
 	<a name="var$content_type"></a>
 	<p></p>
 	<h4>$content_type = <span class="value"></span></h4>
-	<p>[line 993]</p>
+	<p>[line 1341]</p>
   <br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -201,7 +203,7 @@ Object operations<br /><br /><p>An Object is analogous to a file on a convention
 	<a name="var$last_modified"></a>
 	<p></p>
 	<h4>$last_modified = <span class="value"></span></h4>
-	<p>[line 992]</p>
+	<p>[line 1340]</p>
   <br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -225,7 +227,7 @@ Object operations<br /><br /><p>An Object is analogous to a file on a convention
 	<a name="var$metadata"></a>
 	<p></p>
 	<h4>$metadata = <span class="value"></span></h4>
-	<p>[line 995]</p>
+	<p>[line 1343]</p>
   <br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -249,7 +251,7 @@ Object operations<br /><br /><p>An Object is analogous to a file on a convention
 	<a name="var$name"></a>
 	<p></p>
 	<h4>$name = <span class="value"></span></h4>
-	<p>[line 991]</p>
+	<p>[line 1339]</p>
   <br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -279,7 +281,7 @@ Object operations<br /><br /><p>An Object is analogous to a file on a convention
 
   <hr />
 	<a name="method__construct"></a>
-	<h3>constructor __construct <span class="smalllinenumber">[line 1005]</span></h3>
+	<h3>constructor __construct <span class="smalllinenumber">[line 1353]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -287,7 +289,8 @@ Object operations<br /><br /><p>An Object is analogous to a file on a convention
 
 &$container, string
 $name, [boolean
-$force_exists = False], obj
+$force_exists = False], [
+$dohead = True], obj
 $container)</code>
     </td></tr></table>
     </td></tr></table><br />
@@ -318,13 +321,18 @@ $container)</code>
         <td><b>&$container</b>&nbsp;&nbsp;</td>
         <td></td>
       </tr>
+          <tr>
+        <td class="type">&nbsp;&nbsp;</td>
+        <td><b>$dohead</b>&nbsp;&nbsp;</td>
+        <td></td>
+      </tr>
         </table>
     </div><br />
         <div class="top">[ <a href="#top">Top</a> ]</div>
   </div>
   <hr />
 	<a name="methodcompute_md5sum"></a>
-	<h3>method compute_md5sum <span class="smalllinenumber">[line 1400]</span></h3>
+	<h3>method compute_md5sum <span class="smalllinenumber">[line 1826]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -335,7 +343,7 @@ $data)</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		Compute the MD5 checksum<br /><br /><p>Calculate the MD5 checksum on either a PHP resource or data.  The argument  may either be a local filename, open resource for reading, or a string.</p><p><strong>WARNING:</strong> If $data is a resource, the entire contents are read  into a local variable (memory) before computing the checksum!</p><br /><br /><br />
+		Compute the MD5 checksum<br /><br /><p>Calculate the MD5 checksum on either a PHP resource or data.  The argument  may either be a local filename, open resource for reading, or a string.</p><p><strong>WARNING:</strong> If $data is a resource, the entire contents are read  into a local variable (memory) before computing the checksum!  PHP  will cap it's memory usage based on the php.ini settings of  &quot;memory_limit&quot; and &quot;max_execution_time&quot;.  If you set these values too  high, you may exhaust your system's RAM.  If you plan to use this API  to stream large files into Cloud Files, you should consider either  buffering to disk first to compute the MD5 checksum, or setting  the $verify parameter to False in the write() method.</p><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
@@ -366,7 +374,7 @@ $data)</code>
   </div>
   <hr />
 	<a name="methodgetETag"></a>
-	<h3>method getETag <span class="smalllinenumber">[line 1383]</span></h3>
+	<h3>method getETag <span class="smalllinenumber">[line 1803]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -391,7 +399,7 @@ $data)</code>
   </div>
   <hr />
 	<a name="methodload_from_filename"></a>
-	<h3>method load_from_filename <span class="smalllinenumber">[line 1313]</span></h3>
+	<h3>method load_from_filename <span class="smalllinenumber">[line 1714]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -420,6 +428,9 @@ $verify = True])</code>
   </tr>
   <tr>
     <td><b>throws:</b>&nbsp;&nbsp;</td><td>SyntaxException missing required parameters</td>
+  </tr>
+  <tr>
+    <td><b>throws:</b>&nbsp;&nbsp;</td><td>BadContentTypeException if no Content-Type was/could be set</td>
   </tr>
   <tr>
     <td><b>throws:</b>&nbsp;&nbsp;</td><td>MisMatchedChecksumException $verify is set and checksums unequal</td>
@@ -454,7 +465,7 @@ $verify = True])</code>
   </div>
   <hr />
 	<a name="methodpublic_uri"></a>
-	<h3>method public_uri <span class="smalllinenumber">[line 1054]</span></h3>
+	<h3>method public_uri <span class="smalllinenumber">[line 1409]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -485,7 +496,7 @@ $verify = True])</code>
   </div>
   <hr />
 	<a name="methodread"></a>
-	<h3>method read <span class="smalllinenumber">[line 1090]</span></h3>
+	<h3>method read <span class="smalllinenumber">[line 1445]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -534,7 +545,7 @@ $hdrs = array()])</code>
   </div>
   <hr />
 	<a name="methodsave_to_filename"></a>
-	<h3>method save_to_filename <span class="smalllinenumber">[line 1350]</span></h3>
+	<h3>method save_to_filename <span class="smalllinenumber">[line 1770]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -585,7 +596,7 @@ $filename)</code>
   </div>
   <hr />
 	<a name="methodset_etag"></a>
-	<h3>method set_etag <span class="smalllinenumber">[line 1370]</span></h3>
+	<h3>method set_etag <span class="smalllinenumber">[line 1790]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -612,7 +623,7 @@ $etag)</code>
   </div>
   <hr />
 	<a name="methodstream"></a>
-	<h3>method stream <span class="smalllinenumber">[line 1144]</span></h3>
+	<h3>method stream <span class="smalllinenumber">[line 1502]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -685,7 +696,7 @@ $fp)</code>
   </div>
   <hr />
 	<a name="methodsync_metadata"></a>
-	<h3>method sync_metadata <span class="smalllinenumber">[line 1186]</span></h3>
+	<h3>method sync_metadata <span class="smalllinenumber">[line 1547]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -730,19 +741,19 @@ $fp)</code>
   </div>
   <hr />
 	<a name="methodwrite"></a>
-	<h3>method write <span class="smalllinenumber">[line 1228]</span></h3>
+	<h3>method write <span class="smalllinenumber">[line 1593]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
 		<code>boolean write(
 [string|resource
-$data = NULL], [int
-$size = 0], [boolean
+$data = NULL], [float
+$bytes = 0], [boolean
 $verify = True])</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		Upload Object's data to Cloud Files<br /><br /><p>Write data to the remote Object.  The $data argument can either be a  PHP resource open for reading (see PHP's fopen() method) or an in-memory  variable.  If passing in a PHP resource, you must also include the $size  parameter.</p><p>Example:  <ol><li><div class="src-line">&nbsp;<span class="src-comm">#&nbsp;...&nbsp;authentication/connection/container&nbsp;code&nbsp;excluded</span></div></li>
+		Upload Object's data to Cloud Files<br /><br /><p>Write data to the remote Object.  The $data argument can either be a  PHP resource open for reading (see PHP's fopen() method) or an in-memory  variable.  If passing in a PHP resource, you must also include the $bytes  parameter.</p><p>Example:  <ol><li><div class="src-line">&nbsp;<span class="src-comm">#&nbsp;...&nbsp;authentication/connection/container&nbsp;code&nbsp;excluded</span></div></li>
 <li><div class="src-line">&nbsp;<span class="src-comm">#&nbsp;...&nbsp;see&nbsp;previous&nbsp;examples</span></div></li>
 <li><div class="src-line">&nbsp;</div></li>
 <li><div class="src-line">&nbsp;<span class="src-var">$my_docs&nbsp;</span>=&nbsp;<span class="src-var">$conn</span><span class="src-sym">-&gt;</span><span class="src-id">get_container</span><span class="src-sym">(</span><span class="src-str">&quot;documents&quot;</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
@@ -760,6 +771,9 @@ $verify = True])</code>
   </tr>
   <tr>
     <td><b>throws:</b>&nbsp;&nbsp;</td><td>SyntaxException missing required parameters</td>
+  </tr>
+  <tr>
+    <td><b>throws:</b>&nbsp;&nbsp;</td><td>BadContentTypeException if no Content-Type was/could be set</td>
   </tr>
   <tr>
     <td><b>throws:</b>&nbsp;&nbsp;</td><td>MisMatchedChecksumException $verify is set and checksums unequal</td>
@@ -781,8 +795,8 @@ $verify = True])</code>
         <td>string or open resource</td>
       </tr>
           <tr>
-        <td class="type">int&nbsp;&nbsp;</td>
-        <td><b>$size</b>&nbsp;&nbsp;</td>
+        <td class="type">float&nbsp;&nbsp;</td>
+        <td><b>$bytes</b>&nbsp;&nbsp;</td>
         <td>amount of data to upload (required for resources)</td>
       </tr>
           <tr>
@@ -796,7 +810,7 @@ $verify = True])</code>
   </div>
   <hr />
 	<a name="method__toString"></a>
-	<h3>method __toString <span class="smalllinenumber">[line 1031]</span></h3>
+	<h3>method __toString <span class="smalllinenumber">[line 1386]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -824,7 +838,7 @@ $verify = True])</code>
 
         <div class="credit">
 		    <hr />
-		    Documentation generated on Wed, 10 Dec 2008 16:44:11 -0600 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.2</a>
+		    Documentation generated on Wed, 10 Jun 2009 13:11:09 -0500 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.2</a>
 	      </div>
       </td></tr></table>
     </td>

@@ -26,6 +26,8 @@
   <tr valign="top">
     <td width="200" class="menu">
 	<div id="ric">
+					<p><a href="../ric_AUTHORS.html">AUTHORS</a></p>
+					<p><a href="../ric_COPYING.html">COPYING</a></p>
 					<p><a href="../ric_Changelog.html">Changelog</a></p>
 					<p><a href="../ric_README.html">README</a></p>
 			</div>
@@ -74,13 +76,14 @@ Source Location: /cloudfiles.php<br /><br />
 <td valign="top">
 <h3><a href="#class_vars">Variables</a></h3>
 <ul>
+    <li><a href="../php-cloudfiles/CF_Container.html#var$bytes_used">$bytes_used</a></li>
     <li><a href="../php-cloudfiles/CF_Container.html#var$cdn_enabled">$cdn_enabled</a></li>
     <li><a href="../php-cloudfiles/CF_Container.html#var$cdn_ttl">$cdn_ttl</a></li>
     <li><a href="../php-cloudfiles/CF_Container.html#var$cdn_uri">$cdn_uri</a></li>
+    <li><a href="../php-cloudfiles/CF_Container.html#var$cfs_auth">$cfs_auth</a></li>
     <li><a href="../php-cloudfiles/CF_Container.html#var$cfs_http">$cfs_http</a></li>
     <li><a href="../php-cloudfiles/CF_Container.html#var$name">$name</a></li>
     <li><a href="../php-cloudfiles/CF_Container.html#var$object_count">$object_count</a></li>
-    <li><a href="../php-cloudfiles/CF_Container.html#var$size_used">$size_used</a></li>
   </ul>
 </td>
 
@@ -90,8 +93,10 @@ Source Location: /cloudfiles.php<br /><br />
 <ul>
     <li><a href="../php-cloudfiles/CF_Container.html#method__construct">__construct</a></li>
     <li><a href="../php-cloudfiles/CF_Container.html#methodcreate_object">create_object</a></li>
+    <li><a href="../php-cloudfiles/CF_Container.html#methodcreate_paths">create_paths</a></li>
     <li><a href="../php-cloudfiles/CF_Container.html#methoddelete_object">delete_object</a></li>
     <li><a href="../php-cloudfiles/CF_Container.html#methodget_object">get_object</a></li>
+    <li><a href="../php-cloudfiles/CF_Container.html#methodget_objects">get_objects</a></li>
     <li><a href="../php-cloudfiles/CF_Container.html#methodis_public">is_public</a></li>
     <li><a href="../php-cloudfiles/CF_Container.html#methodlist_objects">list_objects</a></li>
     <li><a href="../php-cloudfiles/CF_Container.html#methodmake_private">make_private</a></li>
@@ -116,18 +121,42 @@ Source Location: /cloudfiles.php<br /><br />
 <a name="class_details"></a>
 <h3>Class Details</h3>
 <div class="tags">
-[line 604]<br />
-Container operations<br /><br /><p>Containers are storage compartments where you put your data (objects).  A container is similar to a directory or folder on a conventional filesystem  with the exception that they exist in a flat namespace, you can not create  containers inside of containers.</p><p>You also have the option of marking a Container as &quot;public&quot; so that the  Objects stored in the Container are publicly available via the CDN.</p><p>NOTE: Due to the possible overflow of PHP's 32-bit integer, the Container's        object_count and size_used instance variables may either be a        integer or float.</p><br /></div><br /><br />
+[line 816]<br />
+Container operations<br /><br /><p>Containers are storage compartments where you put your data (objects).  A container is similar to a directory or folder on a conventional filesystem  with the exception that they exist in a flat namespace, you can not create  containers inside of containers.</p><p>You also have the option of marking a Container as &quot;public&quot; so that the  Objects stored in the Container are publicly available via the CDN.</p><br /></div><br /><br />
 <div class="top">[ <a href="#top">Top</a> ]</div><br />
 
 <hr />
 <a name="class_vars"></a>
 <h3>Class Variables</h3>
 <div class="tags">
+	<a name="var$bytes_used"></a>
+	<p></p>
+	<h4>$bytes_used = <span class="value"></span></h4>
+	<p>[line 822]</p>
+  <br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+
+  <br />
+	<div class="tags">
+  <table border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td><b>Type:</b>&nbsp;&nbsp;</td>
+      <td>mixed</td>
+    </tr>
+      </table>
+	</div><br /><br />
+	<div class="top">[ <a href="#top">Top</a> ]</div><br />
 	<a name="var$cdn_enabled"></a>
 	<p></p>
 	<h4>$cdn_enabled = <span class="value"></span></h4>
-	<p>[line 611]</p>
+	<p>[line 824]</p>
   <br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -151,7 +180,7 @@ Container operations<br /><br /><p>Containers are storage compartments where you
 	<a name="var$cdn_ttl"></a>
 	<p></p>
 	<h4>$cdn_ttl = <span class="value"></span></h4>
-	<p>[line 613]</p>
+	<p>[line 826]</p>
   <br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -175,7 +204,31 @@ Container operations<br /><br /><p>Containers are storage compartments where you
 	<a name="var$cdn_uri"></a>
 	<p></p>
 	<h4>$cdn_uri = <span class="value"></span></h4>
-	<p>[line 612]</p>
+	<p>[line 825]</p>
+  <br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+
+  <br />
+	<div class="tags">
+  <table border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td><b>Type:</b>&nbsp;&nbsp;</td>
+      <td>mixed</td>
+    </tr>
+      </table>
+	</div><br /><br />
+	<div class="top">[ <a href="#top">Top</a> ]</div><br />
+	<a name="var$cfs_auth"></a>
+	<p></p>
+	<h4>$cfs_auth = <span class="value"></span></h4>
+	<p>[line 818]</p>
   <br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -199,7 +252,7 @@ Container operations<br /><br /><p>Containers are storage compartments where you
 	<a name="var$cfs_http"></a>
 	<p></p>
 	<h4>$cfs_http = <span class="value"></span></h4>
-	<p>[line 606]</p>
+	<p>[line 819]</p>
   <br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -223,7 +276,7 @@ Container operations<br /><br /><p>Containers are storage compartments where you
 	<a name="var$name"></a>
 	<p></p>
 	<h4>$name = <span class="value"></span></h4>
-	<p>[line 607]</p>
+	<p>[line 820]</p>
   <br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -247,31 +300,7 @@ Container operations<br /><br /><p>Containers are storage compartments where you
 	<a name="var$object_count"></a>
 	<p></p>
 	<h4>$object_count = <span class="value"></span></h4>
-	<p>[line 608]</p>
-  <br /><br />
-<h4>Tags:</h4>
-<div class="tags">
-<table border="0" cellspacing="0" cellpadding="0">
-  <tr>
-    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
-  </tr>
-</table>
-</div>
-
-  <br />
-	<div class="tags">
-  <table border="0" cellspacing="0" cellpadding="0">
-    <tr>
-      <td><b>Type:</b>&nbsp;&nbsp;</td>
-      <td>mixed</td>
-    </tr>
-      </table>
-	</div><br /><br />
-	<div class="top">[ <a href="#top">Top</a> ]</div><br />
-	<a name="var$size_used"></a>
-	<p></p>
-	<h4>$size_used = <span class="value"></span></h4>
-	<p>[line 609]</p>
+	<p>[line 821]</p>
   <br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -301,16 +330,19 @@ Container operations<br /><br /><p>Containers are storage compartments where you
 
   <hr />
 	<a name="method__construct"></a>
-	<h3>constructor __construct <span class="smalllinenumber">[line 626]</span></h3>
+	<h3>constructor __construct <span class="smalllinenumber">[line 840]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
 		<code>CF_Container __construct(
 
+&$cfs_auth, 
 &$cfs_http, string
 $name, [int
 $count = 0], [int
-$bytes = 0], obj
+$bytes = 0], [
+$docdn = True], obj
+$cfs_auth, obj
 $cfs_http)</code>
     </td></tr></table>
     </td></tr></table><br />
@@ -330,6 +362,11 @@ $cfs_http)</code>
         <h4>Parameters:</h4>
     <div class="tags">
     <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+        <td class="type">obj&nbsp;&nbsp;</td>
+        <td><b>$cfs_auth</b>&nbsp;&nbsp;</td>
+        <td>CF_Authentication instance</td>
+      </tr>
           <tr>
         <td class="type">obj&nbsp;&nbsp;</td>
         <td><b>$cfs_http</b>&nbsp;&nbsp;</td>
@@ -352,7 +389,17 @@ $cfs_http)</code>
       </tr>
           <tr>
         <td class="type">&nbsp;&nbsp;</td>
+        <td><b>&$cfs_auth</b>&nbsp;&nbsp;</td>
+        <td></td>
+      </tr>
+          <tr>
+        <td class="type">&nbsp;&nbsp;</td>
         <td><b>&$cfs_http</b>&nbsp;&nbsp;</td>
+        <td></td>
+      </tr>
+          <tr>
+        <td class="type">&nbsp;&nbsp;</td>
+        <td><b>$docdn</b>&nbsp;&nbsp;</td>
         <td></td>
       </tr>
         </table>
@@ -361,7 +408,7 @@ $cfs_http)</code>
   </div>
   <hr />
 	<a name="methodcreate_object"></a>
-	<h3>method create_object <span class="smalllinenumber">[line 827]</span></h3>
+	<h3>method create_object <span class="smalllinenumber">[line 1046]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -406,8 +453,35 @@ $obj_name = NULL])</code>
         <div class="top">[ <a href="#top">Top</a> ]</div>
   </div>
   <hr />
+	<a name="methodcreate_paths"></a>
+	<h3>method create_paths <span class="smalllinenumber">[line 1272]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>void create_paths(
+
+$path_name)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Helper function to create &quot;path&quot; elements for a given Object name<br /><br /><p>Given an Object whos name contains '/' path separators, this function  will create the &quot;directory marker&quot; Objects of one byte with the  Content-Type of &quot;application/folder&quot;.</p><p>It assumes the last element of the full path is the &quot;real&quot; Object  and does NOT create a remote storage Object for that last element.</p><br /><br /><br />
+
+	
+        <h4>Parameters:</h4>
+    <div class="tags">
+    <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+        <td class="type">&nbsp;&nbsp;</td>
+        <td><b>$path_name</b>&nbsp;&nbsp;</td>
+        <td></td>
+      </tr>
+        </table>
+    </div><br />
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
 	<a name="methoddelete_object"></a>
-	<h3>method delete_object <span class="smalllinenumber">[line 932]</span></h3>
+	<h3>method delete_object <span class="smalllinenumber">[line 1232]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -461,7 +535,7 @@ $obj)</code>
   </div>
   <hr />
 	<a name="methodget_object"></a>
-	<h3>method get_object <span class="smalllinenumber">[line 856]</span></h3>
+	<h3>method get_object <span class="smalllinenumber">[line 1075]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -507,8 +581,93 @@ $obj_name = NULL])</code>
         <div class="top">[ <a href="#top">Top</a> ]</div>
   </div>
   <hr />
+	<a name="methodget_objects"></a>
+	<h3>method get_objects <span class="smalllinenumber">[line 1183]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>array get_objects(
+[int
+$limit = 0], [int
+$marker = NULL], [string
+$prefix = NULL], [string
+$path = NULL])</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Return an array of Objects<br /><br /><p>Return an array of Object instances in this Container.</p><p>Example:  <ol><li><div class="src-line">&nbsp;<span class="src-comm">#&nbsp;...&nbsp;authentication&nbsp;code&nbsp;excluded&nbsp;(see&nbsp;previous&nbsp;examples)&nbsp;...</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-comm">#</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-var">$images&nbsp;</span>=&nbsp;<span class="src-var">$conn</span><span class="src-sym">-&gt;</span><span class="src-id">get_container</span><span class="src-sym">(</span><span class="src-str">&quot;my&nbsp;photos&quot;</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">&nbsp;<span class="src-comm">#&nbsp;Grab&nbsp;the&nbsp;list&nbsp;of&nbsp;all&nbsp;storage&nbsp;objects</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-comm">#</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-var">$all_objects&nbsp;</span>=&nbsp;<span class="src-var">$images</span><span class="src-sym">-&gt;</span><a href="../php-cloudfiles/CF_Container.html#methodget_objects">get_objects</a><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">&nbsp;<span class="src-comm">#&nbsp;Grab&nbsp;subsets&nbsp;of&nbsp;all&nbsp;storage&nbsp;objects</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-comm">#</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-var">$first_ten&nbsp;</span>=&nbsp;<span class="src-var">$images</span><span class="src-sym">-&gt;</span><a href="../php-cloudfiles/CF_Container.html#methodget_objects">get_objects</a><span class="src-sym">(</span><span class="src-num">10</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">&nbsp;<span class="src-comm">#&nbsp;Note&nbsp;the&nbsp;use&nbsp;of&nbsp;the&nbsp;previous&nbsp;result's&nbsp;last&nbsp;object&nbsp;name&nbsp;being</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-comm">#&nbsp;used&nbsp;as&nbsp;the&nbsp;'marker'&nbsp;parameter&nbsp;to&nbsp;fetch&nbsp;the&nbsp;next&nbsp;10&nbsp;objects</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-comm">#</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-var">$next_ten&nbsp;</span>=&nbsp;<span class="src-var">$images</span><span class="src-sym">-&gt;</span><a href="../php-cloudfiles/CF_Container.html#methodlist_objects">list_objects</a><span class="src-sym">(</span><span class="src-num">10</span><span class="src-sym">,&nbsp;</span><span class="src-var">$first_ten</span><span class="src-sym">[</span><a href="http://www.php.net/count">count</a><span class="src-sym">(</span><span class="src-var">$first_ten</span><span class="src-sym">)</span>-<span class="src-num">1</span><span class="src-sym">]</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">&nbsp;<span class="src-comm">#&nbsp;Grab&nbsp;images&nbsp;starting&nbsp;with&nbsp;&quot;birthday_party&quot;&nbsp;and&nbsp;default&nbsp;limit/marker</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-comm">#&nbsp;to&nbsp;match&nbsp;all&nbsp;photos&nbsp;with&nbsp;that&nbsp;prefix</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-comm">#</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-var">$prefixed&nbsp;</span>=&nbsp;<span class="src-var">$images</span><span class="src-sym">-&gt;</span><a href="../php-cloudfiles/CF_Container.html#methodget_objects">get_objects</a><span class="src-sym">(</span><span class="src-num">0</span><span class="src-sym">,&nbsp;</span><span class="src-id">NULL</span><span class="src-sym">,&nbsp;</span><span class="src-str">&quot;birthday&quot;</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">&nbsp;<span class="src-comm">#&nbsp;Assuming&nbsp;you&nbsp;have&nbsp;created&nbsp;the&nbsp;appropriate&nbsp;directory&nbsp;marker&nbsp;Objects,</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-comm">#&nbsp;you&nbsp;can&nbsp;traverse&nbsp;your&nbsp;pseudo-hierarchical&nbsp;containers</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-comm">#&nbsp;with&nbsp;the&nbsp;&quot;path&quot;&nbsp;argument.</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-comm">#</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-var">$animals&nbsp;</span>=&nbsp;<span class="src-var">$images</span><span class="src-sym">-&gt;</span><a href="../php-cloudfiles/CF_Container.html#methodget_objects">get_objects</a><span class="src-sym">(</span><span class="src-num">0</span><span class="src-sym">,</span><span class="src-id">NULL</span><span class="src-sym">,</span><span class="src-id">NULL</span><span class="src-sym">,</span><span class="src-str">&quot;pictures/animals&quot;</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-var">$dogs&nbsp;</span>=&nbsp;<span class="src-var">$images</span><span class="src-sym">-&gt;</span><a href="../php-cloudfiles/CF_Container.html#methodget_objects">get_objects</a><span class="src-sym">(</span><span class="src-num">0</span><span class="src-sym">,</span><span class="src-id">NULL</span><span class="src-sym">,</span><span class="src-id">NULL</span><span class="src-sym">,</span><span class="src-str">&quot;pictures/animals/dogs&quot;</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+</ol></p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>array of strings</td>
+  </tr>
+  <tr>
+    <td><b>throws:</b>&nbsp;&nbsp;</td><td>InvalidResponseException unexpected response</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+	
+        <h4>Parameters:</h4>
+    <div class="tags">
+    <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+        <td class="type">int&nbsp;&nbsp;</td>
+        <td><b>$limit</b>&nbsp;&nbsp;</td>
+        <td><em>optional</em> only return $limit names</td>
+      </tr>
+          <tr>
+        <td class="type">int&nbsp;&nbsp;</td>
+        <td><b>$marker</b>&nbsp;&nbsp;</td>
+        <td><em>optional</em> subset of names starting at $marker</td>
+      </tr>
+          <tr>
+        <td class="type">string&nbsp;&nbsp;</td>
+        <td><b>$prefix</b>&nbsp;&nbsp;</td>
+        <td><em>optional</em> Objects whose names begin with $prefix</td>
+      </tr>
+          <tr>
+        <td class="type">string&nbsp;&nbsp;</td>
+        <td><b>$path</b>&nbsp;&nbsp;</td>
+        <td><em>optional</em> only return results under &quot;pathname&quot;</td>
+      </tr>
+        </table>
+    </div><br />
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
 	<a name="methodis_public"></a>
-	<h3>method is_public <span class="smalllinenumber">[line 799]</span></h3>
+	<h3>method is_public <span class="smalllinenumber">[line 1018]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -542,22 +701,21 @@ $obj_name = NULL])</code>
   </div>
   <hr />
 	<a name="methodlist_objects"></a>
-	<h3>method list_objects <span class="smalllinenumber">[line 895]</span></h3>
+	<h3>method list_objects <span class="smalllinenumber">[line 1124]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
 		<code>array list_objects(
 [int
 $limit = 0], [int
-$offset = -1], [string
-$prefix = &quot;&quot;])</code>
+$marker = NULL], [string
+$prefix = NULL], [string
+$path = NULL])</code>
     </td></tr></table>
     </td></tr></table><br />
 	
 		Return a list of Objects<br /><br /><p>Return an array of strings listing the Object names in this Container.</p><p>Example:  <ol><li><div class="src-line">&nbsp;<span class="src-comm">#&nbsp;...&nbsp;authentication&nbsp;code&nbsp;excluded&nbsp;(see&nbsp;previous&nbsp;examples)&nbsp;...</span></div></li>
 <li><div class="src-line">&nbsp;<span class="src-comm">#</span></div></li>
-<li><div class="src-line">&nbsp;<span class="src-var">$conn&nbsp;</span>=&nbsp;<span class="src-key">new&nbsp;</span><span class="src-id"><a href="../php-cloudfiles/CF_Authentication.html">CF_Authentication</a></span><span class="src-sym">(</span><span class="src-var">$auth</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
-<li><div class="src-line">&nbsp;</div></li>
 <li><div class="src-line">&nbsp;<span class="src-var">$images&nbsp;</span>=&nbsp;<span class="src-var">$conn</span><span class="src-sym">-&gt;</span><span class="src-id">get_container</span><span class="src-sym">(</span><span class="src-str">&quot;my&nbsp;photos&quot;</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
 <li><div class="src-line">&nbsp;</div></li>
 <li><div class="src-line">&nbsp;<span class="src-comm">#&nbsp;Grab&nbsp;the&nbsp;list&nbsp;of&nbsp;all&nbsp;storage&nbsp;objects</span></div></li>
@@ -567,12 +725,23 @@ $prefix = &quot;&quot;])</code>
 <li><div class="src-line">&nbsp;<span class="src-comm">#&nbsp;Grab&nbsp;subsets&nbsp;of&nbsp;all&nbsp;storage&nbsp;objects</span></div></li>
 <li><div class="src-line">&nbsp;<span class="src-comm">#</span></div></li>
 <li><div class="src-line">&nbsp;<span class="src-var">$first_ten&nbsp;</span>=&nbsp;<span class="src-var">$images</span><span class="src-sym">-&gt;</span><a href="../php-cloudfiles/CF_Container.html#methodlist_objects">list_objects</a><span class="src-sym">(</span><span class="src-num">10</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
-<li><div class="src-line">&nbsp;<span class="src-var">$next_ten&nbsp;</span>=&nbsp;<span class="src-var">$images</span><span class="src-sym">-&gt;</span><a href="../php-cloudfiles/CF_Container.html#methodlist_objects">list_objects</a><span class="src-sym">(</span><span class="src-num">10</span><span class="src-sym">,</span><span class="src-num">10</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
 <li><div class="src-line">&nbsp;</div></li>
-<li><div class="src-line">&nbsp;<span class="src-comm">#&nbsp;Grab&nbsp;images&nbsp;starting&nbsp;with&nbsp;&quot;birthday_party&quot;&nbsp;and&nbsp;default&nbsp;limit/offset</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-comm">#&nbsp;Note&nbsp;the&nbsp;use&nbsp;of&nbsp;the&nbsp;previous&nbsp;result's&nbsp;last&nbsp;object&nbsp;name&nbsp;being</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-comm">#&nbsp;used&nbsp;as&nbsp;the&nbsp;'marker'&nbsp;parameter&nbsp;to&nbsp;fetch&nbsp;the&nbsp;next&nbsp;10&nbsp;objects</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-comm">#</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-var">$next_ten&nbsp;</span>=&nbsp;<span class="src-var">$images</span><span class="src-sym">-&gt;</span><a href="../php-cloudfiles/CF_Container.html#methodlist_objects">list_objects</a><span class="src-sym">(</span><span class="src-num">10</span><span class="src-sym">,&nbsp;</span><span class="src-var">$first_ten</span><span class="src-sym">[</span><a href="http://www.php.net/count">count</a><span class="src-sym">(</span><span class="src-var">$first_ten</span><span class="src-sym">)</span>-<span class="src-num">1</span><span class="src-sym">]</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">&nbsp;<span class="src-comm">#&nbsp;Grab&nbsp;images&nbsp;starting&nbsp;with&nbsp;&quot;birthday_party&quot;&nbsp;and&nbsp;default&nbsp;limit/marker</span></div></li>
 <li><div class="src-line">&nbsp;<span class="src-comm">#&nbsp;to&nbsp;match&nbsp;all&nbsp;photos&nbsp;with&nbsp;that&nbsp;prefix</span></div></li>
 <li><div class="src-line">&nbsp;<span class="src-comm">#</span></div></li>
-<li><div class="src-line">&nbsp;<span class="src-var">$prefixed&nbsp;</span>=&nbsp;<span class="src-var">$images</span><span class="src-sym">-&gt;</span><a href="../php-cloudfiles/CF_Container.html#methodlist_objects">list_objects</a><span class="src-sym">(</span><span class="src-num">0</span><span class="src-sym">,</span>-<span class="src-num">1</span><span class="src-sym">,</span><span class="src-str">&quot;birthday_party&quot;</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-var">$prefixed&nbsp;</span>=&nbsp;<span class="src-var">$images</span><span class="src-sym">-&gt;</span><a href="../php-cloudfiles/CF_Container.html#methodlist_objects">list_objects</a><span class="src-sym">(</span><span class="src-num">0</span><span class="src-sym">,&nbsp;</span><span class="src-id">NULL</span><span class="src-sym">,&nbsp;</span><span class="src-str">&quot;birthday&quot;</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">&nbsp;<span class="src-comm">#&nbsp;Assuming&nbsp;you&nbsp;have&nbsp;created&nbsp;the&nbsp;appropriate&nbsp;directory&nbsp;marker&nbsp;Objects,</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-comm">#&nbsp;you&nbsp;can&nbsp;traverse&nbsp;your&nbsp;pseudo-hierarchical&nbsp;containers</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-comm">#&nbsp;with&nbsp;the&nbsp;&quot;path&quot;&nbsp;argument.</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-comm">#</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-var">$animals&nbsp;</span>=&nbsp;<span class="src-var">$images</span><span class="src-sym">-&gt;</span><a href="../php-cloudfiles/CF_Container.html#methodlist_objects">list_objects</a><span class="src-sym">(</span><span class="src-num">0</span><span class="src-sym">,</span><span class="src-id">NULL</span><span class="src-sym">,</span><span class="src-id">NULL</span><span class="src-sym">,</span><span class="src-str">&quot;pictures/animals&quot;</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-var">$dogs&nbsp;</span>=&nbsp;<span class="src-var">$images</span><span class="src-sym">-&gt;</span><a href="../php-cloudfiles/CF_Container.html#methodlist_objects">list_objects</a><span class="src-sym">(</span><span class="src-num">0</span><span class="src-sym">,</span><span class="src-id">NULL</span><span class="src-sym">,</span><span class="src-id">NULL</span><span class="src-sym">,</span><span class="src-str">&quot;pictures/animals/dogs&quot;</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
 </ol></p><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -598,13 +767,18 @@ $prefix = &quot;&quot;])</code>
       </tr>
           <tr>
         <td class="type">int&nbsp;&nbsp;</td>
-        <td><b>$offset</b>&nbsp;&nbsp;</td>
-        <td><em>optional</em> subset of names starting at $offset</td>
+        <td><b>$marker</b>&nbsp;&nbsp;</td>
+        <td><em>optional</em> subset of names starting at $marker</td>
       </tr>
           <tr>
         <td class="type">string&nbsp;&nbsp;</td>
         <td><b>$prefix</b>&nbsp;&nbsp;</td>
         <td><em>optional</em> Objects whose names begin with $prefix</td>
+      </tr>
+          <tr>
+        <td class="type">string&nbsp;&nbsp;</td>
+        <td><b>$path</b>&nbsp;&nbsp;</td>
+        <td><em>optional</em> only return results under &quot;pathname&quot;</td>
       </tr>
         </table>
     </div><br />
@@ -612,7 +786,7 @@ $prefix = &quot;&quot;])</code>
   </div>
   <hr />
 	<a name="methodmake_private"></a>
-	<h3>method make_private <span class="smalllinenumber">[line 758]</span></h3>
+	<h3>method make_private <span class="smalllinenumber">[line 977]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -656,7 +830,7 @@ $prefix = &quot;&quot;])</code>
   </div>
   <hr />
 	<a name="methodmake_public"></a>
-	<h3>method make_public <span class="smalllinenumber">[line 693]</span></h3>
+	<h3>method make_public <span class="smalllinenumber">[line 909]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -710,7 +884,7 @@ $ttl = 86400])</code>
   </div>
   <hr />
 	<a name="method__toString"></a>
-	<h3>method __toString <span class="smalllinenumber">[line 655]</span></h3>
+	<h3>method __toString <span class="smalllinenumber">[line 871]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -738,7 +912,7 @@ $ttl = 86400])</code>
 
         <div class="credit">
 		    <hr />
-		    Documentation generated on Wed, 10 Dec 2008 16:44:11 -0600 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.2</a>
+		    Documentation generated on Wed, 10 Jun 2009 13:11:09 -0500 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.2</a>
 	      </div>
       </td></tr></table>
     </td>
