@@ -1389,6 +1389,69 @@ class CF_Object
     }
 
     /**
+     * Internal check to get the proper mimetype.
+     *
+     * This function would go over the available PHP methods to get
+     * the MIME type.
+     *
+     * By default it will try to use the PHP fileinfo library which is
+     * available from PHP 5.3 or as an PECL extension
+     * (http://pecl.php.net/package/Fileinfo).
+     *
+     * It will get the magic file by default from the system wide file
+     * which is usually available in /usr/share/magic on Unix or try
+     * to use the file specified in the source directory of the API
+     * (share directory).
+     *
+     * if fileinfo is not available it will try to use the internal
+     * mime_content_type function.
+     * 
+     * @param string $handle name of file or buffer to guess the type from
+     * @return boolean <kbd>True</kbd> if successful
+     * @throws BadContentTypeException
+     */
+    function _guess_content_type($handle) {
+        if (!$this->content_type) {
+            if (function_exists("finfo_open")) {
+                $local_magic = dirname(__FILE__) . "/share/magic";
+                $finfo = @finfo_open(FILEINFO_MIME, $local_magic);
+
+                if (!$finfo) 
+                    $finfo = @finfo_open(FILEINFO_MIME);
+                
+                if ($finfo) {
+
+                    if (is_file($handle)) 
+                        $ct = @finfo_file($finfo, $handle);
+                    else 
+                        $ct = @finfo_buffer($finfo, $handle);
+
+                    /* PHP 5.3 fileinfo display extra information like
+                       charset so we remove everything after the ; since
+                       we are not into that stuff */
+                    if ($ct) {
+                        $extra_content_type_info = strpos($ct, "; ");
+                        if ($extra_content_type_info)
+                            $ct = substr($ct, 0, $extra_content_type_info);
+                    }
+                    if ($ct) 
+                        $this->content_type = $ct;
+                    @finfo_close($finfo);
+                }
+            }
+        }
+
+        if (!$this->content_type && is_file($handle) && function_exists("mime_content_type")) {
+            $this->content_type = @mime_content_type($handle);
+        }
+
+        if (!$this->content_type) {
+            throw new BadContentTypeException("Required Content-Type not set");
+        }
+        return True;
+    }
+    
+    /**
      * String representation of the Object's public URI
      *
      * A string representing the Object's public URI assuming that it's
@@ -1629,32 +1692,7 @@ class CF_Object
             rewind($data);
         }
 
-        if (!$this->content_type) {
-            if (function_exists("finfo_open")) {
-                $finfo = @finfo_open(FILEINFO_MIME);
-                if ($finfo) {
-                    $ct = @finfo_buffer($finfo, $ct_data);
-                    @finfo_close($finfo);
-                    if ($ct) {
-                        $this->content_type = $ct;
-                    }
-                } else {
-                    # try included magic file
-                    $local_magic = dirname(__FILE__) . "/share/magic";
-                    $finfo = @finfo_open(FILEINFO_MIME, $local_magic);
-                    if ($finfo) {
-                        $ct = @finfo_buffer($finfo, $ct_data);
-                        @finfo_close($finfo);
-                        if ($ct) {
-                            $this->content_type = $ct;
-                        }
-                    }
-                }
-            }
-        }
-        if (!$this->content_type) {
-            throw new BadContentTypeException("Required Content-Type not set");
-        }
+        $this->_guess_content_type($ct_data);
 
         list($status, $reason, $etag) =
                 $this->container->cfs_http->put_object($this, $fp);
@@ -1722,22 +1760,8 @@ class CF_Object
             throw new SyntaxException("File size exceeds maximum object size.");
         }
 
-        if (!$this->content_type && function_exists("finfo_open")) {
-            $finfo = @finfo_open(FILEINFO_MIME);
-            if ($finfo) {
-                $ct = @finfo_file($finfo, $filename);
-                @finfo_close($finfo);
-                if ($ct) {
-                    $this->content_type = $ct;
-                }
-            }
-        }
-        if (!$this->content_type && function_exists("mime_content_type")) {
-            $this->content_type = @mime_content_type($filename);
-        }
-        if (!$this->content_type) {
-            throw new BadContentTypeException("Required Content-Type not set");
-        }
+        $this->_guess_content_type($filename);
+        
         $this->write($fp, $size, $verify);
         fclose($fp);
         return True;
