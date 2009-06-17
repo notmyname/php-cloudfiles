@@ -191,6 +191,17 @@ try {
     print "SUCCESS: do not allow '/' in container name\n";
 }
 
+echo "======= Check Containner Attribute =================\n";
+$container_name = "test_containner";
+$cont = $conn->create_container($container_name);
+$clist = $conn->get_containers();
+$cont_name_check = false;
+foreach ($clist as $cont) {
+    if ($cont->name == $container_name)
+        $cont_name_check = true;
+}
+assert($cont_name_check);
+
 echo "======= CREATE EMPTY OBJECT =================================\n";
 $o0 = $container->create_object("empty_object");
 try {

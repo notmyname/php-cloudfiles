@@ -550,7 +550,7 @@ class CF_Connection
         $containers = array();
         foreach ($container_info as $name => $info) {
             $containers[] = new CF_Container($this->cfs_auth, $this->cfs_http,
-                $name, $info["count"], $info["bytes"], False);
+                $info['name'], $info["count"], $info["bytes"], False);
         }
         return $containers;
     }

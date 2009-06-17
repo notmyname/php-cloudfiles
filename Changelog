@@ -2,7 +2,8 @@
   * More simplification of the mimetype detection and support for PHP 5.3.
   * Fix documentation information about the ttl for cached object.
   * Use the hash library to compute MD5 for streams instead of storing the
-  stream in memory.
+    stream in memory.
+  * Fix CF_Connection::get_containers to display the container name properly.
 
 20090325 - v1.3.1 <ej@racklabs.com>
   * Simplify use of FileInfo, remove packaged MIME/Magic file
