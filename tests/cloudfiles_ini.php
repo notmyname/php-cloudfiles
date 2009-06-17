@@ -6,8 +6,8 @@ $ACCOUNT = NULL;                        # DEPRECATED: account name
 $HOST    = NULL;                        # DEPRECATED: authentication host URL
 
 # Allow override by environment variable
-if (isset($_ENV["MOSSO_USER"])) {
-    $USER = $_ENV["MOSSO_USER"];
+if (isset($_ENV["MOSSO_API_USER"])) {
+    $USER = $_ENV["MOSSO_API_USER"];
 }
 
 if (isset($_ENV["MOSSO_API_KEY"])) {
