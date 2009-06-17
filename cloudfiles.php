@@ -897,7 +897,7 @@ class CF_Container
      *
      * # CDN-enable the container and set it's TTL for a month
      * #
-     * $public_container->make_public(86400*30); # 30 days (86400 seconds/day)
+     * $public_container->make_public(86400/2); # 12 hours (86400 seconds/day)
      * </code>
      *
      * @param int $ttl the time in seconds content will be cached in the CDN
