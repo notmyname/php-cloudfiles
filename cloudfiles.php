@@ -1835,14 +1835,10 @@ class CF_Object
      * Calculate the MD5 checksum on either a PHP resource or data.  The argument
      * may either be a local filename, open resource for reading, or a string.
      *
-     * <b>WARNING:</b> If $data is a resource, the entire contents are read
-     * into a local variable (memory) before computing the checksum!  PHP
-     * will cap it's memory usage based on the php.ini settings of
-     * "memory_limit" and "max_execution_time".  If you set these values too
-     * high, you may exhaust your system's RAM.  If you plan to use this API
-     * to stream large files into Cloud Files, you should consider either
-     * buffering to disk first to compute the MD5 checksum, or setting
-     * the $verify parameter to False in the write() method.
+     * <b>WARNING:</b> if you are uploading a big file over a stream
+     * it could get very slow to compute the md5 you probably want to
+     * set the $verify parameter to False in the write() method and
+     * compute yourself the md5 before if you have it.
      *
      * @param filename|obj|string $data filename, open resource, or string
      * @return string MD5 checksum hexidecimal string
@@ -1852,10 +1848,13 @@ class CF_Object
 
         if (is_file($data)) {
             $md5 = md5_file($data);
-        } elseif (is_resource($data)) {
-            # let's hope this isn't a BIG file (see WARNING above)
-            $contents = stream_get_contents($data); # PHP 5 and up
-            $md5 = md5($contents);
+        } elseif (function_exists("hash_init") && is_resource($data)) {
+            $ctx = hash_init('md5');
+            while (!feof($data)) {
+                $buffer = fgets($data, 65536);
+                hash_update($ctx, $buffer);
+            }
+            $md5 = hash_final($ctx, false);
             rewind($data);
         } else {
             $md5 = md5($data);
