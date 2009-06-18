@@ -436,6 +436,8 @@ class CF_Connection
      */
     function delete_container($container=NULL)
     {
+        $container_name = NULL;
+        
         if (is_object($container)) {
             if (get_class($container) == "CF_Container") {
                 $container_name = $container->name;
