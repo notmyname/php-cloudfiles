@@ -1,5 +1,5 @@
 <?php
-$VERBOSE = True;                        # informational messages to stdout
+$VERBOSE = False;                        # informational messages to stdout
 $USER    = "Username";                  # Mosso Username
 $API_KEY = "API Key";                   # User's API Access Key
 $ACCOUNT = NULL;                        # DEPRECATED: account name
@@ -14,7 +14,18 @@ if (isset($_ENV["MOSSO_API_KEY"])) {
     $API_KEY = $_ENV["MOSSO_API_KEY"];
 }
 
+if (isset($_ENV["MOSSO_API_VERBOSE"])) {
+    $VERBOSE = $_ENV["MOSSO_API_VERBOSE"];
+}
+
+# Make it global
+define('USER', $USER);
+define('API_KEY', $API_KEY);
+define('ACCOUNT', $ACCOUNT);
+define('VERBOSE', $VERBOSE);
+
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
+
 
 /*
  * Local variables:
