@@ -1,4 +1,4 @@
-<?
+<?php
 require_once 'cloudfiles_ini.php';
 set_include_path(get_include_path() . PATH_SEPARATOR . "../");
 require_once 'cloudfiles.php';
