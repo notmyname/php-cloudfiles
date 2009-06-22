@@ -1,0 +1,7 @@
+<phpunit>
+  <testsuite name="PHP_CloudFiles">
+      <file>tests/Authentication.php</file>
+      <file>tests/Accounts.php</file>
+      <file>tests/UTF8.php</file>
+  </testsuite>
+</phpunit>
