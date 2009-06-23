@@ -8,11 +8,12 @@ require_once 'common.php';
    *
    * @package php-cloudfiles::tests
    */
-class CloudFileUTF8Test extends PHPUnit_Framework_TestCase
+class UTF8 extends PHPUnit_Framework_TestCase
 {
     public function __construct()
     {
         $this->windows = (strtoupper (substr(PHP_OS, 0,3)) == 'WIN' ) ? true : false;
+        $this->auth = null;
     }
     
     public function setUp()
@@ -23,16 +24,14 @@ class CloudFileUTF8Test extends PHPUnit_Framework_TestCase
         
         #Connect!
         $this->auth = new CF_Authentication(USER, API_KEY);
-        $this->auth->authenticate();
-        
         if ($this->windows)
             $this->auth->ssl_use_cabundle();
-
+        $this->auth->authenticate();
+        
         $this->conn = new CF_Connection($this->auth);
-
         if ($this->windows)
             $this->conn->ssl_use_cabundle();
-
+        
         #Make sure it's deleted at the end
         $this->container = $this->conn->create_container("utf-8");
 
@@ -55,7 +54,6 @@ class CloudFileUTF8Test extends PHPUnit_Framework_TestCase
     { 
         foreach ($this->utf8_names as $name) {
             $container = $this->conn->create_container($name);
-            debug(print_r($container, TRUE));
             $this->assertEquals(get_class($container), "CF_Container");
             $this->assertEquals($container->name, $name);
         }

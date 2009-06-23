@@ -21,6 +21,10 @@ class CloudFileAccountInfoTest extends PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->auth = new CF_Authentication(USER, API_KEY);
+
+        if ($this->windows)
+            $this->auth->ssl_use_cabundle();
+
         $this->auth->authenticate();
 
         if ($this->windows)
@@ -281,6 +285,8 @@ class CloudFileAccountInfoTest extends PHPUnit_Framework_TestCase
     public function testUploadObjectFromFile ()
     { 
         $fname = basename(__FILE__);
+        if (!file_exists("$fname"))
+            $fname = "tests/$fname";
         $md5 = md5_file($fname);
         $o2 = $this->container->create_object($fname);
         $o2->content_type = "text/plain";
