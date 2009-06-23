@@ -11,7 +11,6 @@ class UTF8 extends PHPUnit_Framework_TestCase
 {
     public function __construct()
     {
-        $this->windows = (strtoupper (substr(PHP_OS, 0,3)) == 'WIN' ) ? true : false;
         $this->auth = null;
     }
     
@@ -23,13 +22,9 @@ class UTF8 extends PHPUnit_Framework_TestCase
         
         #Connect!
         $this->auth = new CF_Authentication(USER, API_KEY);
-        if ($this->windows)
-            $this->auth->ssl_use_cabundle();
         $this->auth->authenticate();
         
         $this->conn = new CF_Connection($this->auth);
-        if ($this->windows)
-            $this->conn->ssl_use_cabundle();
         
         #Make sure it's deleted at the end
         $this->container = $this->conn->create_container("utf-8");

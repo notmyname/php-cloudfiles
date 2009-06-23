@@ -1,4 +1,5 @@
 20090617 - v1.3.2 <chmouel.boudjnah@rackspace.co.uk>
+  * Automatically set the updated CA bundle when on the windows OS.
   * More simplification of the mimetype detection and support for PHP 5.3.
   * Fix documentation information about the ttl for cached object.
   * Use the hash library to compute MD5 for streams instead of storing the

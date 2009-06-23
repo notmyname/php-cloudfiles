@@ -141,6 +141,17 @@ class CF_Http
         $this->_cdn_enabled = NULL;
         $this->_cdn_uri = NULL;
         $this->_cdn_ttl = NULL;
+
+        # The OS list with a PHP without an updated CA File for CURL to
+        # connect to SSL Websites. It is the first 3 letters of the PHP_OS
+        # variable.
+        $OS_CAFILE_NONUPDATED=array(
+            "win",
+        ); 
+
+        if (in_array((strtolower (substr(PHP_OS, 0,3))), $OS_CAFILE_NONUPDATED))
+            $this->ssl_use_cabundle();
+        
     }
 
     function ssl_use_cabundle($path=NULL)

@@ -14,7 +14,6 @@ require_once 'common.php';
 class Comprehensive extends PHPUnit_Framework_TestCase
 {
     function __construct() {
-        $this->windows = (strtoupper (substr(PHP_OS, 0,3)) == 'WIN' ) ? true : false;
         $this->auth = null;
         $this->temp_name_write = tempnam(get_tmpdir(), "php-cloudfiles");
         $this->temp_name_read = tempnam(get_tmpdir(), "php-cloudfiles");
@@ -26,15 +25,8 @@ class Comprehensive extends PHPUnit_Framework_TestCase
 
     protected function setUp() {
         $this->auth = new CF_Authentication(USER, API_KEY);
-        if ($this->windows)
-            $this->auth->ssl_use_cabundle();
-        
         $this->auth->authenticate();
-        
         $this->conn = new CF_Connection($this->auth);
-        if ($this->windows)
-            $this->conn->ssl_use_cabundle();
-        
     }
 
     protected function __create_big_file($size) {

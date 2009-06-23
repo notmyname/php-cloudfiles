@@ -6,7 +6,6 @@ class CloudFileAccountInfoTest extends PHPUnit_Framework_TestCase
 {
     function __construct()
     {
-        $this->windows = (strtoupper (substr(PHP_OS, 0,3)) == 'WIN' ) ? true : false;
         $this->auth = null;
         $this->container = null;
         $this->temp_name = tempnam(get_tmpdir(), "php-cloudfiles");
@@ -20,20 +19,8 @@ class CloudFileAccountInfoTest extends PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->auth = new CF_Authentication(USER, API_KEY);
-
-        if ($this->windows)
-            $this->auth->ssl_use_cabundle();
-
         $this->auth->authenticate();
-
-        if ($this->windows)
-            $this->auth->ssl_use_cabundle();
-
         $this->conn = new CF_Connection($this->auth);
-
-        if ($this->windows)
-            $this->conn->ssl_use_cabundle();
-
         #We will need it all of those
         $this->conn->set_read_progress_function("read_callback_test");
         $this->conn->set_write_progress_function("write_callback_test");

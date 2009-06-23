@@ -5,14 +5,11 @@ require_once 'common.php';
 class Authentication extends PHPUnit_Framework_TestCase
 {
     function __construct() {
-        $this->windows = (strtoupper (substr(PHP_OS, 0,3)) == 'WIN' ) ? true : false;
         $this->auth = null;
     }
 
     protected function setUp() {
         $this->auth = new CF_Authentication(USER, API_KEY);
-        if ($this->windows)
-            $this->auth->ssl_use_cabundle();
         $this->auth->authenticate();
         $conn = new CF_Connection($this->auth);
     }    
@@ -27,7 +24,6 @@ class Authentication extends PHPUnit_Framework_TestCase
     {
         $this->setExpectedException('AuthenticationException');
         $auth = new CF_Authentication('e046e8db7d813050b14ce335f2511e83', 'bleurrhrhahra');
-        $auth->ssl_use_cabundle();        
         $auth->authenticate();
     }
     
@@ -39,9 +35,6 @@ class Authentication extends PHPUnit_Framework_TestCase
         if (ACCOUNT)
             $this->assertNotNull($this->auth->cdnm_url);
     }
-
-
-    
 }
 
 ?>
