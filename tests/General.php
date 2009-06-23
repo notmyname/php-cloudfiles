@@ -1,5 +1,4 @@
-<?php
-
+<?php # -*- compile-command: (concat "phpunit " buffer-file-name) -*-
 require_once 'PHPUnit/Framework.php';
 require_once 'common.php';
 
@@ -10,7 +9,7 @@ class CloudFileAccountInfoTest extends PHPUnit_Framework_TestCase
         $this->windows = (strtoupper (substr(PHP_OS, 0,3)) == 'WIN' ) ? true : false;
         $this->auth = null;
         $this->container = null;
-        $this->temp_name = tempnam("/tmp", "php-cloudfiles");
+        $this->temp_name = tempnam(get_tmpdir(), "php-cloudfiles");
         $this->object_data = "Some Random text for object data";
     }
 

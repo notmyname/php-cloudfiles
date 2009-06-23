@@ -167,4 +167,22 @@ function debug($texto){
     file_put_contents('/tmp/quick-cf-api.log',date('d/m/Y H:i:s').' - '.$texto."\n",FILE_APPEND);
 }
 
+/**
+   * Get the temporary directory abstracted of the OS
+   *
+   */
+function get_tmpdir() {
+    if (isset($_ENV['TMP']))
+        return realpath($_ENV['TMP']);
+    if (isset($_ENV['TMPDIR']))
+        return realpath( $_ENV['TMPDIR']);
+    if (isset($_ENV['TEMP']))
+        return realpath( $_ENV['TEMP']);
+
+    $tempfile=tempnam(uniqid(rand(),TRUE),'');
+    if (file_exists($tempfile)) 
+        unlink($tempfile);
+    return realpath(dirname($tempfile));
+}
+
 ?>

@@ -1,4 +1,4 @@
-<?php
+<?php # -*- compile-command: (concat "phpunit " buffer-file-name) -*-
 require_once 'PHPUnit/Framework.php';
 require_once 'common.php';
 
