@@ -28,8 +28,13 @@ class Comprehensive extends PHPUnit_Framework_TestCase
         $this->auth = new CF_Authentication(USER, API_KEY);
         if ($this->windows)
             $this->auth->ssl_use_cabundle();
+        
         $this->auth->authenticate();
+        
         $this->conn = new CF_Connection($this->auth);
+        if ($this->windows)
+            $this->conn->ssl_use_cabundle();
+        
     }
 
     protected function __create_big_file($size) {
@@ -47,6 +52,8 @@ class Comprehensive extends PHPUnit_Framework_TestCase
     }    
     
     public function test_big_file () { 
+        $fname = basename($this->temp_name_write);
+
         $this->__create_big_file(500 * 1024 * 1024);
 
         #Upload IT
@@ -54,7 +61,7 @@ class Comprehensive extends PHPUnit_Framework_TestCase
         $filesize_orig = filesize($this->temp_name_write);
         
         $comp_cont = $this->conn->create_container("big-file-php");
-        $obj = $comp_cont->create_object(basename($this->temp_name_write));
+        $obj = $comp_cont->create_object($fname);
         $obj->content_type = "application/octet-stream";
         $obj->set_etag($md5_orig);
         $fp = fopen($this->temp_name_write, "rb");
@@ -62,7 +69,7 @@ class Comprehensive extends PHPUnit_Framework_TestCase
         fclose($fp);
 
         #GET IT
-        $o2 = $comp_cont->get_object(basename($this->temp_name_write));
+        $o2 = $comp_cont->get_object($fname);
         $o2->save_to_filename($this->temp_name_read);
         $md5_new = md5_file($this->temp_name_read);
         $filesize_new = filesize($this->temp_name_read);
@@ -71,7 +78,7 @@ class Comprehensive extends PHPUnit_Framework_TestCase
         $this->assertEquals($filesize_orig, $filesize_new);
 
         # Clean it
-        $comp_cont->delete_object(basename($this->temp_name_write));
+        $comp_cont->delete_object($fname);
         
     }
 }
