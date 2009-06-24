@@ -1423,7 +1423,7 @@ class CF_Object
                 
                 if ($finfo) {
 
-                    if (is_file($handle)) 
+                    if (is_file((string)$handle))
                         $ct = @finfo_file($finfo, $handle);
                     else 
                         $ct = @finfo_buffer($finfo, $handle);
@@ -1443,7 +1443,7 @@ class CF_Object
             }
         }
 
-        if (!$this->content_type && is_file($handle) && function_exists("mime_content_type")) {
+        if (!$this->content_type && (string)is_file($handle) && function_exists("mime_content_type")) {
             $this->content_type = @mime_content_type($handle);
         }
 
@@ -1848,9 +1848,7 @@ class CF_Object
     function compute_md5sum(&$data)
     {
 
-        if (is_file($data)) {
-            $md5 = md5_file($data);
-        } elseif (function_exists("hash_init") && is_resource($data)) {
+        if (function_exists("hash_init") && is_resource($data)) {
             $ctx = hash_init('md5');
             while (!feof($data)) {
                 $buffer = fgets($data, 65536);
@@ -1858,6 +1856,8 @@ class CF_Object
             }
             $md5 = hash_final($ctx, false);
             rewind($data);
+        } elseif ((string)is_file($data)) {
+            $md5 = md5_file($data);
         } else {
             $md5 = md5($data);
         }
