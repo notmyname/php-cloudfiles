@@ -30,6 +30,15 @@ class Comprehensive extends PHPUnit_Framework_TestCase
     }
 
     protected function __create_big_file($size) {
+
+        // Check if we have enough free space, this is time two
+        // because we are creating uploading and downloading which
+        // after get compared.
+        if ($size * 2 >= disk_free_space(get_tmpdir())) {
+            print "not enough free space to continue";
+            exit(1);
+        }
+        
         $chunk = 8192;
         $fp = fopen($this->temp_name_write, "wb");
         for ($i=1; $i <= $size;) {
