@@ -260,14 +260,6 @@ class CloudFileAccountInfoTest extends PHPUnit_Framework_TestCase
 
     }
 
-    # ======= TEST BADCONTENTTYPE EXCEPTION =======================
-    public function testBadContentType ()
-    { 
-        $this->setExpectedException('BadContentTypeException');
-        $o2 = $this->container->create_object("bad-content-type");
-        $o2->write(pack("n*", 0xf00f, 0xdead, 0xbeef, 0x0100, 0x0ff0));
-    }
-
     public function testUploadObjectFromFile ()
     { 
         $fname = basename(__FILE__);
