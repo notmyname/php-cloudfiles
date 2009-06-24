@@ -86,15 +86,60 @@ class FileDetection extends PHPUnit_Framework_TestCase
         }
     }
 
-    /* TODO: To see with JEFF
+    /*
+      If set application/octet-stream it should not throw
+      BadContentTypeException
+    */
+    public function test_set_application_octet_stream ()
+    {
+        #CREATE
+        $o = $this->container->create_object("ct.mp3");
+
+        #PUT
+        $o->content_type = "application/octet-stream";
+        $o->write(pack("n*", 0x4944, 0x3303, 0x0000, 0x0000, 0x0f76, 0x5450, 0x4531, 0x0000, 0x000d)); #MP3
+        
+        #GET
+        $o = $this->container->get_object("ct.mp3");
+
+        #TEST
+        $this->assertEquals($o->content_type, "application/octet-stream");
+
+        #CLEAN
+        $this->container->delete_object("ct.mp3");
+    }
+    
+
+    /*
+      If set with another content type than supposed to be it should not auto detect it
+    */
+    public function test_set_wrong_content_type ()
+    {
+        #CREATE
+        $o = $this->container->create_object("ct.mp4");
+
+        #PUT
+        $o->content_type = "video/mp4"; #it should be image/jpeg but if the user really want to set as MP4 it's his problem
+        $o->write(pack("n*", 0x0000, 0x001c, 0x6674, 0x7970, 0x6d70, 0x3432, 0x0000, 0x0000, 0x6973)); #JPG
+        
+        #GET
+        $o = $this->container->get_object("ct.mp4");
+
+        #TEST
+        $this->assertEquals($o->content_type, "video/mp4");
+
+        #CLEAN
+        $this->container->delete_object("ct.mp4");
+    }
+    
+
+
     public function test_bad_content_type ()
     { 
         $this->setExpectedException('BadContentTypeException');
         $o2 = $this->container->create_object("bad-content-type");
         $o2->write(pack("n*", 0xf00f, 0xdead, 0xbeef, 0x0100, 0x0ff0));
-        print $o2->content_type;
     }
-    */
     
     public function test_delete_main_container () { 
         $result = $this->conn->delete_container("file-detection");
