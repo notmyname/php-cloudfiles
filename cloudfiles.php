@@ -1413,33 +1413,36 @@ class CF_Object
      * @throws BadContentTypeException
      */
     function _guess_content_type($handle) {
-        if (!$this->content_type) {
-            if (function_exists("finfo_open")) {
-                $local_magic = dirname(__FILE__) . "/share/magic";
-                $finfo = @finfo_open(FILEINFO_MIME, $local_magic);
+        if ($this->content_type)
+            return;
+            
+        if (function_exists("finfo_open")) {
+            $local_magic = dirname(__FILE__) . "/share/magic";
+            $finfo = @finfo_open(FILEINFO_MIME, $local_magic);
 
-                if (!$finfo) 
-                    $finfo = @finfo_open(FILEINFO_MIME);
+            if (!$finfo) 
+                $finfo = @finfo_open(FILEINFO_MIME);
                 
-                if ($finfo) {
+            if ($finfo) {
 
-                    if (is_file((string)$handle))
-                        $ct = @finfo_file($finfo, $handle);
-                    else 
-                        $ct = @finfo_buffer($finfo, $handle);
+                if (is_file((string)$handle))
+                    $ct = @finfo_file($finfo, $handle);
+                else 
+                    $ct = @finfo_buffer($finfo, $handle);
 
-                    /* PHP 5.3 fileinfo display extra information like
-                       charset so we remove everything after the ; since
-                       we are not into that stuff */
-                    if ($ct) {
-                        $extra_content_type_info = strpos($ct, "; ");
-                        if ($extra_content_type_info)
-                            $ct = substr($ct, 0, $extra_content_type_info);
-                    }
-                    if ($ct) 
-                        $this->content_type = $ct;
-                    @finfo_close($finfo);
+                /* PHP 5.3 fileinfo display extra information like
+                   charset so we remove everything after the ; since
+                   we are not into that stuff */
+                if ($ct) {
+                    $extra_content_type_info = strpos($ct, "; ");
+                    if ($extra_content_type_info)
+                        $ct = substr($ct, 0, $extra_content_type_info);
                 }
+
+                if ($ct && $ct != 'application/octet-stream')
+                    $this->content_type = $ct;
+
+                @finfo_close($finfo);
             }
         }
 
