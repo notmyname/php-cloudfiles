@@ -4,5 +4,6 @@
       <file>tests/General.php</file>
       <file>tests/UTF8.php</file>
       <file>tests/FileDetection.php</file>
+      <!--  <file>tests/Comprehensive.php</file> -->
   </testsuite>
 </phpunit>
