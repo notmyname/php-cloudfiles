@@ -26,10 +26,10 @@
   <tr valign="top">
     <td width="200" class="menu">
 	<div id="ric">
+					<p><a href="ric_README.html">README</a></p>
 					<p><a href="ric_AUTHORS.html">AUTHORS</a></p>
 					<p><a href="ric_COPYING.html">COPYING</a></p>
 					<p><a href="ric_Changelog.html">Changelog</a></p>
-					<p><a href="ric_README.html">README</a></p>
 			</div>
       <b>Packages:</b><br />
               <a href="li_php-cloudfiles.html">php-cloudfiles</a><br />
@@ -48,7 +48,7 @@
 ;; ========================================================================
 ;;   This package contains the PHP API for the Cloud Files storage system.
 ;;
-;;   Please see http://www.mosso.com for more information regarding the
+;;   Please see http://www.rackspacecloud.com/ for more information regarding the
 ;;   Cloud Files storage system.
 ;;
 ;; Install
@@ -87,6 +87,19 @@
 ;;   available and run:
 ;;      rm -rf docs &amp;&amp; phpdoc -c phpdoc.ini
 ;;
+;; Tests
+;; ------------------------------------------------------------------------ 
+;; The tests are based on phpunit and are run with PHPUnit 3.3.17
+;; please follow the instructions on :
+;;
+;; http://www.phpunit.de/manual/current/en/installation.html
+;; 
+;; to install PHPUnit. When installed just run the command phpunit on
+;; the top of the directory and it will launch the tests.
+;;
+;; The tests/Comprehensive.php is not enabled by default since
+;; generating big files. If you want to run it you need to go in the
+;; tests directory and run with phpunit Comprehensive.php
 ;;
 ;; ========================================================================
 ;; The lines below here are the configuration settings for re-generating
@@ -108,7 +121,7 @@ readmeinstallchangelog = README,COPYING,AUTHORS,Changelog
 </pre>
         <div class="credit">
 		    <hr />
-		    Documentation generated on Wed, 10 Jun 2009 13:11:09 -0500 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.2</a>
+		    Documentation generated on Fri, 26 Jun 2009 15:35:09 -0500 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.2</a>
 	      </div>
       </td></tr></table>
     </td>
