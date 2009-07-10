@@ -286,14 +286,16 @@ class CloudFileAccountInfoTest extends PHPUnit_Framework_TestCase
 
         # ======= UPDATE OBJECT METADATA ==============================
         $o3->metadata = array(
-            "NewFoo" => "This is new foo",
-            "NewBar" => "This is new bar");
+            "NewFoo" => "This is NEW foo",
+            "NewBar" => "This is new BAR");
         $result = $o3->sync_metadata();
         $this->assertNotNull($result);
 
         # ======= VERIFY UPDATED METADATA =============================
         $o4 = $this->container->get_object("fuzzy.txt");
-        $this->assertTrue($o4->getETag() == $o3->getETag());
+        $o4_md = asort(array_change_key_case($o4->metadata));
+        $o3_md = asort(array_change_key_case($o3->metadata));
+        $this->assertTrue($o4_md == $o3_md);
     }
 
     # ======= CREATE OBJECT =======================================
