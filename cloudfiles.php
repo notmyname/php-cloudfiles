@@ -951,6 +951,27 @@ class CF_Container
         return $this->cdn_uri;
     }
 
+
+    /*
+     * Enable CDN log retention on the container.
+     *
+     * If enabled logs will be periodically (at unpredictable
+     * intervals) compressed and uploaded to a ".CDN_ACCESS_LOGS"
+     * container in the form of
+     * "container_name.YYYY-MM-DD-HH.gz". Requires CDN be enabled on
+     * the account.
+     * 
+     * Example:
+     * <code>
+     * $conn->log_retention(True);
+     * </code>
+     *
+     * @param boolean $cdn_log_retention enable or disable the log retention feature
+     * @returns boolean True if successful
+     * @throws CDNNotEnabledException CDN functionality not returned during auth
+     * @throws AuthenticationException if auth token is not valid/expired
+     * @throws InvalidResponseException unexpected response
+     */
     function log_retention($cdn_log_retention=False) {
         if ($this->cfs_http->getCDNMUrl() == NULL) {
             throw new CDNNotEnabledException(
@@ -965,6 +986,7 @@ class CF_Container
                 "Invalid response (".$status."): ".$this->cfs_http->get_error());
         }
         $this->cdn_log_retention = $cdn_log_retention;
+        return True;
     }
     
     /**
