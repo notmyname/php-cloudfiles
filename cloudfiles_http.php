@@ -338,13 +338,13 @@ class CF_Http
 
         if (!$return_code) {
             $this->error_str .= ": Failed to obtain valid HTTP response.";
-            array(0,$this->error_str,NULL,NULL,NULL);
+            array(0,$this->error_str,NULL,NULL,NULL,NULL);
         }
         if ($return_code == 401) {
-            return array($return_code,"Unauthorized",NULL,NULL,NULL);
+            return array($return_code,"Unauthorized",NULL,NULL,NULL,NULL);
         }
         if ($return_code == 404) {
-            return array($return_code,"Account not found.",NULL,NULL,NULL);
+            return array($return_code,"Account not found.",NULL,NULL,NULL,NULL);
         }
         if ($return_code == 204) {
             return array($return_code,$this->response_reason,
@@ -352,7 +352,7 @@ class CF_Http
                 $this->_cdn_log_retention
                 );
         }
-        return array($return_code,$this->response_reason,NULL,NULL,NULL);
+        return array($return_code,$this->response_reason,NULL,NULL,NULL,NULL);
     }
 
     # GET /v1/Account
