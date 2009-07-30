@@ -1,3 +1,7 @@
+20090730 - v1.3.3 Chmouel Boudjnah <chmouel.boudjnah@rackspace.co.uk>
+  * Fix returning error when there is an invalid HTTP response on a container
+  request.
+
 20090617 - v1.3.2 <chmouel.boudjnah@rackspace.co.uk>
   * Change the Unit Tests to phpunit.
   * Automatically set the updated CA bundle when on the windows OS.
