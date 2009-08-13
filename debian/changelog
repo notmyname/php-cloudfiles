@@ -1,0 +1,5 @@
+php-cloudfiles (1.0.4) stable; urgency=low
+
+  * Initial package.
+
+ -- Chmouel Boudjnah <chmouel.boudjnah@rackspace.co.uk>  Thu, 13 Aug 2009 16:15:22 +0100
