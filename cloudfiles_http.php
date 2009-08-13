@@ -38,6 +38,7 @@ define("CONTAINER_BYTES_USED", "X-Container-Bytes-Used");
 define("METADATA_HEADER", "X-Object-Meta-");
 define("CDN_URI", "X-CDN-URI");
 define("CDN_ENABLED", "X-CDN-Enabled");
+define("CDN_LOG_RETENTION", "X-Log-Retention");
 define("CDN_TTL", "X-TTL");
 define("CDNM_URL", "X-CDN-Management-Url");
 define("STORAGE_URL", "X-Storage-Url");
@@ -95,6 +96,7 @@ class CF_Http
     private $_cdn_enabled;
     private $_cdn_uri;
     private $_cdn_ttl;
+    private $_cdn_log_retention;
 
     function __construct($api_version)
     {
@@ -141,6 +143,7 @@ class CF_Http
         $this->_cdn_enabled = NULL;
         $this->_cdn_uri = NULL;
         $this->_cdn_ttl = NULL;
+        $this->_cdn_log_retention = NULL;
 
         # The OS list with a PHP without an updated CA File for CURL to
         # connect to SSL Websites. It is the first 3 letters of the PHP_OS
@@ -244,15 +247,17 @@ class CF_Http
 
     # (CDN) POST /v1/Account/Container
     #
-    function update_cdn_container($container_name, $ttl=86400)
+    function update_cdn_container($container_name, $ttl=86400, $cdn_log_retention=False)
     {
         if (!$container_name) {
             throw new SyntaxException("Container name not set.");
         }
+        
         $url_path = $this->_make_path("CDN", $container_name);
         $hdrs = array(
             CDN_ENABLED => "True",
             CDN_TTL => $ttl,
+            CDN_LOG_RETENTION => $cdn_log_retention ?  "True" : "False",
             );
         $return_code = $this->_send_request("DEL_POST",$url_path,$hdrs,"POST");
         if ($return_code == 401) {
@@ -343,7 +348,9 @@ class CF_Http
         }
         if ($return_code == 204) {
             return array($return_code,$this->response_reason,
-                $this->_cdn_enabled, $this->_cdn_uri, $this->_cdn_ttl);
+                $this->_cdn_enabled, $this->_cdn_uri, $this->_cdn_ttl,
+                $this->_cdn_log_retention
+                );
         }
         return array($return_code,$this->response_reason,NULL,NULL,NULL);
     }
@@ -924,6 +931,11 @@ class CF_Http
         }
         if (stripos($header, CDN_TTL) === 0) {
             $this->_cdn_ttl = trim(substr($header, strlen(CDN_TTL)+1))+0;
+            return strlen($header);
+        }
+        if (stripos($header, CDN_LOG_RETENTION) === 0) {
+            $this->_cdn_log_retention =
+                trim(substr($header, strlen(CDN_LOG_RETENTION)+1)) == "True" ? True : False;
             return strlen($header);
         }
         if (stripos($header, ACCOUNT_CONTAINER_COUNT) === 0) {
