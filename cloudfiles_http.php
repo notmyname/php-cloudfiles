@@ -352,7 +352,7 @@ class CF_Http
                 $this->_cdn_log_retention
                 );
         }
-        return array($return_code,$this->response_reason,NULL,NULL,NULL);
+        return array($return_code,$this->response_reason,NULL,NULL,NULL,$this->_cdn_log_retention);
     }
 
     # GET /v1/Account
