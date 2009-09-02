@@ -6,16 +6,16 @@ $ACCOUNT = NULL;                        # DEPRECATED: account name
 $HOST    = NULL;                        # DEPRECATED: authentication host URL
 
 # Allow override by environment variable
-if (isset($_ENV["MOSSO_API_USER"])) {
-    $USER = $_ENV["MOSSO_API_USER"];
+if (isset($_ENV["RCLOUD_API_USER"])) {
+    $USER = $_ENV["RCLOUD_API_USER"];
 }
 
-if (isset($_ENV["MOSSO_API_KEY"])) {
-    $API_KEY = $_ENV["MOSSO_API_KEY"];
+if (isset($_ENV["RCLOUD_API_KEY"])) {
+    $API_KEY = $_ENV["RCLOUD_API_KEY"];
 }
 
-if (isset($_ENV["MOSSO_API_VERBOSE"])) {
-    $VERBOSE = $_ENV["MOSSO_API_VERBOSE"];
+if (isset($_ENV["RCLOUD_API_VERBOSE"])) {
+    $VERBOSE = $_ENV["RCLOUD_API_VERBOSE"];
 }
 
 # Make it global
