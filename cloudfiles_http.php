@@ -446,6 +446,15 @@ class CF_Http
         }
         if ($return_code == 200) {
             $json_body = json_decode($this->_obj_write_string, True);
+			foreach($json_body as $index => $container) {
+				foreach($container as $key => $value) {
+					$decoded = utf8_decode($value);
+					if ($decoded == '?') {
+						$decoded = $value;
+					}
+					$json_body[$index][$key] = $decoded;
+				}
+			}
             return array($return_code, $this->response_reason, $json_body);
         }
         $this->error_str = "Unexpected HTTP response: ".$this->response_reason;
