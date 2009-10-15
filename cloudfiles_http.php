@@ -888,9 +888,13 @@ class CF_Http
         return $this->auth_token;
     }
 
-    function setCFAuth($cfs_auth)
+    function setCFAuth($cfs_auth, $servicenet=False)
     {
-        $this->storage_url = $cfs_auth->storage_url;
+        if ($servicenet) {
+            $this->storage_url = "https://snet-" . substr($cfs_auth->storage_url, 8);
+        } else {
+            $this->storage_url = $cfs_auth->storage_url;
+        }
         $this->auth_token = $cfs_auth->auth_token;
         $this->cdnm_url = $cfs_auth->cdnm_url;
     }

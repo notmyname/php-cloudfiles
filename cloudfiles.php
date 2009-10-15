@@ -297,12 +297,20 @@ class CF_Connection
      * # validated CF_Authentication instance.
      * #
      * $conn = new CF_Connection($auth);
+     *
+     * # If you are connecting via Rackspace servers and have access
+     * # to the servicenet network you can set the $servicenet to True
+     * # like this.
+     *
+     * $conn = new CF_Connection($auth, $servicenet=True);
+     *
      * </code>
      *
      * @param obj $cfs_auth previously authenticated CF_Authentication instance
+     * @param boolean $servicenet enable/disable access via Rackspace servicenet.
      * @throws AuthenticationException not authenticated
      */
-    function __construct($cfs_auth)
+    function __construct($cfs_auth, $servicenet=False)
     {
         $this->cfs_http = new CF_Http(DEFAULT_CF_API_VERSION);
         $this->cfs_auth = $cfs_auth;
@@ -311,7 +319,7 @@ class CF_Connection
             $e .= "CF_Authentication instance.";
             throw new AuthenticationException($e);
         }
-        $this->cfs_http->setCFAuth($this->cfs_auth);
+        $this->cfs_http->setCFAuth($this->cfs_auth, $servicenet=$servicenet);
         $this->dbug = False;
     }
 
