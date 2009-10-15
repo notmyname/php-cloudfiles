@@ -26,10 +26,10 @@
   <tr valign="top">
     <td width="200" class="menu">
 	<div id="ric">
-					<p><a href="../ric_README.html">README</a></p>
+					<p><a href="../ric_Changelog.html">Changelog</a></p>
 					<p><a href="../ric_AUTHORS.html">AUTHORS</a></p>
 					<p><a href="../ric_COPYING.html">COPYING</a></p>
-					<p><a href="../ric_Changelog.html">Changelog</a></p>
+					<p><a href="../ric_README.html">README</a></p>
 			</div>
       <b>Packages:</b><br />
               <a href="../li_php-cloudfiles.html">php-cloudfiles</a><br />
@@ -78,6 +78,7 @@ Source Location: /cloudfiles.php<br /><br />
 <ul>
     <li><a href="../php-cloudfiles/CF_Container.html#var$bytes_used">$bytes_used</a></li>
     <li><a href="../php-cloudfiles/CF_Container.html#var$cdn_enabled">$cdn_enabled</a></li>
+    <li><a href="../php-cloudfiles/CF_Container.html#var$cdn_log_retention">$cdn_log_retention</a></li>
     <li><a href="../php-cloudfiles/CF_Container.html#var$cdn_ttl">$cdn_ttl</a></li>
     <li><a href="../php-cloudfiles/CF_Container.html#var$cdn_uri">$cdn_uri</a></li>
     <li><a href="../php-cloudfiles/CF_Container.html#var$cfs_auth">$cfs_auth</a></li>
@@ -99,6 +100,7 @@ Source Location: /cloudfiles.php<br /><br />
     <li><a href="../php-cloudfiles/CF_Container.html#methodget_objects">get_objects</a></li>
     <li><a href="../php-cloudfiles/CF_Container.html#methodis_public">is_public</a></li>
     <li><a href="../php-cloudfiles/CF_Container.html#methodlist_objects">list_objects</a></li>
+    <li><a href="../php-cloudfiles/CF_Container.html#methodlog_retention">log_retention</a></li>
     <li><a href="../php-cloudfiles/CF_Container.html#methodmake_private">make_private</a></li>
     <li><a href="../php-cloudfiles/CF_Container.html#methodmake_public">make_public</a></li>
     <li><a href="../php-cloudfiles/CF_Container.html#method__toString">__toString</a></li>
@@ -121,7 +123,7 @@ Source Location: /cloudfiles.php<br /><br />
 <a name="class_details"></a>
 <h3>Class Details</h3>
 <div class="tags">
-[line 818]<br />
+[line 826]<br />
 Container operations<br /><br /><p>Containers are storage compartments where you put your data (objects).  A container is similar to a directory or folder on a conventional filesystem  with the exception that they exist in a flat namespace, you can not create  containers inside of containers.</p><p>You also have the option of marking a Container as &quot;public&quot; so that the  Objects stored in the Container are publicly available via the CDN.</p><br /></div><br /><br />
 <div class="top">[ <a href="#top">Top</a> ]</div><br />
 
@@ -132,7 +134,7 @@ Container operations<br /><br /><p>Containers are storage compartments where you
 	<a name="var$bytes_used"></a>
 	<p></p>
 	<h4>$bytes_used = <span class="value"></span></h4>
-	<p>[line 824]</p>
+	<p>[line 832]</p>
   <br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -156,7 +158,31 @@ Container operations<br /><br /><p>Containers are storage compartments where you
 	<a name="var$cdn_enabled"></a>
 	<p></p>
 	<h4>$cdn_enabled = <span class="value"></span></h4>
-	<p>[line 826]</p>
+	<p>[line 834]</p>
+  <br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+
+  <br />
+	<div class="tags">
+  <table border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td><b>Type:</b>&nbsp;&nbsp;</td>
+      <td>mixed</td>
+    </tr>
+      </table>
+	</div><br /><br />
+	<div class="top">[ <a href="#top">Top</a> ]</div><br />
+	<a name="var$cdn_log_retention"></a>
+	<p></p>
+	<h4>$cdn_log_retention = <span class="value"></span></h4>
+	<p>[line 837]</p>
   <br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -180,7 +206,7 @@ Container operations<br /><br /><p>Containers are storage compartments where you
 	<a name="var$cdn_ttl"></a>
 	<p></p>
 	<h4>$cdn_ttl = <span class="value"></span></h4>
-	<p>[line 828]</p>
+	<p>[line 836]</p>
   <br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -204,7 +230,7 @@ Container operations<br /><br /><p>Containers are storage compartments where you
 	<a name="var$cdn_uri"></a>
 	<p></p>
 	<h4>$cdn_uri = <span class="value"></span></h4>
-	<p>[line 827]</p>
+	<p>[line 835]</p>
   <br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -228,7 +254,7 @@ Container operations<br /><br /><p>Containers are storage compartments where you
 	<a name="var$cfs_auth"></a>
 	<p></p>
 	<h4>$cfs_auth = <span class="value"></span></h4>
-	<p>[line 820]</p>
+	<p>[line 828]</p>
   <br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -252,7 +278,7 @@ Container operations<br /><br /><p>Containers are storage compartments where you
 	<a name="var$cfs_http"></a>
 	<p></p>
 	<h4>$cfs_http = <span class="value"></span></h4>
-	<p>[line 821]</p>
+	<p>[line 829]</p>
   <br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -276,7 +302,7 @@ Container operations<br /><br /><p>Containers are storage compartments where you
 	<a name="var$name"></a>
 	<p></p>
 	<h4>$name = <span class="value"></span></h4>
-	<p>[line 822]</p>
+	<p>[line 830]</p>
   <br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -300,7 +326,7 @@ Container operations<br /><br /><p>Containers are storage compartments where you
 	<a name="var$object_count"></a>
 	<p></p>
 	<h4>$object_count = <span class="value"></span></h4>
-	<p>[line 823]</p>
+	<p>[line 831]</p>
   <br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -330,7 +356,7 @@ Container operations<br /><br /><p>Containers are storage compartments where you
 
   <hr />
 	<a name="method__construct"></a>
-	<h3>constructor __construct <span class="smalllinenumber">[line 842]</span></h3>
+	<h3>constructor __construct <span class="smalllinenumber">[line 851]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -408,7 +434,7 @@ $cfs_http)</code>
   </div>
   <hr />
 	<a name="methodcreate_object"></a>
-	<h3>method create_object <span class="smalllinenumber">[line 1048]</span></h3>
+	<h3>method create_object <span class="smalllinenumber">[line 1078]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -454,7 +480,7 @@ $obj_name = NULL])</code>
   </div>
   <hr />
 	<a name="methodcreate_paths"></a>
-	<h3>method create_paths <span class="smalllinenumber">[line 1274]</span></h3>
+	<h3>method create_paths <span class="smalllinenumber">[line 1304]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -481,7 +507,7 @@ $path_name)</code>
   </div>
   <hr />
 	<a name="methoddelete_object"></a>
-	<h3>method delete_object <span class="smalllinenumber">[line 1234]</span></h3>
+	<h3>method delete_object <span class="smalllinenumber">[line 1264]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -535,7 +561,7 @@ $obj)</code>
   </div>
   <hr />
 	<a name="methodget_object"></a>
-	<h3>method get_object <span class="smalllinenumber">[line 1077]</span></h3>
+	<h3>method get_object <span class="smalllinenumber">[line 1107]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -582,7 +608,7 @@ $obj_name = NULL])</code>
   </div>
   <hr />
 	<a name="methodget_objects"></a>
-	<h3>method get_objects <span class="smalllinenumber">[line 1185]</span></h3>
+	<h3>method get_objects <span class="smalllinenumber">[line 1215]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -667,7 +693,7 @@ $path = NULL])</code>
   </div>
   <hr />
 	<a name="methodis_public"></a>
-	<h3>method is_public <span class="smalllinenumber">[line 1020]</span></h3>
+	<h3>method is_public <span class="smalllinenumber">[line 1050]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -701,7 +727,7 @@ $path = NULL])</code>
   </div>
   <hr />
 	<a name="methodlist_objects"></a>
-	<h3>method list_objects <span class="smalllinenumber">[line 1126]</span></h3>
+	<h3>method list_objects <span class="smalllinenumber">[line 1156]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -785,8 +811,35 @@ $path = NULL])</code>
         <div class="top">[ <a href="#top">Top</a> ]</div>
   </div>
   <hr />
+	<a name="methodlog_retention"></a>
+	<h3>method log_retention <span class="smalllinenumber">[line 962]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>void log_retention(
+[
+$cdn_log_retention = False])</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		<br /><br />
+
+	
+        <h4>Parameters:</h4>
+    <div class="tags">
+    <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+        <td class="type">&nbsp;&nbsp;</td>
+        <td><b>$cdn_log_retention</b>&nbsp;&nbsp;</td>
+        <td></td>
+      </tr>
+        </table>
+    </div><br />
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
 	<a name="methodmake_private"></a>
-	<h3>method make_private <span class="smalllinenumber">[line 979]</span></h3>
+	<h3>method make_private <span class="smalllinenumber">[line 1008]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -830,7 +883,7 @@ $path = NULL])</code>
   </div>
   <hr />
 	<a name="methodmake_public"></a>
-	<h3>method make_public <span class="smalllinenumber">[line 911]</span></h3>
+	<h3>method make_public <span class="smalllinenumber">[line 923]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -884,7 +937,7 @@ $ttl = 86400])</code>
   </div>
   <hr />
 	<a name="method__toString"></a>
-	<h3>method __toString <span class="smalllinenumber">[line 873]</span></h3>
+	<h3>method __toString <span class="smalllinenumber">[line 883]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -912,7 +965,7 @@ $ttl = 86400])</code>
 
         <div class="credit">
 		    <hr />
-		    Documentation generated on Fri, 26 Jun 2009 15:35:10 -0500 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.2</a>
+		    Documentation generated on Thu, 15 Oct 2009 16:21:48 +0100 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.3</a>
 	      </div>
       </td></tr></table>
     </td>

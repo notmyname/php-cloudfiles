@@ -23,15 +23,15 @@
   <tr valign="top">
     <td width="200" class="menu">
 	<div id="ric">
-					<p><a href="ric_README.html">README</a></p>
+					<p><a href="ric_Changelog.html">Changelog</a></p>
 					<p><a href="ric_AUTHORS.html">AUTHORS</a></p>
 					<p><a href="ric_COPYING.html">COPYING</a></p>
-					<p><a href="ric_Changelog.html">Changelog</a></p>
+					<p><a href="ric_README.html">README</a></p>
 			</div>
       <b>Packages:</b><br />
+              <a href="li_php-cloudfiles-exceptions.html">php-cloudfiles-exceptions</a><br />
               <a href="li_php-cloudfiles.html">php-cloudfiles</a><br />
               <a href="li_php-cloudfiles-http.html">php-cloudfiles-http</a><br />
-              <a href="li_php-cloudfiles-exceptions.html">php-cloudfiles-exceptions</a><br />
             <br /><br />
                 </td>
     <td>
@@ -120,14 +120,16 @@
 				<dd>in file cloudfiles.php, variable <a href="php-cloudfiles/CF_Authentication.html#var$cdnm_url">CF_Authentication::$cdnm_url</a></dd>
 							<dt><b>$cdn_enabled</b></dt>
 				<dd>in file cloudfiles.php, variable <a href="php-cloudfiles/CF_Container.html#var$cdn_enabled">CF_Container::$cdn_enabled</a></dd>
+							<dt><b>$cdn_log_retention</b></dt>
+				<dd>in file cloudfiles.php, variable <a href="php-cloudfiles/CF_Container.html#var$cdn_log_retention">CF_Container::$cdn_log_retention</a></dd>
 							<dt><b>$cdn_ttl</b></dt>
 				<dd>in file cloudfiles.php, variable <a href="php-cloudfiles/CF_Container.html#var$cdn_ttl">CF_Container::$cdn_ttl</a></dd>
 							<dt><b>$cdn_uri</b></dt>
 				<dd>in file cloudfiles.php, variable <a href="php-cloudfiles/CF_Container.html#var$cdn_uri">CF_Container::$cdn_uri</a></dd>
 							<dt><b>$cfs_auth</b></dt>
-				<dd>in file cloudfiles.php, variable <a href="php-cloudfiles/CF_Container.html#var$cfs_auth">CF_Container::$cfs_auth</a></dd>
-							<dt><b>$cfs_auth</b></dt>
 				<dd>in file cloudfiles.php, variable <a href="php-cloudfiles/CF_Connection.html#var$cfs_auth">CF_Connection::$cfs_auth</a></dd>
+							<dt><b>$cfs_auth</b></dt>
+				<dd>in file cloudfiles.php, variable <a href="php-cloudfiles/CF_Container.html#var$cfs_auth">CF_Container::$cfs_auth</a></dd>
 							<dt><b>$cfs_http</b></dt>
 				<dd>in file cloudfiles.php, variable <a href="php-cloudfiles/CF_Connection.html#var$cfs_http">CF_Connection::$cfs_http</a></dd>
 							<dt><b>$cfs_http</b></dt>
@@ -144,6 +146,8 @@
 				<dd>in file cloudfiles_exceptions.php, class <a href="php-cloudfiles-exceptions/CDNNotEnabledException.html">CDNNotEnabledException</a></dd>
 							<dt><b>CDN_ENABLED</b></dt>
 				<dd>in file cloudfiles_http.php, constant <a href="php-cloudfiles-http/_cloudfiles_http.php.html#defineCDN_ENABLED">CDN_ENABLED</a></dd>
+							<dt><b>CDN_LOG_RETENTION</b></dt>
+				<dd>in file cloudfiles_http.php, constant <a href="php-cloudfiles-http/_cloudfiles_http.php.html#defineCDN_LOG_RETENTION">CDN_LOG_RETENTION</a></dd>
 							<dt><b>CDN_TTL</b></dt>
 				<dd>in file cloudfiles_http.php, constant <a href="php-cloudfiles-http/_cloudfiles_http.php.html#defineCDN_TTL">CDN_TTL</a></dd>
 							<dt><b>CDN_URI</b></dt>
@@ -171,9 +175,9 @@
 							<dt><b>CONTAINER_OBJ_COUNT</b></dt>
 				<dd>in file cloudfiles_http.php, constant <a href="php-cloudfiles-http/_cloudfiles_http.php.html#defineCONTAINER_OBJ_COUNT">CONTAINER_OBJ_COUNT</a></dd>
 							<dt><b>create_container</b></dt>
-				<dd>in file cloudfiles_http.php, method <a href="php-cloudfiles-http/CF_Http.html#methodcreate_container">CF_Http::create_container()</a></dd>
-							<dt><b>create_container</b></dt>
 				<dd>in file cloudfiles.php, method <a href="php-cloudfiles/CF_Connection.html#methodcreate_container">CF_Connection::create_container()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Create a Container</dd>
+							<dt><b>create_container</b></dt>
+				<dd>in file cloudfiles_http.php, method <a href="php-cloudfiles-http/CF_Http.html#methodcreate_container">CF_Http::create_container()</a></dd>
 							<dt><b>create_object</b></dt>
 				<dd>in file cloudfiles.php, method <a href="php-cloudfiles/CF_Container.html#methodcreate_object">CF_Container::create_object()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Create a new remote storage Object</dd>
 							<dt><b>create_paths</b></dt>
@@ -283,17 +287,19 @@
 							<dt><b>list_containers</b></dt>
 				<dd>in file cloudfiles.php, method <a href="php-cloudfiles/CF_Connection.html#methodlist_containers">CF_Connection::list_containers()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Return list of remote Containers</dd>
 							<dt><b>list_containers_info</b></dt>
-				<dd>in file cloudfiles.php, method <a href="php-cloudfiles/CF_Connection.html#methodlist_containers_info">CF_Connection::list_containers_info()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Return array of information about remote Containers</dd>
-							<dt><b>list_containers_info</b></dt>
 				<dd>in file cloudfiles_http.php, method <a href="php-cloudfiles-http/CF_Http.html#methodlist_containers_info">CF_Http::list_containers_info()</a></dd>
-							<dt><b>list_objects</b></dt>
-				<dd>in file cloudfiles.php, method <a href="php-cloudfiles/CF_Container.html#methodlist_objects">CF_Container::list_objects()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Return a list of Objects</dd>
+							<dt><b>list_containers_info</b></dt>
+				<dd>in file cloudfiles.php, method <a href="php-cloudfiles/CF_Connection.html#methodlist_containers_info">CF_Connection::list_containers_info()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Return array of information about remote Containers</dd>
 							<dt><b>list_objects</b></dt>
 				<dd>in file cloudfiles_http.php, method <a href="php-cloudfiles-http/CF_Http.html#methodlist_objects">CF_Http::list_objects()</a></dd>
+							<dt><b>list_objects</b></dt>
+				<dd>in file cloudfiles.php, method <a href="php-cloudfiles/CF_Container.html#methodlist_objects">CF_Container::list_objects()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Return a list of Objects</dd>
 							<dt><b>list_public_containers</b></dt>
 				<dd>in file cloudfiles.php, method <a href="php-cloudfiles/CF_Connection.html#methodlist_public_containers">CF_Connection::list_public_containers()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Return list of Containers that have been published to the CDN.</dd>
 							<dt><b>load_from_filename</b></dt>
 				<dd>in file cloudfiles.php, method <a href="php-cloudfiles/CF_Object.html#methodload_from_filename">CF_Object::load_from_filename()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Upload Object data from local filename</dd>
+							<dt><b>log_retention</b></dt>
+				<dd>in file cloudfiles.php, method <a href="php-cloudfiles/CF_Container.html#methodlog_retention">CF_Container::log_retention()</a></dd>
 					</dl>
 	</div>
 	<a href="elementindex.html#top">top</a><br>
@@ -473,7 +479,7 @@
 	<a href="elementindex.html#top">top</a><br>
         <div class="credit">
 		    <hr />
-		    Documentation generated on Fri, 26 Jun 2009 15:35:09 -0500 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.2</a>
+		    Documentation generated on Thu, 15 Oct 2009 16:21:47 +0100 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.3</a>
 	      </div>
       </td></tr></table>
     </td>

@@ -1,3 +1,7 @@
+1.5.0 - Chmouel Boudjnah <chmouel.boudjnah@rackspace.co.uk> - 20091015
+  * Add the option servicenet to connection to use Rackspace service net
+    instead of public network.
+
 1.4.0 - Chmouel Boudjnah <chmouel.boudjnah@rackspace.co.uk> - 20090808
 
   * Add the ability to store the container log.
