@@ -306,12 +306,17 @@ class CF_Connection
      *
      * </code>
      *
+     * If the environement variable RACKSPACE_SERVICENET is defined it will
+     * force to connect via the servicenet.
+     *
      * @param obj $cfs_auth previously authenticated CF_Authentication instance
      * @param boolean $servicenet enable/disable access via Rackspace servicenet.
      * @throws AuthenticationException not authenticated
      */
     function __construct($cfs_auth, $servicenet=False)
     {
+        if (isset($_ENV['RACKSPACE_SERVICENET']))
+            $servicenet=True;
         $this->cfs_http = new CF_Http(DEFAULT_CF_API_VERSION);
         $this->cfs_auth = $cfs_auth;
         if (!$this->cfs_auth->authenticated()) {

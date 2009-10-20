@@ -1,3 +1,7 @@
+1.5.1 - Chmouel Boudjnah <chmouel.boudjnah@rackspace.co.uk> - 20091020
+  * If the environement variable RACKSPACE_SERVICENET is defined then force to
+    connect via rakcspace servicenet.
+
 1.5.0 - Chmouel Boudjnah <chmouel.boudjnah@rackspace.co.uk> - 20091015
   * Add the option servicenet to connection to use Rackspace service net
     instead of public network.
