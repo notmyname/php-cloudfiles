@@ -1,3 +1,6 @@
+1.5.2 - Chmouel Boudjnah <chmouel.boudjnah@rackspace.co.uk>
+  * Invalid the PHP stats cache before getting filesize.
+
 1.5.1 - Chmouel Boudjnah <chmouel.boudjnah@rackspace.co.uk> - 20091020
   * If the environement variable RACKSPACE_SERVICENET is defined then force to
     connect via rakcspace servicenet.
