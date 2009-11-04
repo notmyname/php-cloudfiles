@@ -471,6 +471,28 @@ class CloudFileAccountInfoTest extends PHPUnit_Framework_TestCase
         $this->assertNotNull($info == $cdn_info);
     }
 
+    public function test_cached_stats() {
+        $fname = $this->temp_name;
+        $bname = basename($this->temp_name);
+        
+        $f = fopen($fname,"w");
+        fclose($f);
+
+        $o2 = $this->container->create_object($bname);
+        $o2->content_type = "text/plain";
+        $result = $o2->load_from_filename($fname);
+        
+        $f = fopen($fname,"a");
+        fputs($f,"x");
+        fclose($f);
+
+        $o3 = $this->container->create_object($bname);
+        $o3->content_type = "text/plain";
+        $result = $o3->load_from_filename($fname);
+
+        $this->assertNotEquals($o2->content_length, $o3->content_length);
+    }
+    
 }
 
 ?>

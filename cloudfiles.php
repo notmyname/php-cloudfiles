@@ -1796,6 +1796,9 @@ class CF_Object
         if (!$fp) {
             throw new IOException("Could not open file for reading: ".$filename);
         }
+
+        clearstatcache();
+        
         $size = (float) sprintf("%u", filesize($filename));
         if ($size > MAX_OBJECT_SIZE) {
             throw new SyntaxException("File size exceeds maximum object size.");
