@@ -841,6 +841,7 @@ class CF_Container
     public $cdn_ttl;
     public $cdn_log_retention;
     public $cdn_acl_user_agent;
+    public $cdn_acl_referrer;
 
     /**
      * Class constructor
@@ -875,6 +876,7 @@ class CF_Container
         $this->cdn_ttl = NULL;
         $this->cdn_log_retention = NULL;
         $this->cdn_acl_user_agent = NULL;
+        $this->cdn_acl_referrer = NULL;
         if ($this->cfs_http->getCDNMUrl() != NULL && $docdn) {
             $this->_cdn_initialize();
         }
@@ -901,6 +903,12 @@ class CF_Container
             if ($this->cdn_acl_user_agent != NULL) {
                 $me .= ", cdn acl user agent: " . $this->cdn_acl_user_agent;
             }
+
+            if ($this->cdn_acl_referrer != NULL) {
+                $me .= ", cdn acl referrer: " . $this->cdn_acl_referrer;
+            }
+            
+            
         }
         return $me;
     }
@@ -940,7 +948,10 @@ class CF_Container
         if ($this->cdn_uri != NULL) {
             # previously published, assume we're setting new attributes
             list($status, $reason, $cdn_uri) =
-                $this->cfs_http->update_cdn_container($this->name,$ttl, $this->cdn_log_retention, $this->cdn_acl_user_agent);
+                $this->cfs_http->update_cdn_container($this->name,$ttl,
+                                                      $this->cdn_log_retention,
+                                                      $this->cdn_acl_user_agent,
+                                                      $this->cdn_acl_referrer);
             #if ($status == 401 && $this->_re_auth()) {
             #    return $this->make_public($ttl);
             #}
@@ -967,7 +978,8 @@ class CF_Container
         $this->cdn_ttl = $ttl;
         $this->cdn_uri = $cdn_uri;
         $this->cdn_log_retention = False;
-        $this->cdn_acl_user_agent = "";        
+        $this->cdn_acl_user_agent = "";
+        $this->cdn_acl_referrer = "";
         return $this->cdn_uri;
     }
 
@@ -983,13 +995,54 @@ class CF_Container
             $this->cfs_http->update_cdn_container($this->name,
                                                   $this->cdn_ttl,
                                                   $this->cdn_log_retention,
-                                                  $cdn_acl_user_agent
+                                                  $cdn_acl_user_agent,
+                                                  $this->cdn_acl_referrer
                 );
         if (!in_array($status, array(202,404))) {
             throw new InvalidResponseException(
                 "Invalid response (".$status."): ".$this->cfs_http->get_error());
         }
         $this->cdn_acl_user_agent_ = $cdn_acl_user_agent;
+    }
+
+    /**
+     * Enable ACL restriction by referer for this container.
+     *
+     * Example:
+     * <code>
+     * # ... authentication code excluded (see previous examples) ...
+     * #
+     * $conn = new CF_Authentication($auth);
+     *
+     * $public_container = $conn->get_container("public");
+     *
+     * # Enable Referrer
+     * $public_container->acl_referrer("http://www.example.com/gallery.php);
+     * </code>
+     *
+     * @returns boolean True if successful
+     * @throws CDNNotEnabledException CDN functionality not returned during auth
+     * @throws AuthenticationException if auth token is not valid/expired
+     * @throws InvalidResponseException unexpected response
+     */
+    function acl_referrer($cdn_acl_referrer="") {
+        if ($this->cfs_http->getCDNMUrl() == NULL) {
+            throw new CDNNotEnabledException(
+                "Authentication response did not indicate CDN availability");
+        }
+        list($status,$reason) =
+            $this->cfs_http->update_cdn_container($this->name,
+                                                  $this->cdn_ttl,
+                                                  $this->cdn_log_retention,
+                                                  $this->cdn_acl_user_agent,
+                                                  $cdn_acl_referrer
+                );
+        if (!in_array($status, array(202,404))) {
+            throw new InvalidResponseException(
+                "Invalid response (".$status."): ".$this->cfs_http->get_error());
+        }
+        $this->cdn_acl_referrer_ = $cdn_acl_referrer;
+        return True;
     }
     
     /**
@@ -1027,7 +1080,8 @@ class CF_Container
             $this->cfs_http->update_cdn_container($this->name,
                                                   $this->cdn_ttl,
                                                   $cdn_log_retention,
-                                                  $this->cdn_acl_user_agent
+                                                  $this->cdn_acl_user_agent,
+                                                  $this->cdn_acl_referrer
                 );
         if (!in_array($status, array(202,404))) {
             throw new InvalidResponseException(
@@ -1085,6 +1139,7 @@ class CF_Container
         $this->cdn_uri = NULL;
         $this->cdn_log_retention = NULL;
         $this->cdn_acl_user_agent = NULL;
+        $this->cdn_acl_referrer = NULL;
         return True;
     }
 
@@ -1389,7 +1444,8 @@ class CF_Container
      */
     private function _cdn_initialize()
     {
-        list($status, $reason, $cdn_enabled, $cdn_uri, $cdn_ttl, $cdn_log_retention, $cdn_acl_user_agent) =
+        list($status, $reason, $cdn_enabled, $cdn_uri, $cdn_ttl,
+             $cdn_log_retention, $cdn_acl_user_agent, $cdn_acl_referrer) =
             $this->cfs_http->head_cdn_container($this->name);
         #if ($status == 401 && $this->_re_auth()) {
         #    return $this->_cdn_initialize();
@@ -1403,6 +1459,7 @@ class CF_Container
         $this->cdn_ttl = $cdn_ttl;
         $this->cdn_log_retention = $cdn_log_retention;
         $this->cdn_acl_user_agent = $cdn_acl_user_agent;
+        $this->cdn_acl_referrer = $cdn_acl_referrer;
     }
 
     #private function _re_auth()

@@ -40,6 +40,7 @@ define("CDN_URI", "X-CDN-URI");
 define("CDN_ENABLED", "X-CDN-Enabled");
 define("CDN_LOG_RETENTION", "X-Log-Retention");
 define("CDN_ACL_USER_AGENT", "X-User-Agent-ACL");
+define("CDN_ACL_REFERRER", "X-Referrer-ACL");
 define("CDN_TTL", "X-TTL");
 define("CDNM_URL", "X-CDN-Management-Url");
 define("STORAGE_URL", "X-Storage-Url");
@@ -99,6 +100,7 @@ class CF_Http
     private $_cdn_ttl;
     private $_cdn_log_retention;
     private $_cdn_acl_user_agent;
+    private $_cdn_acl_referrer;
 
     function __construct($api_version)
     {
@@ -147,6 +149,7 @@ class CF_Http
         $this->_cdn_ttl = NULL;
         $this->_cdn_log_retention = NULL;
         $this->_cdn_acl_user_agent = NULL;
+        $this->_cdn_acl_referrer = NULL;
 
         # The OS list with a PHP without an updated CA File for CURL to
         # connect to SSL Websites. It is the first 3 letters of the PHP_OS
@@ -250,7 +253,8 @@ class CF_Http
 
     # (CDN) POST /v1/Account/Container
     #
-    function update_cdn_container($container_name, $ttl=86400, $cdn_log_retention=False, $cdn_acl_user_agent="")
+    function update_cdn_container($container_name, $ttl=86400, $cdn_log_retention=False,
+                                  $cdn_acl_user_agent="", $cdn_acl_referrer)
     {
         if (!$container_name) {
             throw new SyntaxException("Container name not set.");
@@ -262,6 +266,7 @@ class CF_Http
             CDN_TTL => $ttl,
             CDN_LOG_RETENTION => $cdn_log_retention ?  "True" : "False",
             CDN_ACL_USER_AGENT => $cdn_acl_user_agent,
+            CDN_ACL_REFERRER => $cdn_acl_referrer,
             );
         $return_code = $this->_send_request("DEL_POST",$url_path,$hdrs,"POST");
         if ($return_code == 401) {
@@ -355,12 +360,15 @@ class CF_Http
                 $this->_cdn_enabled, $this->_cdn_uri, $this->_cdn_ttl,
                 $this->_cdn_log_retention,
                 $this->_cdn_acl_user_agent,
+                $this->_cdn_acl_referrer
                 );
         }
         return array($return_code,$this->response_reason,
                      NULL,NULL,NULL,
                      $this->_cdn_log_retention,
-                     $this->_cdn_acl_user_agent);
+                     $this->_cdn_acl_user_agent,
+                     $this->_cdn_acl_referrer
+            );
     }
 
     # GET /v1/Account
@@ -954,6 +962,12 @@ class CF_Http
         if (stripos($header, CDN_ACL_USER_AGENT) === 0) {
             $this->_cdn_acl_user_agent =
                 trim(substr($header, strlen(CDN_ACL_USER_AGENT)+1));
+            return strlen($header);
+        }
+
+        if (stripos($header, CDN_ACL_REFERRER) === 0) {
+            $this->_cdn_acl_referrer =
+                trim(substr($header, strlen(CDN_ACL_REFERRER)+1));
             return strlen($header);
         }
         

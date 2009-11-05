@@ -77,6 +77,8 @@ Source Location: /cloudfiles.php<br /><br />
 <h3><a href="#class_vars">Variables</a></h3>
 <ul>
     <li><a href="../php-cloudfiles/CF_Container.html#var$bytes_used">$bytes_used</a></li>
+    <li><a href="../php-cloudfiles/CF_Container.html#var$cdn_acl_referrer">$cdn_acl_referrer</a></li>
+    <li><a href="../php-cloudfiles/CF_Container.html#var$cdn_acl_user_agent">$cdn_acl_user_agent</a></li>
     <li><a href="../php-cloudfiles/CF_Container.html#var$cdn_enabled">$cdn_enabled</a></li>
     <li><a href="../php-cloudfiles/CF_Container.html#var$cdn_log_retention">$cdn_log_retention</a></li>
     <li><a href="../php-cloudfiles/CF_Container.html#var$cdn_ttl">$cdn_ttl</a></li>
@@ -93,6 +95,8 @@ Source Location: /cloudfiles.php<br /><br />
 <h3><a href="#class_methods">Methods</a></h3>
 <ul>
     <li><a href="../php-cloudfiles/CF_Container.html#method__construct">__construct</a></li>
+    <li><a href="../php-cloudfiles/CF_Container.html#methodacl_referrer">acl_referrer</a></li>
+    <li><a href="../php-cloudfiles/CF_Container.html#methodacl_user_agent">acl_user_agent</a></li>
     <li><a href="../php-cloudfiles/CF_Container.html#methodcreate_object">create_object</a></li>
     <li><a href="../php-cloudfiles/CF_Container.html#methodcreate_paths">create_paths</a></li>
     <li><a href="../php-cloudfiles/CF_Container.html#methoddelete_object">delete_object</a></li>
@@ -135,6 +139,54 @@ Container operations<br /><br /><p>Containers are storage compartments where you
 	<p></p>
 	<h4>$bytes_used = <span class="value"></span></h4>
 	<p>[line 837]</p>
+  <br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+
+  <br />
+	<div class="tags">
+  <table border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td><b>Type:</b>&nbsp;&nbsp;</td>
+      <td>mixed</td>
+    </tr>
+      </table>
+	</div><br /><br />
+	<div class="top">[ <a href="#top">Top</a> ]</div><br />
+	<a name="var$cdn_acl_referrer"></a>
+	<p></p>
+	<h4>$cdn_acl_referrer = <span class="value"></span></h4>
+	<p>[line 844]</p>
+  <br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+
+  <br />
+	<div class="tags">
+  <table border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td><b>Type:</b>&nbsp;&nbsp;</td>
+      <td>mixed</td>
+    </tr>
+      </table>
+	</div><br /><br />
+	<div class="top">[ <a href="#top">Top</a> ]</div><br />
+	<a name="var$cdn_acl_user_agent"></a>
+	<p></p>
+	<h4>$cdn_acl_user_agent = <span class="value"></span></h4>
+	<p>[line 843]</p>
   <br /><br />
 <h4>Tags:</h4>
 <div class="tags">
@@ -356,7 +408,7 @@ Container operations<br /><br /><p>Containers are storage compartments where you
 
   <hr />
 	<a name="method__construct"></a>
-	<h3>constructor __construct <span class="smalllinenumber">[line 856]</span></h3>
+	<h3>constructor __construct <span class="smalllinenumber">[line 858]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -433,8 +485,88 @@ $cfs_http)</code>
         <div class="top">[ <a href="#top">Top</a> ]</div>
   </div>
   <hr />
+	<a name="methodacl_referrer"></a>
+	<h3>method acl_referrer <span class="smalllinenumber">[line 1028]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>boolean acl_referrer(
+[
+$cdn_acl_referrer = &quot;&quot;])</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Enable ACL restriction by referer for this container.<br /><br /><p>Example:  <ol><li><div class="src-line">&nbsp;<span class="src-comm">#&nbsp;...&nbsp;authentication&nbsp;code&nbsp;excluded&nbsp;(see&nbsp;previous&nbsp;examples)&nbsp;...</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-comm">#</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-var">$conn&nbsp;</span>=&nbsp;<span class="src-key">new&nbsp;</span><span class="src-id"><a href="../php-cloudfiles/CF_Authentication.html">CF_Authentication</a></span><span class="src-sym">(</span><span class="src-var">$auth</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">&nbsp;<span class="src-var">$public_container&nbsp;</span>=&nbsp;<span class="src-var">$conn</span><span class="src-sym">-&gt;</span><span class="src-id">get_container</span><span class="src-sym">(</span><span class="src-str">&quot;public&quot;</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">&nbsp;<span class="src-comm">#&nbsp;Enable&nbsp;Referrer</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-var">$public_container</span><span class="src-sym">-&gt;</span><a href="../php-cloudfiles/CF_Container.html#methodacl_referrer">acl_referrer</a><span class="src-sym">(</span><span class="src-str">&quot;</span><span class="src-str">http://www.example.com/gallery.php);</span></div></li>
+</ol></p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>True if successful</td>
+  </tr>
+  <tr>
+    <td><b>throws:</b>&nbsp;&nbsp;</td><td>CDNNotEnabledException CDN functionality not returned during auth</td>
+  </tr>
+  <tr>
+    <td><b>throws:</b>&nbsp;&nbsp;</td><td>AuthenticationException if auth token is not valid/expired</td>
+  </tr>
+  <tr>
+    <td><b>throws:</b>&nbsp;&nbsp;</td><td>InvalidResponseException unexpected response</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+	
+        <h4>Parameters:</h4>
+    <div class="tags">
+    <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+        <td class="type">&nbsp;&nbsp;</td>
+        <td><b>$cdn_acl_referrer</b>&nbsp;&nbsp;</td>
+        <td></td>
+      </tr>
+        </table>
+    </div><br />
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
+	<a name="methodacl_user_agent"></a>
+	<h3>method acl_user_agent <span class="smalllinenumber">[line 989]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>void acl_user_agent(
+[
+$cdn_acl_user_agent = &quot;&quot;])</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		<br /><br />
+
+	
+        <h4>Parameters:</h4>
+    <div class="tags">
+    <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+        <td class="type">&nbsp;&nbsp;</td>
+        <td><b>$cdn_acl_user_agent</b>&nbsp;&nbsp;</td>
+        <td></td>
+      </tr>
+        </table>
+    </div><br />
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
 	<a name="methodcreate_object"></a>
-	<h3>method create_object <span class="smalllinenumber">[line 1110]</span></h3>
+	<h3>method create_object <span class="smalllinenumber">[line 1195]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -480,7 +612,7 @@ $obj_name = NULL])</code>
   </div>
   <hr />
 	<a name="methodcreate_paths"></a>
-	<h3>method create_paths <span class="smalllinenumber">[line 1336]</span></h3>
+	<h3>method create_paths <span class="smalllinenumber">[line 1421]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -507,7 +639,7 @@ $path_name)</code>
   </div>
   <hr />
 	<a name="methoddelete_object"></a>
-	<h3>method delete_object <span class="smalllinenumber">[line 1296]</span></h3>
+	<h3>method delete_object <span class="smalllinenumber">[line 1381]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -561,7 +693,7 @@ $obj)</code>
   </div>
   <hr />
 	<a name="methodget_object"></a>
-	<h3>method get_object <span class="smalllinenumber">[line 1139]</span></h3>
+	<h3>method get_object <span class="smalllinenumber">[line 1224]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -608,7 +740,7 @@ $obj_name = NULL])</code>
   </div>
   <hr />
 	<a name="methodget_objects"></a>
-	<h3>method get_objects <span class="smalllinenumber">[line 1247]</span></h3>
+	<h3>method get_objects <span class="smalllinenumber">[line 1332]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -693,7 +825,7 @@ $path = NULL])</code>
   </div>
   <hr />
 	<a name="methodis_public"></a>
-	<h3>method is_public <span class="smalllinenumber">[line 1082]</span></h3>
+	<h3>method is_public <span class="smalllinenumber">[line 1167]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -727,7 +859,7 @@ $path = NULL])</code>
   </div>
   <hr />
 	<a name="methodlist_objects"></a>
-	<h3>method list_objects <span class="smalllinenumber">[line 1188]</span></h3>
+	<h3>method list_objects <span class="smalllinenumber">[line 1273]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -812,7 +944,7 @@ $path = NULL])</code>
   </div>
   <hr />
 	<a name="methodlog_retention"></a>
-	<h3>method log_retention <span class="smalllinenumber">[line 994]</span></h3>
+	<h3>method log_retention <span class="smalllinenumber">[line 1074]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -865,7 +997,7 @@ $cdn_log_retention = False])</code>
   </div>
   <hr />
 	<a name="methodmake_private"></a>
-	<h3>method make_private <span class="smalllinenumber">[line 1040]</span></h3>
+	<h3>method make_private <span class="smalllinenumber">[line 1123]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -909,7 +1041,7 @@ $cdn_log_retention = False])</code>
   </div>
   <hr />
 	<a name="methodmake_public"></a>
-	<h3>method make_public <span class="smalllinenumber">[line 928]</span></h3>
+	<h3>method make_public <span class="smalllinenumber">[line 942]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -963,7 +1095,7 @@ $ttl = 86400])</code>
   </div>
   <hr />
 	<a name="method__toString"></a>
-	<h3>method __toString <span class="smalllinenumber">[line 888]</span></h3>
+	<h3>method __toString <span class="smalllinenumber">[line 892]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -991,7 +1123,7 @@ $ttl = 86400])</code>
 
         <div class="credit">
 		    <hr />
-		    Documentation generated on Thu, 05 Nov 2009 11:24:59 +0000 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.3</a>
+		    Documentation generated on Thu, 05 Nov 2009 11:56:18 +0000 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.3</a>
 	      </div>
       </td></tr></table>
     </td>

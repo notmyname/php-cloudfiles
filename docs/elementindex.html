@@ -74,12 +74,16 @@
 				<dd>in file cloudfiles_http.php, constant <a href="php-cloudfiles-http/_cloudfiles_http.php.html#defineACCOUNT_BYTES_USED">ACCOUNT_BYTES_USED</a></dd>
 							<dt><b>ACCOUNT_CONTAINER_COUNT</b></dt>
 				<dd>in file cloudfiles_http.php, constant <a href="php-cloudfiles-http/_cloudfiles_http.php.html#defineACCOUNT_CONTAINER_COUNT">ACCOUNT_CONTAINER_COUNT</a></dd>
+							<dt><b>acl_referrer</b></dt>
+				<dd>in file cloudfiles.php, method <a href="php-cloudfiles/CF_Container.html#methodacl_referrer">CF_Container::acl_referrer()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Enable ACL restriction by referer for this container.</dd>
+							<dt><b>acl_user_agent</b></dt>
+				<dd>in file cloudfiles.php, method <a href="php-cloudfiles/CF_Container.html#methodacl_user_agent">CF_Container::acl_user_agent()</a></dd>
 							<dt><b>add_cdn_container</b></dt>
 				<dd>in file cloudfiles_http.php, method <a href="php-cloudfiles-http/CF_Http.html#methodadd_cdn_container">CF_Http::add_cdn_container()</a></dd>
 							<dt><b>authenticate</b></dt>
-				<dd>in file cloudfiles_http.php, method <a href="php-cloudfiles-http/CF_Http.html#methodauthenticate">CF_Http::authenticate()</a></dd>
-							<dt><b>authenticate</b></dt>
 				<dd>in file cloudfiles.php, method <a href="php-cloudfiles/CF_Authentication.html#methodauthenticate">CF_Authentication::authenticate()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Attempt to validate Username/API Access Key</dd>
+							<dt><b>authenticate</b></dt>
+				<dd>in file cloudfiles_http.php, method <a href="php-cloudfiles-http/CF_Http.html#methodauthenticate">CF_Http::authenticate()</a></dd>
 							<dt><b>authenticated</b></dt>
 				<dd>in file cloudfiles.php, method <a href="php-cloudfiles/CF_Authentication.html#methodauthenticated">CF_Authentication::authenticated()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Make sure the CF_Authentication instance has authenticated.</dd>
 							<dt><b>AuthenticationException</b></dt>
@@ -118,6 +122,10 @@
 		<dl>
 							<dt><b>$cdnm_url</b></dt>
 				<dd>in file cloudfiles.php, variable <a href="php-cloudfiles/CF_Authentication.html#var$cdnm_url">CF_Authentication::$cdnm_url</a></dd>
+							<dt><b>$cdn_acl_referrer</b></dt>
+				<dd>in file cloudfiles.php, variable <a href="php-cloudfiles/CF_Container.html#var$cdn_acl_referrer">CF_Container::$cdn_acl_referrer</a></dd>
+							<dt><b>$cdn_acl_user_agent</b></dt>
+				<dd>in file cloudfiles.php, variable <a href="php-cloudfiles/CF_Container.html#var$cdn_acl_user_agent">CF_Container::$cdn_acl_user_agent</a></dd>
 							<dt><b>$cdn_enabled</b></dt>
 				<dd>in file cloudfiles.php, variable <a href="php-cloudfiles/CF_Container.html#var$cdn_enabled">CF_Container::$cdn_enabled</a></dd>
 							<dt><b>$cdn_log_retention</b></dt>
@@ -127,13 +135,13 @@
 							<dt><b>$cdn_uri</b></dt>
 				<dd>in file cloudfiles.php, variable <a href="php-cloudfiles/CF_Container.html#var$cdn_uri">CF_Container::$cdn_uri</a></dd>
 							<dt><b>$cfs_auth</b></dt>
-				<dd>in file cloudfiles.php, variable <a href="php-cloudfiles/CF_Connection.html#var$cfs_auth">CF_Connection::$cfs_auth</a></dd>
-							<dt><b>$cfs_auth</b></dt>
 				<dd>in file cloudfiles.php, variable <a href="php-cloudfiles/CF_Container.html#var$cfs_auth">CF_Container::$cfs_auth</a></dd>
-							<dt><b>$cfs_http</b></dt>
-				<dd>in file cloudfiles.php, variable <a href="php-cloudfiles/CF_Connection.html#var$cfs_http">CF_Connection::$cfs_http</a></dd>
+							<dt><b>$cfs_auth</b></dt>
+				<dd>in file cloudfiles.php, variable <a href="php-cloudfiles/CF_Connection.html#var$cfs_auth">CF_Connection::$cfs_auth</a></dd>
 							<dt><b>$cfs_http</b></dt>
 				<dd>in file cloudfiles.php, variable <a href="php-cloudfiles/CF_Container.html#var$cfs_http">CF_Container::$cfs_http</a></dd>
+							<dt><b>$cfs_http</b></dt>
+				<dd>in file cloudfiles.php, variable <a href="php-cloudfiles/CF_Connection.html#var$cfs_http">CF_Connection::$cfs_http</a></dd>
 							<dt><b>$container</b></dt>
 				<dd>in file cloudfiles.php, variable <a href="php-cloudfiles/CF_Object.html#var$container">CF_Object::$container</a></dd>
 							<dt><b>$content_length</b></dt>
@@ -144,6 +152,10 @@
 				<dd>in file cloudfiles_http.php, constant <a href="php-cloudfiles-http/_cloudfiles_http.php.html#defineCDNM_URL">CDNM_URL</a></dd>
 							<dt><b>CDNNotEnabledException</b></dt>
 				<dd>in file cloudfiles_exceptions.php, class <a href="php-cloudfiles-exceptions/CDNNotEnabledException.html">CDNNotEnabledException</a></dd>
+							<dt><b>CDN_ACL_REFERRER</b></dt>
+				<dd>in file cloudfiles_http.php, constant <a href="php-cloudfiles-http/_cloudfiles_http.php.html#defineCDN_ACL_REFERRER">CDN_ACL_REFERRER</a></dd>
+							<dt><b>CDN_ACL_USER_AGENT</b></dt>
+				<dd>in file cloudfiles_http.php, constant <a href="php-cloudfiles-http/_cloudfiles_http.php.html#defineCDN_ACL_USER_AGENT">CDN_ACL_USER_AGENT</a></dd>
 							<dt><b>CDN_ENABLED</b></dt>
 				<dd>in file cloudfiles_http.php, constant <a href="php-cloudfiles-http/_cloudfiles_http.php.html#defineCDN_ENABLED">CDN_ENABLED</a></dd>
 							<dt><b>CDN_LOG_RETENTION</b></dt>
@@ -479,7 +491,7 @@
 	<a href="elementindex.html#top">top</a><br>
         <div class="credit">
 		    <hr />
-		    Documentation generated on Thu, 05 Nov 2009 11:24:58 +0000 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.3</a>
+		    Documentation generated on Thu, 05 Nov 2009 11:56:18 +0000 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.3</a>
 	      </div>
       </td></tr></table>
     </td>
