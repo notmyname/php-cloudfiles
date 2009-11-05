@@ -1019,7 +1019,7 @@ class CF_Container
             throw new InvalidResponseException(
                 "Invalid response (".$status."): ".$this->cfs_http->get_error());
         }
-        $this->cdn_acl_user_agent_ = $cdn_acl_user_agent;
+        $this->cdn_acl_user_agent = $cdn_acl_user_agent;
         return True;
     }
 
@@ -1059,7 +1059,7 @@ class CF_Container
             throw new InvalidResponseException(
                 "Invalid response (".$status."): ".$this->cfs_http->get_error());
         }
-        $this->cdn_acl_referrer_ = $cdn_acl_referrer;
+        $this->cdn_acl_referrer = $cdn_acl_referrer;
         return True;
     }
     
