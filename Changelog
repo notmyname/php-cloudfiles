@@ -2,6 +2,7 @@
   * Add CDN ACL restriction by referrer feature.
   * Add CDN ACL restriction by User Agent feature.
   * Add documentation for log_retention method.
+  * Return True if log_retention as succeeded.
   * Invalid the PHP stats cache before getting filesize.
 
 1.5.1 - Chmouel Boudjnah <chmouel.boudjnah@rackspace.co.uk> - 20091020

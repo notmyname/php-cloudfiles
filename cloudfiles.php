@@ -1088,6 +1088,7 @@ class CF_Container
                 "Invalid response (".$status."): ".$this->cfs_http->get_error());
         }
         $this->cdn_log_retention = $cdn_log_retention;
+        return True;
     }
     
     /**
