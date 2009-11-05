@@ -983,8 +983,25 @@ class CF_Container
         return $this->cdn_uri;
     }
 
-     /*
-       TODO: Documentation
+    /**
+     * Enable ACL restriction by User Agent for this container.
+     *
+     * Example:
+     * <code>
+     * # ... authentication code excluded (see previous examples) ...
+     * #
+     * $conn = new CF_Authentication($auth);
+     *
+     * $public_container = $conn->get_container("public");
+     *
+     * # Enable ACL by Referrer
+     * $public_container->acl_referrer("Mozilla");
+     * </code>
+     *
+     * @returns boolean True if successful
+     * @throws CDNNotEnabledException CDN functionality not returned during auth
+     * @throws AuthenticationException if auth token is not valid/expired
+     * @throws InvalidResponseException unexpected response
      */
     function acl_user_agent($cdn_acl_user_agent="") {
         if ($this->cfs_http->getCDNMUrl() == NULL) {
@@ -1003,6 +1020,7 @@ class CF_Container
                 "Invalid response (".$status."): ".$this->cfs_http->get_error());
         }
         $this->cdn_acl_user_agent_ = $cdn_acl_user_agent;
+        return True;
     }
 
     /**
@@ -1017,7 +1035,7 @@ class CF_Container
      * $public_container = $conn->get_container("public");
      *
      * # Enable Referrer
-     * $public_container->acl_referrer("http://www.example.com/gallery.php);
+     * $public_container->acl_referrer("http://www.example.com/gallery.php");
      * </code>
      *
      * @returns boolean True if successful
