@@ -347,13 +347,13 @@ class CF_Http
 
         if (!$return_code) {
             $this->error_str .= ": Failed to obtain valid HTTP response.";
-            return array(0,$this->error_str,NULL,NULL,NULL,NULL);
+            return array(0,$this->error_str,NULL,NULL,NULL,NULL,NULL,NULL);
         }
         if ($return_code == 401) {
-            return array($return_code,"Unauthorized",NULL,NULL,NULL,NULL);
+            return array($return_code,"Unauthorized",NULL,NULL,NULL,NULL,NULL,NULL);
         }
         if ($return_code == 404) {
-            return array($return_code,"Account not found.",NULL,NULL,NULL,NULL);
+            return array($return_code,"Account not found.",NULL,NULL,NULL,NULL,NULL,NULL);
         }
         if ($return_code == 204) {
             return array($return_code,$this->response_reason,
