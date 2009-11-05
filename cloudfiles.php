@@ -840,6 +840,7 @@ class CF_Container
     public $cdn_uri;
     public $cdn_ttl;
     public $cdn_log_retention;
+    public $cdn_acl_user_agent;
 
     /**
      * Class constructor
@@ -873,6 +874,7 @@ class CF_Container
         $this->cdn_uri = NULL;
         $this->cdn_ttl = NULL;
         $this->cdn_log_retention = NULL;
+        $this->cdn_acl_user_agent = NULL;
         if ($this->cfs_http->getCDNMUrl() != NULL && $docdn) {
             $this->_cdn_initialize();
         }
@@ -890,11 +892,15 @@ class CF_Container
         $me = sprintf("name: %s, count: %.0f, bytes: %.0f",
             $this->name, $this->object_count, $this->bytes_used);
         if ($this->cfs_http->getCDNMUrl() != NULL) {
-            $me .= sprintf(", cdn: %s, cdn uri: %s, cdn ttl: %.0f logs retention: %s",
+            $me .= sprintf(", cdn: %s, cdn uri: %s, cdn ttl: %.0f, logs retention: %s",
                 $this->is_public() ? "Yes" : "No",
                 $this->cdn_uri, $this->cdn_ttl,
                 $this->cdn_log_retention ? "Yes" : "No"
                 );
+
+            if ($this->cdn_acl_user_agent != NULL) {
+                $me .= ", cdn acl user agent: " . $this->cdn_acl_user_agent;
+            }
         }
         return $me;
     }
@@ -934,7 +940,7 @@ class CF_Container
         if ($this->cdn_uri != NULL) {
             # previously published, assume we're setting new attributes
             list($status, $reason, $cdn_uri) =
-                $this->cfs_http->update_cdn_container($this->name,$ttl,$this->cdn_log_retention);
+                $this->cfs_http->update_cdn_container($this->name,$ttl, $this->cdn_log_retention, $this->cdn_acl_user_agent);
             #if ($status == 401 && $this->_re_auth()) {
             #    return $this->make_public($ttl);
             #}
@@ -961,10 +967,31 @@ class CF_Container
         $this->cdn_ttl = $ttl;
         $this->cdn_uri = $cdn_uri;
         $this->cdn_log_retention = False;
+        $this->cdn_acl_user_agent = "";        
         return $this->cdn_uri;
     }
 
-
+     /*
+       TODO: Documentation
+     */
+    function acl_user_agent($cdn_acl_user_agent="") {
+        if ($this->cfs_http->getCDNMUrl() == NULL) {
+            throw new CDNNotEnabledException(
+                "Authentication response did not indicate CDN availability");
+        }
+        list($status,$reason) =
+            $this->cfs_http->update_cdn_container($this->name,
+                                                  $this->cdn_ttl,
+                                                  $this->cdn_log_retention,
+                                                  $cdn_acl_user_agent
+                );
+        if (!in_array($status, array(202,404))) {
+            throw new InvalidResponseException(
+                "Invalid response (".$status."): ".$this->cfs_http->get_error());
+        }
+        $this->cdn_acl_user_agent_ = $cdn_acl_user_agent;
+    }
+    
     /**
      * Enable log retention for this CDN container.
      *
@@ -999,7 +1026,9 @@ class CF_Container
         list($status,$reason) =
             $this->cfs_http->update_cdn_container($this->name,
                                                   $this->cdn_ttl,
-                                                  $cdn_log_retention);
+                                                  $cdn_log_retention,
+                                                  $this->cdn_acl_user_agent
+                );
         if (!in_array($status, array(202,404))) {
             throw new InvalidResponseException(
                 "Invalid response (".$status."): ".$this->cfs_http->get_error());
@@ -1055,6 +1084,7 @@ class CF_Container
         $this->cdn_ttl = NULL;
         $this->cdn_uri = NULL;
         $this->cdn_log_retention = NULL;
+        $this->cdn_acl_user_agent = NULL;
         return True;
     }
 
@@ -1359,7 +1389,7 @@ class CF_Container
      */
     private function _cdn_initialize()
     {
-        list($status, $reason, $cdn_enabled, $cdn_uri, $cdn_ttl, $cdn_log_retention) =
+        list($status, $reason, $cdn_enabled, $cdn_uri, $cdn_ttl, $cdn_log_retention, $cdn_acl_user_agent) =
             $this->cfs_http->head_cdn_container($this->name);
         #if ($status == 401 && $this->_re_auth()) {
         #    return $this->_cdn_initialize();
@@ -1372,6 +1402,7 @@ class CF_Container
         $this->cdn_uri = $cdn_uri;
         $this->cdn_ttl = $cdn_ttl;
         $this->cdn_log_retention = $cdn_log_retention;
+        $this->cdn_acl_user_agent = $cdn_acl_user_agent;
     }
 
     #private function _re_auth()

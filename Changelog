@@ -1,4 +1,5 @@
 1.5.2 - Chmouel Boudjnah <chmouel.boudjnah@rackspace.co.uk>
+  * Add CDN ACL restriction by User Agent feature.
   * Add documentation for log_retention method.
   * Invalid the PHP stats cache before getting filesize.
 
