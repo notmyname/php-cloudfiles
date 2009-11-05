@@ -381,19 +381,16 @@ class CloudFileAccountInfoTest extends PHPUnit_Framework_TestCase
         $cdn_info = $this->conn->get_info();
 
         # ======= CREATE NEW TEST CONTAINER (ASCII) ===================
-        $n1 = "cdn-ascii-test";
+        $n1 = "cdn-ascii-test" . rand(0, 500);
         $ascii_cont = $this->conn->create_container($n1);
         $cnames[$n1] = $ascii_cont;
         $this->assertNotNull($ascii_cont);
-        
 
         # ======= CREATE NEW GOOP CONTAINER (ASCII) ===================
         $n2 = "#$%^&*()-_=+{}[]\|;:'><,'";
         $goop_cont = $this->conn->create_container($n2);
         $cnames[$n2] = $goop_cont;
         $this->assertNotNull( $goop_cont );
-        
-
 
         # ======= CREATE NEW TEST CONTAINER (UTF-8) ===================
         $n3 = "©Ï&mMMÂaxÔ¾¶Áºá±â÷³¡YDéBSQÜO´ãánÉ¤°Bxn¹tðÁVètØBñü+3Pe-¹ùðVÚ_";
@@ -451,6 +448,25 @@ class CloudFileAccountInfoTest extends PHPUnit_Framework_TestCase
         $this->assertNotNull($contents == substr($cdn_contents, -strlen($contents)));
 
 
+        # ==== Enable Features on CDN ====
+        foreach ($cnames as $name => $cont) {
+            $cont->log_retention(True);
+            $cont->acl_referrer("http://www.example.com");
+            $cont->acl_user_agent("Mozilla");            
+
+            /* Make sure set on the fly */
+            $this->assertTrue($cont->cdn_log_retention);
+            $this->assertEquals($cont->cdn_acl_referrer, "http://www.example.com");
+            $this->assertEquals($cont->cdn_acl_user_agent, "Mozilla");
+
+            /* Make sure set on the server */
+            $cont_msure = $this->conn->get_container($name);            
+            $this->assertTrue($cont_msure->cdn_log_retention);
+            $this->assertEquals($cont_msure->cdn_acl_referrer, "http://www.example.com");
+            $this->assertEquals($cont_msure->cdn_acl_user_agent, "Mozilla");
+            
+        }
+                   
         # ======= DISABLE CDN =========================================
         foreach ($cnames as $name => $cont) {
             $uri = $cont->make_private();
