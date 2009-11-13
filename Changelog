@@ -1,4 +1,4 @@
-1.5.2 - Chmouel Boudjnah <chmouel.boudjnah@rackspace.co.uk>
+1.6.0 - Chmouel Boudjnah <chmouel.boudjnah@rackspace.co.uk>
   * Add CDN ACL restriction by referrer feature.
   * Add CDN ACL restriction by User Agent feature.
   * Add documentation for log_retention method.
