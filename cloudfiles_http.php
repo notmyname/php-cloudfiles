@@ -29,7 +29,7 @@
  */
 require_once("cloudfiles_exceptions.php");
 
-define("PHP_CF_VERSION", "1.6.0");
+define("PHP_CF_VERSION", "1.6.1");
 define("USER_AGENT", sprintf("PHP-CloudFiles/%s", PHP_CF_VERSION));
 define("ACCOUNT_CONTAINER_COUNT", "X-Account-Container-Count");
 define("ACCOUNT_BYTES_USED", "X-Account-Bytes-Used");
@@ -738,6 +738,8 @@ class CF_Http
         $url_path = $this->_make_path("STORAGE", $obj->container->name,$obj->name);
 
         $hdrs = $this->_metadata_headers($obj);
+
+        $etag = $obj->getETag();
         if (isset($etag)) {
             $hdrs[] = "ETag: " . $etag;
         }
@@ -761,23 +763,23 @@ class CF_Http
             curl_setopt($this->connections[$conn_type],
                     CURLOPT_INFILESIZE, $obj->content_length);
         }
-
         $return_code = $this->_send_request($conn_type,$url_path,$hdrs);
+
         if (!$return_code) {
             $this->error_str .= ": Failed to obtain valid HTTP response.";
             return array(0,$this->error_str,NULL);
         }
         if ($return_code == 412) {
             $this->error_str = "Missing Content-Type header";
-            return array(0,$this->error_str,NULL);
+            return array($return_code,$this->error_str,NULL);
         }
         if ($return_code == 422) {
             $this->error_str = "Derived and computed checksums do not match.";
-            return array(0,$this->error_str,NULL);
+            return array($return_code,$this->error_str,NULL);
         }
         if ($return_code != 201) {
             $this->error_str = "Unexpected HTTP return code: $return_code";
-            return array(0,$this->error_str,NULL);
+            return array($return_code,$this->error_str,NULL);
         }
         return array($return_code,$this->response_reason,$this->_obj_etag);
     }
@@ -1229,7 +1231,6 @@ class CF_Http
     {
         $this->_init($conn_type);
         $this->_reset_callback_vars();
-
         $headers = $this->_make_headers($hdrs);
 
         switch ($method) {

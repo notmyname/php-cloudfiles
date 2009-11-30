@@ -508,7 +508,20 @@ class CloudFileAccountInfoTest extends PHPUnit_Framework_TestCase
 
         $this->assertNotEquals($o2->content_length, $o3->content_length);
     }
-    
+
+    /**
+     * @expectedException MisMatchedChecksumException
+     */
+    public function test_wrong_etag() {
+        $fname = $this->temp_name;
+        $f = fopen($fname,"w");
+        fclose($f);
+        
+        $o1 = $this->container->create_object("wrong_etag.txt");
+        $o1->content_type = "text/plain";
+        $o1->set_etag("ffffffffffffffffffffffff");
+        $result = $o1->load_from_filename($fname, $verify = True);
+    }
 }
 
 ?>

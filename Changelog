@@ -1,3 +1,8 @@
+1.6.1 - Chmouel Boudjnah <chmouel.boudjnah@rackspace.co.uk>
+  * Fix setting etag.
+  * Fix throwing proper exception when an invalid etag has been set.
+  * Fix throwing proper exception when no content type has been set.
+
 1.6.0 - Chmouel Boudjnah <chmouel.boudjnah@rackspace.co.uk>
   * Add CDN ACL restriction by referrer feature.
   * Add CDN ACL restriction by User Agent feature.
