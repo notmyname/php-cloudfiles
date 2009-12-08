@@ -1,5 +1,5 @@
 1.6.1 - Chmouel Boudjnah <chmouel.boudjnah@rackspace.co.uk>
-  * Fix setting etag.
+  * Fix setting etag on objects.
   * Fix throwing proper exception when an invalid etag has been set.
   * Fix throwing proper exception when no content type has been set.
 
