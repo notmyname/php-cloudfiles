@@ -211,6 +211,7 @@ class CF_Http
         curl_setopt($curl_ch, CURLOPT_HEADER, 0);
         curl_setopt($curl_ch, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($curl_ch, CURLOPT_USERAGENT, USER_AGENT);
+        curl_setopt($curl_ch, CURLOPT_RETURNTRANSFER, TRUE);
         curl_setopt($curl_ch, CURLOPT_HEADERFUNCTION,array(&$this,'_auth_hdr_cb'));
         curl_setopt($curl_ch, CURLOPT_URL, $url);
         curl_exec($curl_ch);
