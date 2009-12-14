@@ -257,9 +257,11 @@ class CF_Http
     function update_cdn_container($container_name, $ttl=86400, $cdn_log_retention=False,
                                   $cdn_acl_user_agent="", $cdn_acl_referrer)
     {
-        if (!$container_name) {
+        if ($container_name == "")
             throw new SyntaxException("Container name not set.");
-        }
+
+        if ($container_name != "0" and !isset($container_name))
+            throw new SyntaxException("Container name not set.");
 
         $url_path = $this->_make_path("CDN", $container_name);
         $hdrs = array(
@@ -290,9 +292,12 @@ class CF_Http
     #
     function add_cdn_container($container_name, $ttl=86400)
     {
-        if (!$container_name) {
+        if ($container_name == "")
             throw new SyntaxException("Container name not set.");
-        }
+
+        if ($container_name != "0" and !isset($container_name))
+            throw new SyntaxException("Container name not set.");
+        
         $url_path = $this->_make_path("CDN", $container_name);
         $hdrs = array(
             CDN_ENABLED => "True",
@@ -314,9 +319,12 @@ class CF_Http
     #
     function remove_cdn_container($container_name)
     {
-        if (!$container_name) {
+        if ($container_name == "")
             throw new SyntaxException("Container name not set.");
-        }
+
+        if ($container_name != "0" and !isset($container_name))
+            throw new SyntaxException("Container name not set.");
+        
         $url_path = $this->_make_path("CDN", $container_name);
         $hdrs = array(CDN_ENABLED => "False");
         $return_code = $this->_send_request("DEL_POST",$url_path,$hdrs,"POST");
@@ -339,9 +347,12 @@ class CF_Http
     #
     function head_cdn_container($container_name)
     {
-        if (!$container_name) {
+        if ($container_name == "")
             throw new SyntaxException("Container name not set.");
-        }
+
+        if ($container_name != "0" and !isset($container_name))
+            throw new SyntaxException("Container name not set.");
+        
         $conn_type = "HEAD";
         $url_path = $this->_make_path("CDN", $container_name);
         $return_code = $this->_send_request($conn_type, $url_path);
@@ -480,9 +491,11 @@ class CF_Http
     #
     function create_container($container_name)
     {
-        if (!$container_name) {
+        if ($container_name == "")
             throw new SyntaxException("Container name not set.");
-        }
+
+        if ($container_name != "0" and !isset($container_name))
+            throw new SyntaxException("Container name not set.");
 
         $url_path = $this->_make_path("STORAGE", $container_name);
         $return_code = $this->_send_request("PUT_CONT",$url_path);
@@ -498,9 +511,11 @@ class CF_Http
     #
     function delete_container($container_name)
     {
-        if (!$container_name) {
+        if ($container_name == "")
             throw new SyntaxException("Container name not set.");
-        }
+
+        if ($container_name != "0" and !isset($container_name))
+            throw new SyntaxException("Container name not set.");
 
         $url_path = $this->_make_path("STORAGE", $container_name);
         $return_code = $this->_send_request("DEL_POST",$url_path,array(),"DELETE");
@@ -631,11 +646,17 @@ class CF_Http
     #
     function head_container($container_name)
     {
-        if (!$container_name) {
+
+        if ($container_name == "") {
             $this->error_str = "Container name not set.";
             return False;
         }
-
+        
+        if ($container_name != "0" and !isset($container_name)) {
+            $this->error_str = "Container name not set.";
+            return False;
+        }
+    
         $conn_type = "HEAD";
 
         $url_path = $this->_make_path("STORAGE", $container_name);
@@ -857,8 +878,18 @@ class CF_Http
     #
     function delete_object($container_name, $object_name)
     {
-        if (!$container_name || !$object_name) {
-            $this->error_str = "Container or Object name not set.";
+        if ($container_name == "") {
+            $this->error_str = "Container name not set.";
+            return 0;
+        }
+        
+        if ($container_name != "0" and !isset($container_name)) {
+            $this->error_str = "Container name not set.";
+            return 0;
+        }
+        
+        if (!$object_name) {
+            $this->error_str = "Object name not set.";
             return 0;
         }
 
@@ -1195,6 +1226,9 @@ class CF_Http
         case "CDN":
             $path[] = $this->cdnm_url; break;
         }
+        if ($c == "0")
+            $path[] = rawurlencode($c);
+
         if ($c) {
             $path[] = rawurlencode($c);
         }

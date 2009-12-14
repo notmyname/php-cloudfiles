@@ -56,6 +56,14 @@ class CloudFileAccountInfoTest extends PHPUnit_Framework_TestCase
         $container = $this->conn->create_container();
     }
 
+    public function testCreateContainerWithZero()
+    {
+        $container = $this->conn->create_container("0");
+        $result = $this->conn->delete_container('0');
+        print_r($this->conn);
+        $this->assertNotNull($container);
+    }
+    
     public function testCreateContainer()
     {
         $this->assertNotNull($this->container);
@@ -509,10 +517,9 @@ class CloudFileAccountInfoTest extends PHPUnit_Framework_TestCase
         $this->assertNotEquals($o2->content_length, $o3->content_length);
     }
 
-    /**
-     * @expectedException MisMatchedChecksumException
-     */
     public function test_wrong_etag() {
+        $this->setExpectedException('MisMatchedChecksumException');
+        
         $fname = $this->temp_name;
         $f = fopen($fname,"w");
         fclose($f);

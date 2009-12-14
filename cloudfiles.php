@@ -395,9 +395,12 @@ class CF_Connection
      */
     function create_container($container_name=NULL)
     {
-        if (!$container_name) {
+        if ($container_name != "0" and !isset($container_name))
             throw new SyntaxException("Container name not set.");
-        }
+        
+        if (!isset($container_name) or $container_name == "") 
+            throw new SyntaxException("Container name not set.");
+
         if (strpos($container_name, "/") !== False) {
             $r = "Container name '".$container_name;
             $r .= "' cannot contain a '/' character.";
@@ -459,9 +462,9 @@ class CF_Connection
         if (is_string($container)) {
             $container_name = $container;
         }
-        if (!$container_name) {
+
+        if ($container_name != "0" and !isset($container_name))
             throw new SyntaxException("Must specify container object or name.");
-        }
 
         $return_code = $this->cfs_http->delete_container($container_name);
 
