@@ -60,7 +60,6 @@ class CloudFileAccountInfoTest extends PHPUnit_Framework_TestCase
     {
         $container = $this->conn->create_container("0");
         $result = $this->conn->delete_container('0');
-        print_r($this->conn);
         $this->assertNotNull($container);
     }
     
