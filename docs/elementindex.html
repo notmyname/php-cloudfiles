@@ -135,13 +135,13 @@
 							<dt><b>$cdn_uri</b></dt>
 				<dd>in file cloudfiles.php, variable <a href="php-cloudfiles/CF_Container.html#var$cdn_uri">CF_Container::$cdn_uri</a></dd>
 							<dt><b>$cfs_auth</b></dt>
-				<dd>in file cloudfiles.php, variable <a href="php-cloudfiles/CF_Container.html#var$cfs_auth">CF_Container::$cfs_auth</a></dd>
-							<dt><b>$cfs_auth</b></dt>
 				<dd>in file cloudfiles.php, variable <a href="php-cloudfiles/CF_Connection.html#var$cfs_auth">CF_Connection::$cfs_auth</a></dd>
-							<dt><b>$cfs_http</b></dt>
-				<dd>in file cloudfiles.php, variable <a href="php-cloudfiles/CF_Container.html#var$cfs_http">CF_Container::$cfs_http</a></dd>
+							<dt><b>$cfs_auth</b></dt>
+				<dd>in file cloudfiles.php, variable <a href="php-cloudfiles/CF_Container.html#var$cfs_auth">CF_Container::$cfs_auth</a></dd>
 							<dt><b>$cfs_http</b></dt>
 				<dd>in file cloudfiles.php, variable <a href="php-cloudfiles/CF_Connection.html#var$cfs_http">CF_Connection::$cfs_http</a></dd>
+							<dt><b>$cfs_http</b></dt>
+				<dd>in file cloudfiles.php, variable <a href="php-cloudfiles/CF_Container.html#var$cfs_http">CF_Container::$cfs_http</a></dd>
 							<dt><b>$container</b></dt>
 				<dd>in file cloudfiles.php, variable <a href="php-cloudfiles/CF_Object.html#var$container">CF_Object::$container</a></dd>
 							<dt><b>$content_length</b></dt>
@@ -174,6 +174,10 @@
 				<dd>in file cloudfiles_http.php, class <a href="php-cloudfiles-http/CF_Http.html">CF_Http</a><br>&nbsp;&nbsp;&nbsp;&nbsp;HTTP/cURL wrapper for Cloud Files</dd>
 							<dt><b>CF_Object</b></dt>
 				<dd>in file cloudfiles.php, class <a href="php-cloudfiles/CF_Object.html">CF_Object</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Object operations</dd>
+							<dt><b>close</b></dt>
+				<dd>in file cloudfiles.php, method <a href="php-cloudfiles/CF_Connection.html#methodclose">CF_Connection::close()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Close a connection</dd>
+							<dt><b>close</b></dt>
+				<dd>in file cloudfiles_http.php, method <a href="php-cloudfiles-http/CF_Http.html#methodclose">CF_Http::close()</a></dd>
 							<dt><b>cloudfiles.php</b></dt>
 				<dd>procedural page <a href="php-cloudfiles/_cloudfiles.php.html">cloudfiles.php</a></dd>
 							<dt><b>cloudfiles_exceptions.php</b></dt>
@@ -182,14 +186,16 @@
 				<dd>procedural page <a href="php-cloudfiles-http/_cloudfiles_http.php.html">cloudfiles_http.php</a></dd>
 							<dt><b>compute_md5sum</b></dt>
 				<dd>in file cloudfiles.php, method <a href="php-cloudfiles/CF_Object.html#methodcompute_md5sum">CF_Object::compute_md5sum()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Compute the MD5 checksum</dd>
+							<dt><b>ConnectionNotOpenException</b></dt>
+				<dd>in file cloudfiles_exceptions.php, class <a href="php-cloudfiles-exceptions/ConnectionNotOpenException.html">ConnectionNotOpenException</a></dd>
 							<dt><b>CONTAINER_BYTES_USED</b></dt>
 				<dd>in file cloudfiles_http.php, constant <a href="php-cloudfiles-http/_cloudfiles_http.php.html#defineCONTAINER_BYTES_USED">CONTAINER_BYTES_USED</a></dd>
 							<dt><b>CONTAINER_OBJ_COUNT</b></dt>
 				<dd>in file cloudfiles_http.php, constant <a href="php-cloudfiles-http/_cloudfiles_http.php.html#defineCONTAINER_OBJ_COUNT">CONTAINER_OBJ_COUNT</a></dd>
 							<dt><b>create_container</b></dt>
-				<dd>in file cloudfiles.php, method <a href="php-cloudfiles/CF_Connection.html#methodcreate_container">CF_Connection::create_container()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Create a Container</dd>
-							<dt><b>create_container</b></dt>
 				<dd>in file cloudfiles_http.php, method <a href="php-cloudfiles-http/CF_Http.html#methodcreate_container">CF_Http::create_container()</a></dd>
+							<dt><b>create_container</b></dt>
+				<dd>in file cloudfiles.php, method <a href="php-cloudfiles/CF_Connection.html#methodcreate_container">CF_Connection::create_container()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Create a Container</dd>
 							<dt><b>create_object</b></dt>
 				<dd>in file cloudfiles.php, method <a href="php-cloudfiles/CF_Container.html#methodcreate_object">CF_Container::create_object()</a><br>&nbsp;&nbsp;&nbsp;&nbsp;Create a new remote storage Object</dd>
 							<dt><b>create_paths</b></dt>
@@ -491,7 +497,7 @@
 	<a href="elementindex.html#top">top</a><br>
         <div class="credit">
 		    <hr />
-		    Documentation generated on Thu, 05 Nov 2009 12:00:59 +0000 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.3</a>
+		    Documentation generated on Thu, 14 Jan 2010 17:07:28 +0000 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.3</a>
 	      </div>
       </td></tr></table>
     </td>
