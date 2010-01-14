@@ -528,6 +528,15 @@ class CloudFileAccountInfoTest extends PHPUnit_Framework_TestCase
         $o1->set_etag("ffffffffffffffffffffffff");
         $result = $o1->load_from_filename($fname, $verify = True);
     }
+	
+	public function test_close() {
+        $this->setExpectedException('ConnectionNotOpenException');
+
+        $this->conn->list_containers(); // Open a connection.
+		$this->conn->close();
+		$this->conn->list_containers(); // Open a connection.
+	}    
+    
 }
 
 ?>

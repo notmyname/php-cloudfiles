@@ -775,7 +775,7 @@ class CF_Http
         curl_setopt($this->connections[$conn_type],
                 CURLOPT_INFILE, $fp);
         if (!$obj->content_length) {
-            # We don't know the Content-Length, so assumed "chunked" PUT
+            # We don''t know the Content-Length, so assumed "chunked" PUT
             #
             curl_setopt($this->connections[$conn_type], CURLOPT_UPLOAD, True);
             $hdrs[] = 'Transfer-Encoding: chunked';
@@ -1233,7 +1233,7 @@ class CF_Http
             $path[] = rawurlencode($c);
         }
         if ($o) {
-            # mimic Python's urllib.quote() feature of a "safe" '/' character
+            # mimic Python''s urllib.quote() feature of a "safe" '/' character
             #
             $path[] = str_replace("%2F","/",rawurlencode($o));
         }
@@ -1268,6 +1268,11 @@ class CF_Http
         $this->_reset_callback_vars();
         $headers = $this->_make_headers($hdrs);
 
+        if (gettype($this->connections[$conn_type]) == "unknown type")
+            throw new ConnectionNotOpenException (
+                "Connection is not open."
+                );
+        
         switch ($method) {
         case "DELETE":
             curl_setopt($this->connections[$conn_type],
@@ -1278,10 +1283,10 @@ class CF_Http
                 CURLOPT_CUSTOMREQUEST, "POST");
         default:
             break;
-        }
+        }        
 
         curl_setopt($this->connections[$conn_type],
-            CURLOPT_HTTPHEADER, $headers);
+                    CURLOPT_HTTPHEADER, $headers);
 
         curl_setopt($this->connections[$conn_type],
             CURLOPT_URL, $url_path);
@@ -1294,6 +1299,17 @@ class CF_Http
         }
         return curl_getinfo($this->connections[$conn_type], CURLINFO_HTTP_CODE);
     }
+    
+    function close()
+    {
+        foreach ($this->connections as $cnx) {
+            if (isset($cnx)) {
+                curl_close($cnx);
+                $this->connections[$cnx] = NULL;
+            }
+        }
+    }
+
 }
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */

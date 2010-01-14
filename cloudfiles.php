@@ -340,6 +340,24 @@ class CF_Connection
     }
 
     /**
+     * Close a connection
+     *
+     * Example:
+     * <code>
+     *  
+     * $conn->close();
+     * 
+     * </code>
+     *
+     * Will close all current cUrl active connections.
+     * 
+     */
+    public function close()
+    {
+        $this->cfs_http->close();
+    }
+    
+    /**
      * Cloud Files account information
      *
      * Return an array of two floats (since PHP only supports 32-bit integers);

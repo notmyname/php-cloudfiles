@@ -27,6 +27,7 @@ class IOException extends Exception { }
 class CDNNotEnabledException extends Exception { }
 class BadContentTypeException extends Exception { }
 class InvalidUTF8Exception extends Exception { }
+class ConnectionNotOpenException extends Exception { }
 
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
