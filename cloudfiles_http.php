@@ -195,9 +195,9 @@ class CF_Http
                 sprintf("%s: %s", AUTH_USER_HEADER, $user),
                 sprintf("%s: %s", AUTH_KEY_HEADER, $pass),
                 );
-            $path[] = "https://api.mosso.com";
+            $path[] = "https://auth.api.rackspacecloud.com";
         }
-        $path[] = "auth";
+        $path[] = "v1.0";
         $url = implode("/", $path);
 
         $curl_ch = curl_init();
