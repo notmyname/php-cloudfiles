@@ -1,3 +1,6 @@
+1.7.0 - Chmouel Boudjnah <chmouel.boudjnah@rackspace.co.uk>
+  * Adjust api auth to rackspacecloud not mosso (mshuler).
+
 1.6.2 - Chmouel Boudjnah <chmouel.boudjnah@rackspace.co.uk>
   * Add a close method to close all the current connection.
   * Fix when container_name is named 0.
