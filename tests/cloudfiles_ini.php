@@ -1,7 +1,7 @@
 <?php
 $VERBOSE = False;                        # informational messages to stdout
-$USER    = "";                  # Mosso Username
-$API_KEY = "";
+$USER    = "Username";                  # Mosso Username
+$API_KEY = "API Key";                   # User's API Access Key
 $ACCOUNT = NULL;                        # DEPRECATED: account name
 $HOST    = NULL;                        # DEPRECATED: authentication host URL
 
